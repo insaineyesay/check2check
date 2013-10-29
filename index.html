@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Stop Living Check to Check</title>	
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+<script type="text/x-handlebars" data-template-name="bills">
+
+	<section id="App">
+
+      <header id="header">
+
+        <h1>Enter Values Below</h1>
+        <form id="billItemForm">
+        {{input type="text" id="billNameEntry" value=newTitle action="createBillItem" placeholder="Enter the bill name here"}}
+        </form>
+      </header><!-- close header -->
+  	
+  	
+
+	<section id="main">
+		
+		{{#each}}
+			<div class="billItem">
+      <div class="billName">{{billName}}</div>
+      <div class="billAmount">{{billAmount}}</div>
+      <div class="billDate">{{billDate}}</div>
+      </div><!-- end bill item -->
+		{{/each}}				
+		
+	</section>
+  </section>
+
+</script>
+
+<script src="js/libs/jquery-1.10.2.min.js"></script>
+<script src="js/libs/handlebars-1.0.0.js"></script>
+<script src="js/libs/ember.js"></script>
+<script src="js/libs/ember-data.js"></script>
+<script src="js/application.js"></script>
+<script src="js/router.js"></script>
+<script src="js/models/bill.js"></script>
+<script src="js/controllers/bills_controller.js"></script>
+
+</body>
+</html>
