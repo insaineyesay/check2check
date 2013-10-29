@@ -12,21 +12,28 @@
       <header id="header">
 
         <h1>Enter Values Below</h1>
+        <div class="billCount">
+        <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
+        </div>
         
         {{input type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
         {{input type="text" id="bilAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
         {{input type="text" id="billDateEntry"  valueBinding="newDate" placeholder="Enter the due date here"}}
+
        	<input type="submit" value="submit" {{action "createBillItem" content}}></input>
+
       </header><!-- close header -->
 
 	<section id="main">
 		
 		{{#each}}
+
 			<div class="billItem">
               <div class="billName">{{billName}}</div>
               <div class="billAmount">{{billAmount}}</div>
               <div class="billDate">{{billDate}}</div>
-          </div><!-- end bill item -->
+          	</div><!-- end bill item -->
+
 		{{/each}}				
 		
 	</section>
