@@ -47,3 +47,7 @@ body {
 .billAmount {
 	float: right;
 }
+
+.billDate {
+	clear: both;
+}
