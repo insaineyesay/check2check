@@ -12,21 +12,17 @@
       <header id="header">
 
         <h1>Enter Values Below</h1>
-        <form id="billItemForm">
-        {{input type="text" id="billNameEntry" value=newTitle action="createBillItem" placeholder="Enter the bill name here"}}
-        </form>
+        {{input type="text" id="billNameEntry" valueBinding="newTitle" action="createBillItem" placeholder="Enter the bill name here"}}
       </header><!-- close header -->
-  	
-  	
 
 	<section id="main">
 		
 		{{#each}}
 			<div class="billItem">
-      <div class="billName">{{billName}}</div>
-      <div class="billAmount">{{billAmount}}</div>
-      <div class="billDate">{{billDate}}</div>
-      </div><!-- end bill item -->
+              <div class="billName">{{billName}}</div>
+              <div class="billAmount">{{billAmount}}</div>
+              <div class="billDate">{{billDate}}</div>
+          </div><!-- end bill item -->
 		{{/each}}				
 		
 	</section>

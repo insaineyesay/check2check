@@ -21,7 +21,7 @@ App.BillsController = Ember.ArrayController.extend({
 			// Save it
 			bill.save();
 			console.log('yay4');
-		},
+		}
 
 		/*createAmount: function() {
 			// Get the Bill title set by the new 'New Bill' text field
