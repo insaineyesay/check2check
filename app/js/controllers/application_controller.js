@@ -1,4 +1,4 @@
-App.BillsController = Ember.ArrayController.extend({
+App.ApplicationController = Ember.ArrayController.extend({
 	totalBills: function() {
 		return this.getEach('.billItem').get('length');
 	}.property('@each.billItem'),
