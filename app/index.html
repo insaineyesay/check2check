@@ -26,17 +26,25 @@
 
 	<section id="main">
 		
-		{{#each}}
+		{{#each itemController="bill"}}
 
 			<div class="billItem">
-              <div class="billName">{{billName}}</div>
-              <div class="billAmount">{{billAmount}}</div>
+              <div {{bind-attr class="isEditing:editing billName"}}>
+              {{#if isEditing}}
+             {{edit-bill class="edit" value=billName focus-out="acceptChanges" insert-newline="acceptChanges"}}
+              {{else}}
+             <label {{action "editBill" on="doubleClick"}}> {{billName}}</label>
+              {{/if}}
+              </div>
+              <div class="billAmount"><span>$</span>{{billAmount}}</div>
               <div class="billDate">{{billDate}}</div>
-          	</div><!-- end bill item -->
+    	</div><!-- end bill item -->
 
 		{{/each}}				
 		
 	</section>
+
+  The total of all your bills is <span class="bold">{{billSum}}</span>
   </section>
 
 </script>
@@ -49,6 +57,8 @@
 <script src="js/router.js"></script>
 <script src="js/models/bill.js"></script>
 <script src="js/controllers/bills_controller.js"></script>
+<script src="js/controllers/bill_controller.js"></script>
+<script src="js/views/edit_bill_view.js"></script>
 
 </body>
 </html>
