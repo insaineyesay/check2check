@@ -1,6 +1,6 @@
 App.BillsController = Ember.ArrayController.extend({
 	totalBills: function() {
-		return this.getEach('.billItem').get('length');
+		return this.getEach('.billItem').length;
 	}.property('@each.billItem'),
 
 	inflection: function() {
@@ -8,12 +8,11 @@ App.BillsController = Ember.ArrayController.extend({
 		return totalBills === 1 ? 'bill' : 'bills';
 	}.property('@each.billItem'),
 
+	// Not working yet
 	billSum: function() {
-		var bills = this.getEach("billAmount");
-		billSum = this.getEach('billAmount');
-		console.log(billSum);
-		return billSum;
-	}.property('billAmount'),
+		console.log(this.getEach('.billItem').value);
+		return this.getEach('.billItem').length;
+	}.property('@each.billItem'),
 
 	actions: {
 		createBillItem: function() {
