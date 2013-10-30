@@ -1,5 +1,5 @@
 App.Router.map(function () {
-  this.resource('bills', { path: '/' });
+  this.resource('application', { path: '/' });
 });
 
 App.BillsRoute = Ember.Route.extend({
