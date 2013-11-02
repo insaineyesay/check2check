@@ -31,10 +31,10 @@
 			<div class="billItem">
 
               {{#if isEditingName}}
-              <div class="billName"><input class="edit" value=billName focus-out="acceptChangesForName" insert-newline="acceptChangesForName"></div>
+              <div class="billName"><input class="edit" value="billName" focus-out="acceptChangesForName" insert-newline="acceptChangesForName"></div>
               {{else}}
               <div class="billName"{{bind-attr class="isEditingName:editing"}}>
-              <label {{action "editBillName" on="doubleClick"}}>{{billName}}</label>
+              <label {{action "editBillName" on="doubleClick"}}> {{billName}}</label>
               {{/if}}
               </div>
 
