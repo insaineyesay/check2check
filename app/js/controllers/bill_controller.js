@@ -6,11 +6,11 @@ App.BillController = Ember.ObjectController.extend({
 			bill.save();
 		},
 		
-		editBill: function() {
-			this.set('isEditing', true);
+		editBillName: function() {
+			this.set('isEditingName', true);
 		},
-		acceptChanges: function() {
-			this.set('isEditing', false);
+		acceptChangesForName: function() {
+			this.set('isEditingName', false);
 
 			if(this.get('model').get('isSaving')) return;
 

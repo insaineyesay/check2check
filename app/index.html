@@ -29,15 +29,26 @@
 		{{#each itemController="bill"}}
 
 			<div class="billItem">
-              <div {{bind-attr class="isEditing:editing billName"}}>
+
+              {{#if isEditingName}}
+              <div class="billName"><input class="edit" value="billName" focus-out="acceptChangesForName" insert-newline="acceptChangesForName"></div>
+              {{else}}
+              <div class="billName"{{bind-attr class="isEditingName:editing"}}>
+              <label {{action "editBillName" on="doubleClick"}}> {{billName}}</label>
+              {{/if}}
+              </div>
+
               {{#if isEditing}}
              {{edit-bill class="edit" value=billName focus-out="acceptChanges" insert-newline="acceptChanges"}}
               {{else}}
-             <label {{action "editBill" on="doubleClick"}}> {{billName}}</label>
-              {{/if}}
-              </div>
               <div class="billAmount"><span>$</span>{{billAmount}}</div>
+              {{/if}}
+
+              {{#if isEditing}}
+             {{edit-bill class="edit" value=billName focus-out="acceptChanges" insert-newline="acceptChanges"}}
+              {{else}}
               <div class="billDate">{{billDate}}</div>
+              {{/if}}
               <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
     	</div><!-- end bill item -->
 
@@ -59,7 +70,6 @@
 <script src="js/models/bill.js"></script>
 <script src="js/controllers/bills_controller.js"></script>
 <script src="js/controllers/bill_controller.js"></script>
-<script src="js/views/edit_bill_view.js"></script>
 
 </body>
 </html>
