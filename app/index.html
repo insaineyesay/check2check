@@ -31,7 +31,7 @@
 			<div class="billItem">
 
               {{#if isEditingName}}
-<<<<<<< HEAD
+
               <div class="billName">{{edit-bill class="edit" value=billName focus-out="acceptChangesForBillName" insert-newline="acceptChangesForBillName"}}</div>
               {{else}}
               <div class="billName" {{bind-attr class="isEditingName:editing"}}>
@@ -46,14 +46,7 @@
               <div class="billAmount" {{bind-attr class="isEditingAmount:editing"}}>
               <label {{action "editBillAmount" on="doubleClick"}}>{{billAmount}}</label>
               </div>
-=======
-              <div class="billName"><input class="edit" value=billName focus-out="acceptChangesForName" insert-newline="acceptChangesForName"></div>
-              {{else}}
-              <div class="billName"{{bind-attr class="isEditingName:editing"}}>
-              <label {{action "editBillName" on="doubleClick"}}>{{billName}}</label>
->>>>>>> ff2f5821e0d40c4a25985a0e2ca34bb80135d0bc
-              {{/if}}
-              
+
 
               {{#if isEditing}}
               {{edit-bill class="edit" value=this focus-out="acceptChanges" insert-newline="acceptChanges"}}
@@ -61,10 +54,8 @@
               <div class="billDate" {{bind-attr class="isEditing:editing"}}>
               <label {{action "editBillDate" on="doubleClick"}}>{{billDate}}</label>
               </div>
-<<<<<<< HEAD
               {{/if}}
-              
-=======
+
 
               {{#if isEditing}}
              {{edit-bill class="edit" value=billName focus-out="acceptChanges" insert-newline="acceptChanges"}}
@@ -77,7 +68,7 @@
               {{else}}
               <div class="billDate">{{billDate}}</div>
               {{/if}}
->>>>>>> ff2f5821e0d40c4a25985a0e2ca34bb80135d0bc
+
               <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
     	</div><!-- end bill item -->
 

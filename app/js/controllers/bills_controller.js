@@ -10,16 +10,14 @@ App.BillsController = Ember.ArrayController.extend({
 
 	// Not working yet
 	billSum: function() {
-<<<<<<< HEAD
 		console.log(this);
 		return this.getEach('billAmount');
-=======
+
 		var bills = this.getEach('.billItem').length;
 		console.log(this.getEach(''));
 		this.mapBy('billAmount');
 		return bills;
 		//return this.getEach('.billItem').length;
->>>>>>> ff2f5821e0d40c4a25985a0e2ca34bb80135d0bc
 	}.property('@each.billItem'),
 
 	actions: {
