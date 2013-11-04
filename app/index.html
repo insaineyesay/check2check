@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-<script type="text/x-handlebars" data-template-name="bills">
+<script type="text/x-handlebars">
 
 	<section id="App">
 
@@ -24,72 +24,36 @@
 
       </header><!-- close header -->
 
-	<section id="main">
-		
-		{{#each itemController="bill"}}
+      <section id="main">
+    
+       {{outlet}}
+      </section>
+       </section>
+      </script>
+
+
+<script type="text/x-handlebars" id="about">
+
               
-			<div class="billItem">
-
-              {{#if isEditingName}}
-
-              <div class="billName">{{edit-bill class="edit" value=billName focus-out="acceptChangesForBillName" insert-newline="acceptChangesForBillName"}}</div>
-              {{else}}
-              <div class="billName" {{bind-attr class="isEditingName:editing"}}>
-              <label {{action "editBillName" on="doubleClick"}}>{{billName}}</label>
-              </div>
-              {{/if}}
-
-             
-              {{#if isEditingAmount}}
-              <div class="billAmount">{{edit-bill class="edit" value=blilAmount focus-out="acceptChangesForBillAmount" insert-newline="acceptChangesForBillAmount"}}</div>
-              {{else}}
-              <div class="billAmount" {{bind-attr class="isEditingAmount:editing"}}>
-              <label {{action "editBillAmount" on="doubleClick"}}>{{billAmount}}</label>
-              </div>
-
-
-              {{#if isEditing}}
-              {{edit-bill class="edit" value=this focus-out="acceptChanges" insert-newline="acceptChanges"}}
-              {{else}}
-              <div class="billDate" {{bind-attr class="isEditing:editing"}}>
-              <label {{action "editBillDate" on="doubleClick"}}>{{billDate}}</label>
-              </div>
-              {{/if}}
-
-
-              {{#if isEditing}}
-             {{edit-bill class="edit" value=billName focus-out="acceptChanges" insert-newline="acceptChanges"}}
-              {{else}}
-              <div class="billAmount"><span>$</span>{{billAmount}}</div>
-              {{/if}}
-
-              {{#if isEditing}}
-             {{edit-bill class="edit" value=billName focus-out="acceptChanges" insert-newline="acceptChanges"}}
-              {{else}}
-              <div class="billDate">{{billDate}}</div>
-              {{/if}}
-
+      <div class="billItem">
+              <div class="billName"><p>billName</p></div>
+              <div class="billAmount">billAmount</div>
+              <div class="billDate">BillDate </div>
               <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
-    	</div><!-- end bill item -->
+      </div><!-- end bill item -->
 
-		{{/each}}				
-		
-	</section>
-
-  The total of all your bills is <span class="bold">{{billSum}}</span>
-  </section>
-
+  
 </script>
+ 
+
+
 
 <script src="js/libs/jquery-1.10.2.min.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
-<script src="js/libs/ember-data.js"></script>
+
 <script src="js/application.js"></script>
-<script src="js/router.js"></script>
-<script src="js/models/bill.js"></script>
-<script src="js/controllers/bills_controller.js"></script>
-<script src="js/controllers/bill_controller.js"></script>
+
 
 </body>
 </html>
