@@ -27,21 +27,24 @@
 	<section id="main">
 		
 		{{#each itemController="bill"}}
-
+              
 			<div class="billItem">
 
               {{#if isEditingName}}
-              <div class="billName"><input class="edit" value=billName focus-out="acceptChangesForName" insert-newline="acceptChangesForName"></div>
+              <div class="billName">{{input class="edit" value=billName focus-out="acceptChangesForBillName" insert-newline="acceptChangesForBillName"}}</div>
               {{else}}
-              <div class="billName"{{bind-attr class="isEditingName:editing"}}>
+              <div class="billName" {{bind-attr class="isEditingName:editing"}}>
               <label {{action "editBillName" on="doubleClick"}}>{{billName}}</label>
-              {{/if}}
               </div>
+              {{/if}}
 
-              {{#if isEditing}}
-             {{edit-bill class="edit" value=billName focus-out="acceptChanges" insert-newline="acceptChanges"}}
+             
+              {{#if isEditingAmount}}
+              <div class="billAmount">{{input class="edit" value=blilAmount focus-out="acceptChangesForBillAmount" insert-newline="acceptChangesForBillAmount"}}</div>
               {{else}}
-              <div class="billAmount"><span>$</span>{{billAmount}}</div>
+              <div class="billAmount" {{bind-attr class="isEditingAmount:editing"}}>
+              <label {{action "editBillAmount" on="doubleClick"}}>{{billAmount}}</label>
+              </div>
               {{/if}}
 
               {{#if isEditing}}
@@ -49,6 +52,7 @@
               {{else}}
               <div class="billDate">{{billDate}}</div>
               {{/if}}
+
               <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
     	</div><!-- end bill item -->
 
@@ -70,6 +74,8 @@
 <script src="js/models/bill.js"></script>
 <script src="js/controllers/bills_controller.js"></script>
 <script src="js/controllers/bill_controller.js"></script>
+<script src="js/models/billAmount.js"></script>
+<script src="js/libs/localstorage_adapter.js"></script>
 
 </body>
 </html>

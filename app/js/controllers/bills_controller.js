@@ -10,11 +10,8 @@ App.BillsController = Ember.ArrayController.extend({
 
 	// Not working yet
 	billSum: function() {
-		var bills = this.getEach('.billItem').length;
-		console.log(this.getEach(''));
-		this.mapBy('billAmount');
-		return bills;
-		//return this.getEach('.billItem').length;
+		console.log(this);
+		return this.getEach('billAmount');
 	}.property('@each.billItem'),
 
 	actions: {
@@ -31,8 +28,11 @@ App.BillsController = Ember.ArrayController.extend({
 			// Create the New Bill Model
 			var bill = this.store.createRecord('bill', {
 				billName: title,
-				billAmount: amount,
 				billDate: date
+			});
+
+			var billAmount = this.store.createRecord('billAmount', {
+				billAmount: amount
 			});
 
 			console.log('yay2');

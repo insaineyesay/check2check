@@ -9,7 +9,8 @@ App.BillController = Ember.ObjectController.extend({
 		editBillName: function() {
 			this.set('isEditingName', true);
 		},
-		acceptChangesForName: function() {
+
+		acceptChangesForBillName: function() {
 			this.set('isEditingName', false);
 
 			if(this.get('model').get('isSaving')) return;
@@ -19,7 +20,29 @@ App.BillController = Ember.ObjectController.extend({
 			} else {
 				this.get('model').save();
 			}
+		},
+
+		editBillAmount: function() {
+			this.set('isEditingAmount', true);
+		},
+
+		acceptChangesForBillAmount: function() {
+			this.set('isEditingAmount', false);
+
+			if(this.get('model').get('isSaving')) return;
+
+			if (Ember.isEmpty(this.get('model.billAmount'))) {
+				this.send('removeBill');
+			} else {
+				this.get('model').save();
+			}
+		},
+
+		editBillDate: function() {
+			this.set('isEditing',true);
 		}
+
+		
 	},
 
 	isEditing: false,
