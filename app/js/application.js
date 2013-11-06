@@ -4,17 +4,22 @@ var App = Ember.Application.create({
    // log when Ember generates a controller or a route from a generic class
   LOG_ACTIVE_GENERATION: true,
   // log when Ember looks up a template or a view
-  LOG_VIEW_LOOKUPS: true
+  LOG_VIEW_LOOKUPS: true,
+  LOG_BINDINGS: true,
+  LOG_STACKTRACE_ON_DEPRECATION: true,
+  LOG_VERSION: true,
+  debugMode: true
 	});
 
 
 // Routes
 App.Router.map(function() {
 
-	this.resource('index');
+	this.resource('index', {path: '/'});
 	this.resource('getting started');
-	this.resource('finances');
-	this.resource('bills');
+	this.resource('finances', function() {
+		this.resource('bills');
+	});
 	this.resource('reports');
 	this.resource('contact');
 
@@ -26,29 +31,25 @@ App.IndexRoute = Ember.Route.extend({
 	}
 });
 
-App.BillsRoute = Ember.Route.extend({
+App.BillsIndexRoute = Ember.Route.extend({
 	model: function() {
-		return App.Bill.find();
+		return bills;
 	}
 });
 
 // Controllers
-App.FinancesController = Ember.ArrayController.extend({
-
-});
 
 // Models
-App.Bill = Ember.Object.extend({
-	id: 1,
+App.Bill = DS.Model.extend({
+	id: '',
 	name: '',
 	amount: '',
 	date: '',
 	apr: ''
 });
 
-console.log(App.bills);
 // Adapters
-// App.Bill.adapter = Ember.Adapter.create();
+App.Bill.adapter = DS.RESTAdapter.create();
 
 // JSON 
 App.Bill.url = "api/bill";

@@ -19,7 +19,7 @@
       <li>{{#link-to 'finances'}}Finances{{/link-to}}</li>
       <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
       <li>{{#link-to 'contact'}}Contact{{/link-to}}</li>
-
+      <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
     </ul>
   </div>
 </div>
@@ -79,10 +79,10 @@
 </script>
 
 <script type="text/x-handlebars" id="bills">
-      {{#each Bill in model}}
+      {{#each bill in model}}
       <div class="billItem">
-        <div class="billDate">{{bill.id}}</div>
-        <div class="billName"><p>{{bill.name}}</p></div>
+        <div class="billDate">{{bill.id}}stuff</div>
+        <div class="billName"><p>{{bill.name}}stff</p></div>
         <div class="billAmount">{{bill.amount}}</div>
         <div class="billDate">{{bill.date}} </div>
         <div class="billDate">{{bill.apr}} </div>
@@ -93,8 +93,7 @@
 </script>
 
 <script type="text/x-handlebars" id="reports">
-
-              
+   
       <div class="billItem">
               <div class="billName"><p>billName</p></div>
               <div class="billAmount">billAmount</div>
@@ -110,6 +109,7 @@
 <script src="js/libs/bootstrap.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
+<script src="js/libs/ember-data.js"></script>
 
 <script src="js/application.js"></script>
 
