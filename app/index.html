@@ -70,22 +70,21 @@
         <input type="submit" value="submit" {{action "createBillItem" content}}></input>
 
       </header><!-- close header -->
-
-      <section id="main">
+      </section>
+      <div id="bills">
       {{outlet}}
-      </section>
+      </div>
 
-      </section>
+      
 </script>
 
-<script type="text/x-handlebars" id="bills">
+<script type="text/x-handlebars" id="bills" data-template-name="bills">
       {{#each bill in model}}
       <div class="billItem">
-        <div class="billDate">{{bill.id}}stuff</div>
-        <div class="billName"><p>{{bill.name}}stff</p></div>
-        <div class="billAmount">{{bill.amount}}</div>
-        <div class="billDate">{{bill.date}} </div>
-        <div class="billDate">{{bill.apr}} </div>
+        <div class="billName"><p>{{name}}stff</p></div>
+        <div class="billAmount">{{amount}}</div>
+        <div class="billDate">{{date}} </div>
+        <div class="billDate">{{apr}} </div>
         <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
       </div><!-- end bill item -->
       {{/each}}

@@ -11,6 +11,7 @@ var App = Ember.Application.create({
   debugMode: true
 	});
 
+App.ApplicationAdapter = DS.FixtureAdapter.extend();
 
 // Routes
 App.Router.map(function() {
@@ -31,22 +32,44 @@ App.IndexRoute = Ember.Route.extend({
 	}
 });
 
-App.BillsIndexRoute = Ember.Route.extend({
+App.BillsRoute = Ember.Route.extend({
 	model: function() {
-		return bills;
+		return this.store.find('bill');
 	}
 });
 
 // Controllers
+App.BillController = Ember.ArrayController.extend({
 
+});
 // Models
 App.Bill = DS.Model.extend({
-	id: '',
-	name: '',
-	amount: '',
-	date: '',
-	apr: ''
+	name: DS.attr('string'),
+	amount: DS.attr('string'),
+	date: DS.attr('string'),
+	apr: DS.attr('string')
 });
+
+App.Bill.FIXTURES = [
+{
+        id: 1,
+        name: 'Bill One',
+        amount: '45.00',
+        date: '11/1/13'
+},
+{
+        id: 2,
+        name: 'Bill Two',
+        amount: '45.00',
+        date: '11/1/13'
+},
+{
+        id: 3,
+        name: 'Bill Three',
+        amount: '45.00',
+        date: '11/1/13'
+}
+];
 
 // Adapters
 App.Bill.adapter = DS.RESTAdapter.create();
