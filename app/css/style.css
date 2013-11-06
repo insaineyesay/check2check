@@ -51,3 +51,8 @@ body {
 .billDate {
 	clear: both;
 }
+
+#rotator {
+	background: grey;
+	height: 200px;
+}

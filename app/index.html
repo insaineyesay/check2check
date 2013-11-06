@@ -2,12 +2,59 @@
 <html>
 <head>
 	<title>Stop Living Check to Check</title>	
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-<script type="text/x-handlebars">
 
-	<section id="App">
+ 
+<script type="text/x-handlebars">
+ <div class="navbar">
+  <div class="navbar-inner">
+    
+    <ul class="nav">
+      <li>{{#link-to 'index'}}Home{{/link-to}}</li>
+      <li>{{#link-to 'getting started'}}Get Started{{/link-to}}</li>
+      <li>{{#link-to 'finances'}}Finances{{/link-to}}</li>
+      <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
+      <li>{{#link-to 'contact'}}Contact{{/link-to}}</li>
+
+    </ul>
+  </div>
+</div>
+{{outlet}}
+<div id="footer">
+
+</div>
+</script>
+
+<script type="text/x-handlebars" id="index">
+<h1>Home Page Text</h1>
+<div id="rotator" class="fullSizeImg"></div>
+<div id="homeContent" class="row-fluid">
+<div id="leftHomeContent" class="text span4">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. </p>
+</div>
+
+<!-- end left home content -->
+
+<div id="rightHomeContent" class="span8">
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. Vestibulum sit amet erat at tellus iaculis tristique. Vestibulum tempus turpis nibh, a cursus orci adipiscing vitae. Nullam pharetra risus cursus mattis gravida. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula.</p>
+</div>
+
+<!-- ed right home content -->
+
+</div>
+<!-- end home content -->
+</script>
+
+<script type = "text/x-handlebars" id="getting started">
+ <p>Some Text</p>
+</script>
+	
+<script type = "text/x-handlebars" id="finances">
+  <section id="App">
 
       <header id="header">
 
@@ -20,19 +67,32 @@
         {{input type="text" id="bilAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
         {{input type="text" id="billDateEntry"  valueBinding="newDate" placeholder="Enter the due date here"}}
 
-       	<input type="submit" value="submit" {{action "createBillItem" content}}></input>
+        <input type="submit" value="submit" {{action "createBillItem" content}}></input>
 
       </header><!-- close header -->
 
       <section id="main">
-    
-       {{outlet}}
+      {{outlet}}
       </section>
-       </section>
-      </script>
 
+      </section>
+</script>
 
-<script type="text/x-handlebars" id="about">
+<script type="text/x-handlebars" id="bills">
+      {{#each Bill in model}}
+      <div class="billItem">
+        <div class="billDate">{{bill.id}}</div>
+        <div class="billName"><p>{{bill.name}}</p></div>
+        <div class="billAmount">{{bill.amount}}</div>
+        <div class="billDate">{{bill.date}} </div>
+        <div class="billDate">{{bill.apr}} </div>
+        <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
+      </div><!-- end bill item -->
+      {{/each}}
+      
+</script>
+
+<script type="text/x-handlebars" id="reports">
 
               
       <div class="billItem">
@@ -44,11 +104,10 @@
 
   
 </script>
- 
 
-
-
+<!-- dependencies -->
 <script src="js/libs/jquery-1.10.2.min.js"></script>
+<script src="js/libs/bootstrap.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
 
