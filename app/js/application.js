@@ -39,9 +39,53 @@ App.BillsRoute = Ember.Route.extend({
 });
 
 // Controllers
+App.ApplicationController = Ember.ArrayController.extend({
+  totalBills: function() {
+    return this.each('.billItem').length;
+  }.property('@each.billItem'),
+
+  inflection: function() {
+     var totalBills = this.get('totalBills');
+                return totalBills === 1 ? 'bill' : 'bills';
+        }.property('@each.billItem'),
+});
+
 App.BillController = Ember.ArrayController.extend({
 
 });
+
+App.FinancesController = Ember.Controller.extend({
+   actions: {
+                createBillItem: function() {
+
+                // Get the Bill title set by the new 'New Bill' text field
+                        var title = this.get('newTitle');
+                        var amount = this.get('newAmount');
+                        var date = this.get('newDate');
+
+                        if (!title.trim() && !amount.trim() && !date.trim()) { return; }
+                        console.log('yay1');
+
+                        // Create the New Bill Model
+                        var bill = this.store.createRecord('bill', {
+                                name: title,
+                                amount: amount,
+                                date: date
+                        });
+
+                        console.log('yay2');
+                        // Clear the "New Bill" text field
+                        this.set('newTitle', '');
+                        this.set('newAmount', '');
+                        this.set('newDate', '');
+
+                        console.log('yay3');
+                        // Save it
+                        bill.save();
+                        console.log('yay4');
+                }
+        }
+})
 // Models
 App.Bill = DS.Model.extend({
 	name: DS.attr('string'),
