@@ -39,8 +39,6 @@ App.BillsRoute = Ember.Route.extend({
 });
 
 // Controllers
-
-
 App.FinancesController = Ember.Controller.extend({
    actions: {
                 createBillItem: function() {
@@ -77,14 +75,7 @@ App.FinancesController = Ember.Controller.extend({
 });
 
 App.BillController = Ember.ObjectController.extend({
-		totalBills: function() {
-			return this.each('.billItem').length;
-			}.property('@each.billItem'),
-
-		inflection: function() {
-			var totalBills = this.get('totalBills');
-                return totalBills === 1 ? 'bill' : 'bills';
-				}.property('@each.billItem'),
+		
 
 	actions: {
 		removeBill: function() {
@@ -94,15 +85,36 @@ App.BillController = Ember.ObjectController.extend({
 
 			bill.deleteRecord();
 			bill.save();
-		},
-
-		editBill: function() {
-
-			//Grab the model
-			var bill = this.get('model');
-
 		}
 	}
+});
+
+App.BillsController = Ember.ArrayController.extend({
+  isEditing: false,
+
+  totalBills: function() {
+       return this.getEach('.billItem').length;
+      }.property('@each.billItem'),
+
+    inflection: function() {
+      var totalBills = this.get('totalBills');
+                return totalBills === 1 ? 'bill' : 'bills';
+        }.property('@each.billItem'),
+
+  actions: {
+    editBill: function() {
+
+      //Grab the model
+      this.set('isEditing', true);
+
+    },
+
+    doneEditing: function() {
+      //set editing back to false
+      this.set('isEditing', false);
+      this.get('model').save();
+    }
+  }
 });
 
 // Models
@@ -140,3 +152,5 @@ App.Bill.adapter = DS.RESTAdapter.create();
 // JSON 
 App.Bill.url = "api/bill";
 App.Bill.collectionKey = "bill";
+
+// jQuery UI
