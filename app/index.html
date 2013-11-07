@@ -5,10 +5,10 @@
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
 </head>
 <body>
 
- 
 <script type="text/x-handlebars">
  <div class="navbar">
   <div class="navbar-inner">
@@ -61,20 +61,14 @@
 	
 <script type = "text/x-handlebars" id="finances">
   <section id="App">
-
+      <h1>Enter Values Below</h1>
       <header id="header">
 
-        <h1>Enter Values Below</h1>
-        <div class="billCount">
-        <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
-        </div>
-        
         {{input type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
         {{input type="text" id="bilAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
-        {{input type="text" id="billDateEntry"  valueBinding="newDate" placeholder="Enter the due date here"}}
-
-        <input type="submit" value="submit" {{action "createBillItem" content}}></input>
-
+        {{input type="text" id="datepicker"  valueBinding="newDate" placeholder="Enter the due date here"}}
+        
+        <button type="submit" class="btn" value="submit" {{action "createBillItem" content}}>Add New</button>
       </header><!-- close header -->
       </section>
       <div id="bills">
@@ -85,13 +79,21 @@
 </script>
 
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
-      {{#each}}
+      <div class="billCount">
+        <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
+      </div>
+
+      {{#each itemController = "bill"}}
       <div class="billItem">
         <div class="billName"><p>{{name}}</p></div>
         <div class="billAmount">${{amount}}</div>
         <div class="billDate">{{date}} </div>
         <div class="billDate">{{apr}} </div>
-        <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
+
+        <div id="changeButtons">
+        <button {{action "editBill"}} class="btn btn-warning">Edit</button>
+        <button {{action "removeBill"}} class="btn btn-danger">Delete</button>
+        </div>
       </div><!-- end bill item -->
       {{/each}}
       
@@ -99,11 +101,8 @@
 
 <script type="text/x-handlebars" id="reports">
    
-      <div class="billItem">
-              <div class="billName"><p>billName</p></div>
-              <div class="billAmount">$billAmount</div>
-              <div class="billDate">BillDate </div>
-              <div class="deleteButton"><button {{action "removeBill"}} class="destroy">Delete</button></div>
+      <div class="Reports">
+          {{outlet}}
       </div><!-- end bill item -->
 
   
@@ -111,12 +110,14 @@
 
 <!-- dependencies -->
 <script src="js/libs/jquery-1.10.2.min.js"></script>
+<script src="js/libs/jquery-ui-1.10.3.custom.js"></script>
 <script src="js/libs/bootstrap.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
-<script src="js/libs/ember-data.js"></script>
+<script src="http://builds.emberjs.com/beta/ember-data.js"></script>
 
 <script src="js/application.js"></script>
+<script src="js/script.js"></script>
 
 
 </body>

@@ -39,20 +39,7 @@ App.BillsRoute = Ember.Route.extend({
 });
 
 // Controllers
-App.ApplicationController = Ember.ArrayController.extend({
-  totalBills: function() {
-    return this.each('.billItem').length;
-  }.property('@each.billItem'),
 
-  inflection: function() {
-     var totalBills = this.get('totalBills');
-                return totalBills === 1 ? 'bill' : 'bills';
-        }.property('@each.billItem'),
-});
-
-App.BillController = Ember.ArrayController.extend({
-
-});
 
 App.FinancesController = Ember.Controller.extend({
    actions: {
@@ -73,6 +60,8 @@ App.FinancesController = Ember.Controller.extend({
                                 date: date
                         });
 
+                        console.log(bill);
+
                         console.log('yay2');
                         // Clear the "New Bill" text field
                         this.set('newTitle', '');
@@ -85,7 +74,37 @@ App.FinancesController = Ember.Controller.extend({
                         console.log('yay4');
                 }
         }
-})
+});
+
+App.BillController = Ember.ObjectController.extend({
+		totalBills: function() {
+			return this.each('.billItem').length;
+			}.property('@each.billItem'),
+
+		inflection: function() {
+			var totalBills = this.get('totalBills');
+                return totalBills === 1 ? 'bill' : 'bills';
+				}.property('@each.billItem'),
+
+	actions: {
+		removeBill: function() {
+
+		// Grab the corresponding bill model
+		var bill = this.get('model');
+
+			bill.deleteRecord();
+			bill.save();
+		},
+
+		editBill: function() {
+
+			//Grab the model
+			var bill = this.get('model');
+
+		}
+	}
+});
+
 // Models
 App.Bill = DS.Model.extend({
 	name: DS.attr('string'),
