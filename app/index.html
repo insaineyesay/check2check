@@ -83,37 +83,34 @@
         <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
       </div>
 
-      {{#if isEditing}}
-        {{partial 'bills/edit'}}
-        <button {{action 'doneEditing'}}>Done</button>
-      {{else}}
-        <button {{action 'editBill'}}>Edit</button>
-      {{/if}}
-      
-
       {{#each itemController = "bill"}}
       <div class="billItem">
+      {{#if isEditing}}
+        {{partial 'bills/edit'}}
+        <button class="btn btn-success" {{action 'doneEditing'}}>Done</button>
+      {{/if}}
         <div class="billName"><p>{{name}}</p></div>
         <div class="billAmount">${{amount}}</div>
         <div class="billDate">{{date}} </div>
         <div class="billDate">{{apr}} </div>
 
         <div id="changeButtons">
-        <button {{action 'editBill'}}>Edit</button>
         <button {{action 'editBill'}} class="btn btn-warning">Edit</button>
         <button {{action "removeBill"}} class="btn btn-danger">Delete</button>
         </div>
       </div><!-- end bill item -->
       {{/each}}
       
+      <div id="stats" class="statsArea">
+       <p>You have a total of <span class="bold">{{sumOfBills}}</span> to pay per Month.
+      </div>
 </script>
 
 <script type="text/x-handlebars" id="bills/_edit">
- <p>{{input type="text" value=bill.name}}</p>
-    <p>{{input type="text" value=amount}}</p>
-    <p>{{input type="text" value=date}}</p>
-    <p>{{textarea value=body}}</p>
-  </script>
+ {{input type="text" value=name}}
+ {{input type="text" value=amount}}
+ {{input type="text" value=date}}
+ </script>
 
 <script type="text/x-handlebars" id="reports">
    
@@ -130,7 +127,6 @@
 <script src="js/libs/bootstrap.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
-<script src="js/libs/localstorage_adapter.js"></script>
 <script src="http://builds.emberjs.com/beta/ember-data.js"></script>
 
 <script src="js/application.js"></script>
