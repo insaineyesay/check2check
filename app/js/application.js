@@ -1,4 +1,4 @@
-var App = Ember.Application.create({
+window.App = Ember.Application.create({
 // Log routing transitions and changes
   LOG_TRANSITIONS: true,
    // log when Ember generates a controller or a route from a generic class
@@ -11,6 +11,7 @@ var App = Ember.Application.create({
   debugMode: true
 	});
 
+// Adapters
 App.ApplicationAdapter = DS.FixtureAdapter.extend();
 
 // Routes
@@ -41,51 +42,58 @@ App.BillsRoute = Ember.Route.extend({
 // Controllers
 App.FinancesController = Ember.Controller.extend({
    actions: {
-                createBillItem: function() {
+    createBillItem: function() {
 
-                // Get the Bill title set by the new 'New Bill' text field
-                        var title = this.get('newTitle');
-                        var amount = this.get('newAmount');
-                        var date = this.get('newDate');
+    // Get the Bill title set by the new 'New Bill' text field
+    var title = this.get('newTitle');
+    var amount = this.get('newAmount');
+    var date = this.get('newDate');
 
-                        if (!title.trim() && !amount.trim() && !date.trim()) { return; }
-                        console.log('yay1');
+    if (!title.trim() && !amount.trim() && !date.trim()) { return; }
+    console.log('yay1');
 
-                        // Create the New Bill Model
-                        var bill = this.store.createRecord('bill', {
-                                name: title,
-                                amount: amount,
-                                date: date
-                        });
+    // Create the New Bill Model
+    var bill = this.store.createRecord('bill', {
+            name: title,
+            amount: amount,
+            date: date
+    });
 
-                        console.log(bill);
+    
+    console.log('yay2');
+    // Clear the "New Bill" text field
+    this.set('newTitle', '');
+    this.set('newAmount', '');
+    this.set('newDate', '');
 
-                        console.log('yay2');
-                        // Clear the "New Bill" text field
-                        this.set('newTitle', '');
-                        this.set('newAmount', '');
-                        this.set('newDate', '');
-
-                        console.log('yay3');
-                        // Save it
-                        bill.save();
-                        console.log('yay4');
-                }
-        }
+    console.log('yay3');
+    // Save it
+    this.save();
+    console.log('yay4');
+      }
+    }
 });
 
 App.BillController = Ember.ObjectController.extend({
-		
-
 	actions: {
 		removeBill: function() {
-
 		// Grab the corresponding bill model
 		var bill = this.get('model');
-
-			bill.deleteRecord();
+      bill.deleteRecord();
 			bill.save();
-		}
+		},
+
+     editBill: function() {
+      //Grab the model
+      this.set('isEditing', true);
+    },
+
+    doneEditing: function() {
+     var bill = this.get('model');
+      //set editing back to false
+      bill.set('isEditing', false);
+      bill.get('model').save();
+    }
 	}
 });
 
@@ -93,64 +101,57 @@ App.BillsController = Ember.ArrayController.extend({
   isEditing: false,
 
   totalBills: function() {
-       return this.getEach('.billItem').length;
+      return this.getEach('.billItem').length;
       }.property('@each.billItem'),
 
-    inflection: function() {
+  inflection: function() {
       var totalBills = this.get('totalBills');
-                return totalBills === 1 ? 'bill' : 'bills';
+      return totalBills === 1 ? 'bill' : 'bills';
         }.property('@each.billItem'),
+  
+  sumOfBills: function() {
+     var bills = this.getEach('amount');
+     console.log(bills);
+    var billTotals = bills.reduce(function(previousValue, currentValue, index, array) {
+      return parseInt(previousValue) + parseInt(currentValue);
+     });
+     return billTotals;
+    }.property('@each')
 
-  actions: {
-    editBill: function() {
-
-      //Grab the model
-      this.set('isEditing', true);
-
-    },
-
-    doneEditing: function() {
-      //set editing back to false
-      this.set('isEditing', false);
-      this.get('model').save();
-    }
-  }
 });
 
 // Models
 App.Bill = DS.Model.extend({
 	name: DS.attr('string'),
-	amount: DS.attr('string'),
-	date: DS.attr('string'),
-	apr: DS.attr('string')
+	amount: DS.attr('number'),
+	date: DS.attr('string')
 });
 
 App.Bill.FIXTURES = [
 {
         id: 1,
         name: 'Bill One',
-        amount: '45.00',
+        amount: '45',
         date: '11/1/13'
 },
 {
         id: 2,
         name: 'Bill Two',
-        amount: '45.00',
+        amount: '45',
         date: '11/1/13'
 },
 {
         id: 3,
         name: 'Bill Three',
-        amount: '45.00',
+        amount: '45',
         date: '11/1/13'
 }
 ];
 
-// Adapters
-App.Bill.adapter = DS.RESTAdapter.create();
+
+
 
 // JSON 
-App.Bill.url = "api/bill";
-App.Bill.collectionKey = "bill";
+
 
 // jQuery UI
