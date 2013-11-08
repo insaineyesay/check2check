@@ -19,7 +19,9 @@ App.Router.map(function() {
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
 	this.resource('finances', function() {
-		this.resource('bills');
+		this.resource('bills', function() {
+			this.route('stats');
+		});
 	});
 	this.resource('reports');
 	this.resource('contact');
@@ -35,6 +37,12 @@ App.IndexRoute = Ember.Route.extend({
 App.BillsRoute = Ember.Route.extend({
 	model: function() {
 		return this.store.find('bill');
+	}
+});
+
+App.StatsRoute = Ember.Route.extend({
+	model: function() {
+		return this.store.find('stats');
 	}
 });
 
@@ -75,8 +83,6 @@ App.FinancesController = Ember.Controller.extend({
 });
 
 App.BillController = Ember.ObjectController.extend({
-		
-
 	actions: {
 		removeBill: function() {
 
@@ -85,7 +91,18 @@ App.BillController = Ember.ObjectController.extend({
 
 			bill.deleteRecord();
 			bill.save();
-		}
+		},
+		editBill: function() {
+		//Grab the model
+		this.set('isEditing', true);
+
+    },
+
+    doneEditing: function() {
+      //set editing back to false
+      this.set('isEditing', false);
+      this.get('model').save();
+    }
 	}
 });
 
@@ -101,26 +118,28 @@ App.BillsController = Ember.ArrayController.extend({
                 return totalBills === 1 ? 'bill' : 'bills';
         }.property('@each.billItem'),
 
+     sumOfBills: function() {
+		var billTotal = this.getEach('amount');
+		console.log(billTotal);
+		billTotal.reduce(function(previousValue, currentValue, index, array) {
+			console.log(previousValue);
+			console.log(currentValue);
+			console.log(index);
+			console.log(array);
+			return parseFloat(previousValue) + parseFloat(currentValue);
+		});
+		return billTotal;
+		}.property('@each.billTotal'),
+
   actions: {
-    editBill: function() {
-
-      //Grab the model
-      this.set('isEditing', true);
-
-    },
-
-    doneEditing: function() {
-      //set editing back to false
-      this.set('isEditing', false);
-      this.get('model').save();
-    }
+    
   }
 });
 
 // Models
 App.Bill = DS.Model.extend({
 	name: DS.attr('string'),
-	amount: DS.attr('string'),
+	amount: DS.attr('int'),
 	date: DS.attr('string'),
 	apr: DS.attr('string')
 });
@@ -147,7 +166,7 @@ App.Bill.FIXTURES = [
 ];
 
 // Adapters
-App.Bill.adapter = DS.RESTAdapter.create();
+
 
 // JSON 
 App.Bill.url = "api/bill";
