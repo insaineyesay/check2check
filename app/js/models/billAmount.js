@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 App.BillAmount = DS.Model.extend({
 	bill: DS.belongsTo('bill'),
 	billAmount: DS.attr('string')
@@ -9,3 +10,8 @@ App.BillAmount.FIXTURES = [
 	billAmount: '45.00'
 }
 ];
+=======
+App.BillAmount = DS.Model.extend({
+	billAmount: DS.attr('string')
+});
+>>>>>>> startover

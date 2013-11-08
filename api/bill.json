@@ -1,0 +1,40 @@
+{
+	"bill": 
+	[
+		{
+			"id": 1,
+		 	"name": "Bill One",
+		 	"amount": "45",
+		 	"date": "11/11/11",
+		 	"apr": 3
+		},
+		{
+			"id": 2,
+		 	"name": "Bill Two",
+		 	"amount": "45",
+		 	"date": "11/11/11",
+		 	"apr": "3"
+		},
+		{
+			"id": 3,
+		 	"name": "Bill Three",
+		 	"amount": "45",
+		 	"date": "11/11/11",
+		 	"apr": "3"
+		},
+		{
+			"id": 4,
+		 	"name": "Bill Four",
+		 	"amount": "45",
+		 	"date": "11/11/11",
+		 	"apr": "3"
+		},
+		{
+			"id": 5,
+		 	"name": "Bill Five",
+		 	"amount": "45",
+		 	"date": "11/11/11",
+		 	"apr": "3"
+		}
+	]
+}

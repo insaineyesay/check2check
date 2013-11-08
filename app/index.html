@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,4 +79,146 @@
 <script src="js/libs/localstorage_adapter.js"></script>
 
 </body>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Stop Living Check to Check</title>	
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
+</head>
+<body>
+
+<script type="text/x-handlebars">
+ <div class="navbar">
+  <div class="navbar-inner">
+    
+    <ul class="nav">
+      <li>{{#link-to 'index'}}Home{{/link-to}}</li>
+      <li>{{#link-to 'getting started'}}Get Started{{/link-to}}</li>
+      <li class="dropdown">
+        <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Bills & Stuff</a>
+          <ul class="dropdown-menu" role="menu">
+            <li>{{#link-to 'finances'}}Finances{{/link-to}}</li>
+            <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
+          </ul>
+      </li>
+      <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
+      <li>{{#link-to 'contact'}}Contact{{/link-to}}</li>
+      
+    </ul>
+  </div>
+</div>
+{{outlet}}
+<div id="footer">
+
+</div>
+</script>
+
+<script type="text/x-handlebars" id="index">
+<h1>Home Page Text</h1>
+<div id="rotator" class="fullSizeImg"></div>
+<div id="homeContent" class="row-fluid">
+<div id="leftHomeContent" class="text span4">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. </p>
+</div>
+
+<!-- end left home content -->
+
+<div id="rightHomeContent" class="span8">
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. Vestibulum sit amet erat at tellus iaculis tristique. Vestibulum tempus turpis nibh, a cursus orci adipiscing vitae. Nullam pharetra risus cursus mattis gravida. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula.</p>
+</div>
+
+<!-- ed right home content -->
+
+</div>
+<!-- end home content -->
+</script>
+
+<script type = "text/x-handlebars" id="getting started">
+ <p>Some Text</p>
+</script>
+	
+<script type = "text/x-handlebars" id="finances">
+  <section id="App">
+      <h1>Enter Values Below</h1>
+      <header id="header">
+
+        {{input type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
+        {{input type="text" id="bilAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+        {{input type="text" id="datepicker"  valueBinding="newDate" placeholder="Enter the due date here"}}
+        
+        <button type="submit" class="btn" value="submit" {{action "createBillItem" content}}>Add New</button>
+      </header><!-- close header -->
+      </section>
+      <div id="bills">
+      {{outlet}}
+      </div>
+
+      
+</script>
+
+<script type="text/x-handlebars" id="bills" data-template-name="bills">
+      <div class="billCount">
+        <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
+      </div>
+
+      {{#if isEditing}}
+        {{partial 'bills/edit'}}
+        <button {{action 'doneEditing'}}>Done</button>
+      {{else}}
+        <button {{action 'editBill'}}>Edit</button>
+      {{/if}}
+      
+
+      {{#each itemController = "bill"}}
+      <div class="billItem">
+        <div class="billName"><p>{{name}}</p></div>
+        <div class="billAmount">${{amount}}</div>
+        <div class="billDate">{{date}} </div>
+        <div class="billDate">{{apr}} </div>
+
+        <div id="changeButtons">
+        <button {{action 'editBill'}}>Edit</button>
+        <button {{action 'editBill'}} class="btn btn-warning">Edit</button>
+        <button {{action "removeBill"}} class="btn btn-danger">Delete</button>
+        </div>
+      </div><!-- end bill item -->
+      {{/each}}
+      
+</script>
+
+<script type="text/x-handlebars" id="bills/_edit">
+ <p>{{input type="text" value=bill.name}}</p>
+    <p>{{input type="text" value=amount}}</p>
+    <p>{{input type="text" value=date}}</p>
+    <p>{{textarea value=body}}</p>
+  </script>
+
+<script type="text/x-handlebars" id="reports">
+   
+      <div class="Reports">
+          {{outlet}}
+      </div><!-- end bill item -->
+
+  
+</script>
+
+<!-- dependencies -->
+<script src="js/libs/jquery-1.10.2.min.js"></script>
+<script src="js/libs/jquery-ui-1.10.3.custom.js"></script>
+<script src="js/libs/bootstrap.js"></script>
+<script src="js/libs/handlebars-1.0.0.js"></script>
+<script src="js/libs/ember.js"></script>
+<script src="js/libs/localstorage_adapter.js"></script>
+<script src="http://builds.emberjs.com/beta/ember-data.js"></script>
+
+<script src="js/application.js"></script>
+<script src="js/script.js"></script>
+
+
+</body>
+>>>>>>> startover
 </html>

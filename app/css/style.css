@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*style.css*/
 html,
 body {
@@ -50,4 +51,63 @@ body {
 
 .billDate {
 	clear: both;
+=======
+/*style.css*/
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+button {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font-size: 100%;
+	vertical-align: baseline;
+	font-family: inherit;
+	color: inherit;
+	-webkit-appearance: none;
+	/*-moz-appearance: none;*/
+	-ms-appearance: none;
+	-o-appearance: none;
+	appearance: none;
+}
+
+body {
+	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	line-height: 1.4em;
+	color: #000;
+	width: 960px;
+	margin: 0 auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+.billName {
+	float: left;
+}
+
+.billItem {
+	border: 1px solid #bbb;
+	margin: 10px 0px;
+	padding: 10px;
+}
+
+.billAmount {
+	float: right;
+}
+
+.billDate {
+	clear: both;
+}
+
+#rotator {
+	background: grey;
+	height: 200px;
+>>>>>>> startover
 }
