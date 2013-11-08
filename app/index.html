@@ -83,23 +83,21 @@
         <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
       </div>
 
-      {{#if isEditing}}
-        {{partial 'bills/edit'}}
-        <button {{action 'doneEditing'}}>Done</button>
-      {{else}}
-        <button {{action 'editBill'}}>Edit</button>
-      {{/if}}
+      
       
 
       {{#each itemController = "bill"}}
       <div class="billItem">
+      {{#if isEditing}}
+        {{partial 'bills/edit'}}
+        <button {{action 'doneEditing'}}>Done</button>
+      {{/if}}
         <div class="billName"><p>{{name}}</p></div>
         <div class="billAmount">${{amount}}</div>
         <div class="billDate">{{date}} </div>
         <div class="billDate">{{apr}} </div>
 
         <div id="changeButtons">
-        <button {{action 'editBill'}}>Edit</button>
         <button {{action 'editBill'}} class="btn btn-warning">Edit</button>
         <button {{action "removeBill"}} class="btn btn-danger">Delete</button>
         </div>
@@ -109,10 +107,9 @@
 </script>
 
 <script type="text/x-handlebars" id="bills/_edit">
- <p>{{input type="text" value=bill.name}}</p>
+ <p>{{input type="text" value=name}}</p>
     <p>{{input type="text" value=amount}}</p>
     <p>{{input type="text" value=date}}</p>
-    <p>{{textarea value=body}}</p>
   </script>
 
 <script type="text/x-handlebars" id="reports">

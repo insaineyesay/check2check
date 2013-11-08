@@ -103,10 +103,8 @@ App.BillsController = Ember.ArrayController.extend({
 
   actions: {
     editBill: function() {
-
       //Grab the model
       this.set('isEditing', true);
-
     },
 
     doneEditing: function() {
@@ -120,7 +118,7 @@ App.BillsController = Ember.ArrayController.extend({
 // Models
 App.Bill = DS.Model.extend({
 	name: DS.attr('string'),
-	amount: DS.attr('string'),
+	amount: DS.attr('int'),
 	date: DS.attr('string'),
 	apr: DS.attr('string')
 });
