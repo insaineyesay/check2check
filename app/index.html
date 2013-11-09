@@ -64,10 +64,9 @@
       <header id="header">
 
         {{input type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
-        {{input type="text" id="bilAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
-        {{input type="text" id="datepicker"  valueBinding="newDate" placeholder="Enter the due date here"}}
-        
-        <button type="submit" class="btn" value="submit" {{action "createBillItem" content}}>Add New</button>
+        {{input type="text" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+        {{partial 'datepicker' valueBinding="newDate" placeholder="Enter Due Date here"}}
+        <button type="submit" class="btn btn-success" value="submit" {{action "createBillItem" content}}>Add New</button>
       </header><!-- close header -->
       </section>
       <div id="bills">
@@ -76,6 +75,10 @@
       
       
 </script>
+
+<script type="text/x-handlebars" id="datepicker" data-template-name="_datepicker">
+      {{#view App.DatePicker}}{{/view}}
+  </script>
 
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
       <div class="billCount">
@@ -107,9 +110,9 @@
 </script>
 
 <script type="text/x-handlebars" id="bills/_edit">
- {{input type="text" value=name}}
- {{input type="text" value=amount}}
- {{input type="text" value=date}}
+ {{input type="text" focus-out="acceptChanges" insert-newline="acceptChanges" value=name}}
+ {{input type="text" focus-out="acceptChanges" insert-newline="acceptChanges" value=amount}}
+ {{input type="text" focus-out="acceptChanges" insert-newline="acceptChanges" value=date}}
 </script>
 
 <script type="text/x-handlebars" id="reports">
@@ -122,16 +125,15 @@
 
 <!-- dependencies -->
 <script src="js/libs/jquery-1.10.2.min.js"></script>
-<script src="js/libs/jquery-ui-1.10.3.custom.js"></script>
+
 <script src="js/libs/bootstrap.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
-
+<script scr="js/libs/jqui.js"></script>
 <script src="http://builds.emberjs.com/beta/ember-data.js"></script>
 
 <script src="js/application.js"></script>
-<script src="js/script.js"></script>
-
+<script src="js/libs/jquery-ui-1.10.3.custom.js"></script>
 
 </body>
 </html>
