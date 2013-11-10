@@ -12,16 +12,20 @@ window.App = Ember.Application.create({
 	});
 
 // Adapters
-App.ApplicationAdapter = DS.FixtureAdapter.extend();
+App.ApplicationAdapter = DS.LSAdapter.extend({
+  namespace: 'bills-emberjs'
+});
+//App.ApplicationAdapter = DS.RESTAdapter.extend({
+  //host: 'https://insaineyesay.iriscouch.com/'
+//});
 
 // Routes
 App.Router.map(function() {
 
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
-	this.resource('finances', function() {
-		this.resource('bills');
-	});
+  this.resource('bills');
+	this.resource('finances');
 	this.resource('reports');
 	this.resource('contact');
 
@@ -42,45 +46,30 @@ App.BillsRoute = Ember.Route.extend({
 // Controllers
 App.FinancesController = Ember.Controller.extend({
    actions: {
-    createBillItem: function() {
-
-    // Get the Bill title set by the new 'New Bill' text field
-    var title = this.get('newTitle');
-    var amount = this.get('newAmount');
-    var date = this.get('newDate');
-
-    if (!title.trim() && !amount.trim() && !date.trim()) { return; }
-    console.log('yay1');
-
-    // Create the New Bill Model
-    var bill = this.store.createRecord('bill', {
-            name: title,
-            amount: amount,
-            date: date
-    });
-
     
-    console.log('yay2');
-    // Clear the "New Bill" text field
-    this.set('newTitle', '');
-    this.set('newAmount', '');
-    this.set('newDate', '');
-
-    console.log('yay3');
-    // Save it
-    bill.save();
-    console.log('yay4');
-      }
     }
 });
 
 App.BillController = Ember.ObjectController.extend({
+  deleteMode: false,
+
 	actions: {
-		removeBill: function() {
-		// Grab the corresponding bill model
-		var bill = this.get('model');
+
+    cancelDelete: function() {
+      this.set('deleteMode', false);
+    },
+
+    confirmDelete: function() {
+      this.toggleProperty('deleteMode');
+      var bill = this.get('model');
       bill.deleteRecord();
-			bill.save();
+      bill.save();
+    },
+
+		delete: function() {
+		// change delete mode to true
+    this.set('deleteMode', true);
+		
 		},
 
      editBill: function() {
@@ -97,22 +86,56 @@ App.BillController = Ember.ObjectController.extend({
       //set editing back to false
       this.set('isEditing', false);
       this.get('model').save();
-    },
-
-    acceptChanges: function() {
-      this.set('isEditing', false);
-
-      if (Ember.isEmpty(this.get('model.title'))) {
-        this.send('removeBill');
-      } else {
-        this.get('model').save();
-      }
     }
-	}
+  }
 });
 
 App.BillsController = Ember.ArrayController.extend({
   isEditing: false,
+
+  actions: {
+    createBillItem: function() {
+
+    // Get the Bill title set by the new 'New Bill' text field
+    var title = this.get('newTitle');
+    var amount = this.get('newAmount');
+    var date = this.get('newDate');
+
+    if (!title.trim() && !amount.trim() && !date.trim()) { return; }
+    console.log('yay1');
+    // Create the New Bill Model
+    var bill = this.store.createRecord('bill', {
+            name: title,
+            amount: amount,
+            date: date
+    });
+
+    
+    console.log('yay2');
+    // Clear the "New Bill" text field
+    this.setProperties({
+      'newTitle': '',
+      'newAmount': '',
+      'newDate': ''
+    });
+
+    console.log('yay3');
+    // Save it
+    bill.save();
+    console.log('yay4');
+    },
+
+    acceptChanges: function() {
+    this.set('isEditing', false);
+
+    if(Ember.isEmpty(this.get('model'))) {
+      this.send('cancelEdit');
+    } else {
+      this.get('model').save();
+      }
+    }
+
+  },
 
   totalBills: function() {
       return this.getEach('.billItem').length;
@@ -137,37 +160,20 @@ App.BillsController = Ember.ArrayController.extend({
 
 // Models
 App.Bill = DS.Model.extend({
-	name: DS.attr('string'),
-	amount: DS.attr('number'),
-	date: DS.attr('string')
+	name: DS.attr(),
+	amount: DS.attr(),
+	date: DS.attr()
 });
 
-App.Bill.FIXTURES = [
-{
-        id: 1,
-        name: 'Bill One',
-        amount: '45',
-        date: '11/1/13'
-},
-{
-        id: 2,
-        name: 'Bill Two',
-        amount: '45',
-        date: '11/1/13'
-},
-{
-        id: 3,
-        name: 'Bill Three',
-        amount: '45',
-        date: '11/1/13'
-}
-];
-
 // Views
+App.AddBill = Ember.View.extend({
 
+});
+// Components
 
 // JSON 
-
+//App.Bill.url = "https://insaineyesay.iriscouch.com/bill";
+//App.Bill.collectionKey = "bill";
 
 // jQuery UI
 // Namespaces in Ember should be created with Ember.Namespace.create()
@@ -175,7 +181,7 @@ JQ = Ember.Namespace.create();
 
 // Create a new mixin for jQuery UI widgets using the Ember
 // mixin syntax.
-JQ.Widget = Em.Mixin.create({
+JQ.Widget = Ember.Mixin.create({
     // When Ember creates the view's DOM element, it will call this
     // method.
     didInsertElement: function () {
@@ -313,7 +319,7 @@ JQ.Menu = Em.CollectionView.extend(JQ.Widget, {
 });
 
 // Create a new Ember view for the jQuery UI Datepicker widget
-App.DatePicker = Ember.View.extend(JQ.Widget, {
+JQ.DatePicker = Em.View.extend(JQ.Widget, {
     uiType: 'datepicker',
     uiOptions: ['disabled', 'altField', 'altFormat', 'appendText', 'autoSize',
     'buttonImage', 'buttonImageOnly', 'buttonText', 'calculateWeek', 'changeMonth', 'changeYear',
@@ -331,9 +337,9 @@ App.DatePicker = Ember.View.extend(JQ.Widget, {
     valueBindings: "newDate"
 });
 
-App.Datepicker = App.DatePicker.extend({
+App.Datepicker = JQ.DatePicker.extend({
   dateFormat: 'yy-mm-dd', //ISO 8601
-  templateName: '_datepicker',
+  templateName: 'finances/_datepicker',
   onSelect: function(dateText, inst) {
     alert(dateText);
   },

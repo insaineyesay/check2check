@@ -7,7 +7,7 @@
   <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
 </head>
 <body>
-
+<input id="datepicker">
 <script type="text/x-handlebars">
  <div class="navbar">
   <div class="navbar-inner">
@@ -35,6 +35,7 @@
 </script>
 
 <script type="text/x-handlebars" id="index">
+<section>
 <h1>Home Page Text</h1>
 <div id="rotator" class="fullSizeImg"></div>
 <div id="homeContent" class="row-fluid">
@@ -52,6 +53,7 @@
 
 </div>
 <!-- end home content -->
+</section>
 </script>
 
 <script type = "text/x-handlebars" id="getting started">
@@ -63,24 +65,30 @@
       <h1>Enter Values Below</h1>
       <header id="header">
 
-        {{input type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
-        {{input type="text" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
-        {{partial 'datepicker' valueBinding="newDate" placeholder="Enter Due Date here"}}
-        <button type="submit" class="btn btn-success" value="submit" {{action "createBillItem" content}}>Add New</button>
+        
       </header><!-- close header -->
       </section>
+
       <div id="bills">
-      {{outlet}}
+      {{view.bills}}
       </div>
-      
-      
 </script>
 
-<script type="text/x-handlebars" id="datepicker" data-template-name="_datepicker">
-      {{#view App.DatePicker}}{{/view}}
+<script type="text/x-handlebars" id="bills/_addBill">
+
+    {{input type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
+    {{input type="text" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+    {{input type="text" id="billDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
+    <button type="submit" class="btn btn-success" value="submit" {{action "createBillItem"}}>Add New</button>
+
+</script>
+
+<script type="text/x-handlebars" id="datepicker" data-template-name="datepicker">
+      {{#view JQ.DatePicker valueBinding="newDate" placeholder="Enter Due Date here"}}{{/view}}
   </script>
 
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
+      {{partial 'bills/addBill'}}
       <div class="billCount">
         <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
       </div>
@@ -89,8 +97,7 @@
       <div class="billItem">
       {{#if isEditing}}
       {{partial 'bills/edit'}}
-      <button class="btn btn-warning" {{action 'cancelEdit'}}>Cancel</button>
-      <button class="btn btn-success" {{action 'doneEditing'}}>Done</button>
+      
       {{/if}}
         <div class="billName"><p>{{name}}</p></div>
         <div class="billAmount">${{amount}}.00</div>
@@ -99,7 +106,16 @@
 
         <div id="changeButtons">
         <button {{action 'editBill'}} class="btn btn-warning">Edit</button>
-        <button {{action "removeBill"}} class="btn btn-danger">Delete</button>
+        <button {{action "delete"}} class="btn btn-danger">Delete</button>
+
+        {{#if deleteMode}}
+        <div class="confirm-box">
+          <h4>Really?</h4>
+          <button {{action "confirmDelete"}}> yes </button>
+          <button {{action "cancelDelete"}}> no </button>
+        </div>
+        {{/if}}
+
         </div>
       </div><!-- end bill item -->
       {{/each}}
@@ -110,9 +126,11 @@
 </script>
 
 <script type="text/x-handlebars" id="bills/_edit">
- {{input type="text" focus-out="acceptChanges" insert-newline="acceptChanges" value=name}}
- {{input type="text" focus-out="acceptChanges" insert-newline="acceptChanges" value=amount}}
- {{input type="text" focus-out="acceptChanges" insert-newline="acceptChanges" value=date}}
+ {{input type="text" insert-newline="acceptChanges" value=name}}
+ {{input type="text" insert-newline="acceptChanges" value=amount}}
+ {{input type="text" insert-newline="acceptChanges" value=date}}
+  <button class="btn btn-warning" {{action 'cancelEdit'}}>Cancel</button>
+  <button class="btn btn-success" {{action 'doneEditing'}}>Done</button>
 </script>
 
 <script type="text/x-handlebars" id="reports">
@@ -129,8 +147,8 @@
 <script src="js/libs/bootstrap.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
-<script scr="js/libs/jqui.js"></script>
 <script src="http://builds.emberjs.com/beta/ember-data.js"></script>
+<script src="js/libs/localstorage_adapter.js"></script>
 
 <script src="js/application.js"></script>
 <script src="js/libs/jquery-ui-1.10.3.custom.js"></script>
