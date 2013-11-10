@@ -149,9 +149,11 @@ App.BillsController = Ember.ArrayController.extend({
   sumOfBills: function() {
      var bills = this.getEach('amount');
      console.log(bills);
-    var billTotals = bills.reduce(function(previousValue, currentValue, index, array) {
-    return parseInt(previousValue, 10) + parseInt(currentValue, 10);
-     });
+     if(bills.length > 0) {
+      var billTotals = bills.reduce(function(previousValue, currentValue, index, array) {
+        return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+      });
+     };
      return billTotals;
     }.property('@each')
 
