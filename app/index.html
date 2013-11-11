@@ -7,18 +7,17 @@
   <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
 </head>
 <body>
-<input id="datepicker">
+
 <script type="text/x-handlebars">
- <div class="navbar">
+ <div class="navbar navbar-default">
   <div class="navbar-inner">
     
-    <ul class="nav">
+    <ul class="nav navbar-nav">
       <li>{{#link-to 'index'}}Home{{/link-to}}</li>
       <li>{{#link-to 'getting started'}}Get Started{{/link-to}}</li>
       <li class="dropdown">
         <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Bills & Stuff</a>
           <ul class="dropdown-menu" role="menu">
-            <li>{{#link-to 'finances'}}Finances{{/link-to}}</li>
             <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
           </ul>
       </li>
@@ -75,65 +74,115 @@
 </script>
 
 <script type="text/x-handlebars" id="bills/_addBill">
+  <form class="form-horizontal">
 
-    {{input type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
-    {{input type="text" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
-    {{input type="text" id="billDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
-    <button type="submit" class="btn btn-success" value="submit" {{action "createBillItem"}}>Add New</button>
+    {{input class="form-control" type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
+    {{input class="form-control" type="number" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+    {{input type="date" id="billDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
+
+    <button type="submit" class="btn btn-small btn-success form-control" value="submit" {{action "createBillItem"}}>Add New</button>
+
+  </form>
 
 </script>
 
-<script type="text/x-handlebars" id="datepicker" data-template-name="datepicker">
-      {{#view JQ.DatePicker valueBinding="newDate" placeholder="Enter Due Date here"}}{{/view}}
-  </script>
+<script type="text/x-handlebars" id="bills/_income">
+      
+    <form class="form-horizontal">
+
+    {{input class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the bill name here"}}
+    {{input class="form-control" type="number" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
+    <label>{{input type="radio"  id="incomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
+
+    <button type="submit" class="btn btn-small btn-success form-control" value="submit" {{action "createIncomeItem"}}>Add New</button>
+
+  </form>
+</script>
+
+<script type="text/x-handlebars" id="bills/_edit">
+ {{input type="text" insert-newline="acceptChanges" value=name}}
+ {{input type="text" insert-newline="acceptChanges" value=amount}}
+ {{input type="date" insert-newline="acceptChanges" value=date}}
+ <div class="editButtons">
+  <button class="btn btn-mini btn-warning" {{action 'cancelEdit'}}>Cancel</button>
+  <button class="btn btn-mini btn-success" {{action 'doneEditing'}}>Done</button>
+  </div>
+</script>
 
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
       
-      {{partial 'bills/addBill'}}
+      <div id="financials" class="row-fluid">
+         
+         <div id="billsAndIncome" class="span4">
+
+          <div id="billsBlock">
+          <h3>Enter Bills Below</h3>
+          {{partial 'bills/addBill'}}
+          </div><!-- end financialBlock -->
+
+          <div id="incomeBlock">
+          <h3>Enter Income Below</h3>
+          {{partial 'bills/income'}}
+          </div> <!-- end incomeBlock -->
       
-      <div class="billCount">
+        </div> <!-- end bills and income -->
+      
+      <div id="billList" class="span8">
+      <h2>Your List of Bills</h2>
+       <div class="billCount">
         <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
       </div>
-      
       {{#each itemController = "bill"}}
-      <div class="billItem">
-      {{#if isEditing}}
-      {{partial 'bills/edit'}}
+
+      <div class="billItem row-fluid">
+
       
+
+      <div id="billItemLeft">
+      {{#if isEditing}}
+      <div id="deleteConfirmation">
+      {{partial 'bills/edit'}}
+      </div>
       {{/if}}
-        <div class="billName"><p>{{name}}</p></div>
+        <p class="billName"><h5>{{name}}</h5>
+        <br/>
+        <div id="changeButtons">
+
+        <button {{action 'editBill'}} class="btn btn-mini btn-warning">Edit</button>
+        <button {{action "delete"}} class="btn btn-mini btn-danger">Delete</button>
+
+      </div> <!-- end changeButtons -->
+      </div> <!-- close billItemLeft -->
+
+      <div id="billItemRight">
         <div class="billAmount">${{amount}}.00</div>
         <div class="billDate">{{date}}</div>
         <div class="billDate">{{apr}}</div>
-
-        <div id="changeButtons">
-        <button {{action 'editBill'}} class="btn btn-warning">Edit</button>
-        <button {{action "delete"}} class="btn btn-danger">Delete</button>
+      </div> <!-- close billitemRight -->
+        
 
         {{#if deleteMode}}
-        <div class="confirm-box">
+        <div class="confirm-box span4">
           <h4>Really?</h4>
-          <button {{action "confirmDelete"}}> yes </button>
-          <button {{action "cancelDelete"}}> no </button>
+          <button class="btn btn-mini btn-danger" {{action "confirmDelete"}}> yes </button>
+          <button class="btn btn-mini btn-warning" {{action "cancelDelete"}}> no </button>
         </div>
         {{/if}}
 
-        </div>
+      
       </div><!-- end bill item -->
       {{/each}}
       
       <div id="stats">
       <p>You have ${{sumOfBills}}.00 you have to pay each month</p>
       </div>
+
+      </div> <!-- end bills -->
+
+      </div><!-- end financials -->
 </script>
 
-<script type="text/x-handlebars" id="bills/_edit">
- {{input type="text" insert-newline="acceptChanges" value=name}}
- {{input type="text" insert-newline="acceptChanges" value=amount}}
- {{input type="text" insert-newline="acceptChanges" value=date}}
-  <button class="btn btn-warning" {{action 'cancelEdit'}}>Cancel</button>
-  <button class="btn btn-success" {{action 'doneEditing'}}>Done</button>
-</script>
+
 
 <script type="text/x-handlebars" id="reports">
    

@@ -41,6 +41,19 @@ body {
 	border: 1px solid #bbb;
 	margin: 10px 0px;
 	padding: 10px;
+	background: #4ae;
+}
+
+#billItemLeft {
+	float: left;
+}
+
+#billItemRight {
+	float: right;
+}
+
+#changeButtons {
+	float: left;
 }
 
 .billAmount {
@@ -49,10 +62,19 @@ body {
 
 .billDate {
 	clear: both;
+	float: right;
 }
 
 #rotator {
 	background: grey;
 	height: 200px;
+}
 
+input {
+	height: 30px;
+}
+
+#stats {
+	float: left;
+	clear: left;
 }
