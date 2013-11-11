@@ -24,7 +24,9 @@ App.Router.map(function() {
 
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
-  this.resource('bills');
+  this.resource('bills', function() {
+    this.resource('income');
+  });
 	this.resource('reports');
 	this.resource('contact');
 
@@ -99,7 +101,7 @@ App.IncomeController = Ember.ObjectController.extend({
 
 });
 
-App.IncomesController = Ember.ArrayController.extend({
+App.IncomeController = Ember.ArrayController.extend({
   actions: {
     createIncomeItem: function() {
       var name = this.get('newIncomeTitle');
@@ -109,8 +111,8 @@ App.IncomesController = Ember.ArrayController.extend({
       if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
 
       var income = this.store.createRecord('income', {
-        name: name,
-        amount: amount,
+        incomeName: name,
+        incomeAmount: amount,
         frequency: frequency
       });
 
@@ -130,28 +132,6 @@ App.BillsController = Ember.ArrayController.extend({
   isEditing: false,
 
   actions: {
-     createIncomeItem: function() {
-      var name = this.get('newIncomeTitle');
-      var amount = this.get('newIncomeAmount');
-      var frequency = this.get('newIncomeFrequency');
-
-      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
-
-      var income = this.store.createRecord('income', {
-        name: name,
-        amount: amount,
-        frequency: frequency
-      });
-
-      this.setProperties({
-        'newIncomeTitle': '',
-        'newIncomeAmount': '',
-        'newIncomeFrequency':  ''
-      });
-
-      income.save();
-    },
-
     createBillItem: function() {
 
     // Get the Bill title set by the new 'New Bill' text field
@@ -222,8 +202,8 @@ App.BillsController = Ember.ArrayController.extend({
 
 // Models
 App.Income = DS.Model.extend({
-  name: DS.attr(),
-  amount: DS.attr(),
+  incomeName: DS.attr(),
+  incomeAmount: DS.attr(),
   frequency: DS.attr()
 });
 

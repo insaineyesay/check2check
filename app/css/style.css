@@ -81,12 +81,22 @@ input {
 .incomeItem {
 background: #6F747A;
 color: white;
+height: 50px;
+margin: 2px 0px;
+position: relative;
 }
 
 .incomeAmount {
 float: right;
 }
 
+.deleteButton {
+	float: right;
+position: absolute;
+top: 3px;
+right: 3px;
+}
+}
 
 #stats {
 	float: left;

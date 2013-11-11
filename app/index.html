@@ -19,6 +19,7 @@
         <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Bills & Stuff</a>
           <ul class="dropdown-menu" role="menu">
             <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
+            <li>{{#link-to 'income'}}Income{{/link-to}}</li>
           </ul>
       </li>
       <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
@@ -96,7 +97,7 @@
   </div>
 </script>
 
-<script type="text/x-handlebars" id="income">
+<script type="text/x-handlebars" id="income" data-template-name="income">
 
   <div id="incomeBlock">
     <h3>{{view.incomeHeading}}</h3>
@@ -112,11 +113,13 @@
   </form>
 
   <div id="incomeList">
-            {{#each itemController="income"}}
+  <h3>Income</h3>
+            {{#each arrayController="income"}}
             <div class="incomeItem">
               <div class="incomeName"><p>{{name}}</p></div>
               <div class="incomeAmount"><p>{{amount}}</p></div>
               <div class="incomeFrequency"><p>{{frequency}}</p></div>
+              <button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button>
             </div><!-- end incomeItem -->
             {{/each}}
   </div><!-- end income List -->   
