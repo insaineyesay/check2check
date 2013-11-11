@@ -42,6 +42,12 @@ App.BillsRoute = Ember.Route.extend({
 	}
 });
 
+App.IncomeRoute = Ember.Route.extend({
+  model: function() {
+    return this.store.find('income');
+  }
+});
+
 // Controllers
 App.FinancesController = Ember.Controller.extend({
    actions: {
@@ -89,16 +95,47 @@ App.BillController = Ember.ObjectController.extend({
   }
 });
 
-App.BillsController = Ember.ArrayController.extend({
-  isEditing: false,
+App.IncomeController = Ember.ObjectController.extend({
 
+});
+
+App.IncomesController = Ember.ArrayController.extend({
   actions: {
     createIncomeItem: function() {
       var name = this.get('newIncomeTitle');
       var amount = this.get('newIncomeAmount');
       var frequency = this.get('newIncomeFrequency');
 
-      if (!title.trim() && !amount.trim() && frequency.trim()) { return; }
+      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
+
+      var income = this.store.createRecord('income', {
+        name: name,
+        amount: amount,
+        frequency: frequency
+      });
+
+      this.setProperties({
+        'newIncomeTitle': '',
+        'newIncomeAmount': '',
+        'newIncomeFrequency':  ''
+      });
+
+      income.save();
+    }
+
+  }
+});
+
+App.BillsController = Ember.ArrayController.extend({
+  isEditing: false,
+
+  actions: {
+     createIncomeItem: function() {
+      var name = this.get('newIncomeTitle');
+      var amount = this.get('newIncomeAmount');
+      var frequency = this.get('newIncomeFrequency');
+
+      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
 
       var income = this.store.createRecord('income', {
         name: name,
@@ -184,6 +221,12 @@ App.BillsController = Ember.ArrayController.extend({
 
 
 // Models
+App.Income = DS.Model.extend({
+  name: DS.attr(),
+  amount: DS.attr(),
+  frequency: DS.attr()
+});
+
 App.Bill = DS.Model.extend({
 	name: DS.attr(),
 	amount: DS.attr(),
@@ -192,15 +235,15 @@ App.Bill = DS.Model.extend({
   priority: DS.attr()
 });
 
-App.Income = DS.Model.extend({
-  title: DS.attr(),
-  amount: DS.attr(),
-  frequency: DS.attr()
+// Views
+App.BillsView = Ember.View.extend({
+  templateName: 'bills',
+  incomeHeading: 'Enter Income Below',
+  billHeading: 'Enter Bills Below'
 });
 
-// Views
-App.AddBill = Ember.View.extend({
-
+App.IncomeView = Ember.View.extend({
+  templateName:"income"
 });
 // Components
 

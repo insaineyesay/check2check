@@ -33,6 +33,16 @@ body {
 	font-smoothing: antialiased;
 }
 
+#rotator {
+	background: grey;
+	height: 200px;
+}
+
+input {
+	height: 30px;
+}
+/* ----------  BILL STYLES  ------------- */
+
 .billName {
 	float: left;
 }
@@ -65,14 +75,18 @@ body {
 	float: right;
 }
 
-#rotator {
-	background: grey;
-	height: 200px;
+
+/* ------------- INCOME STYLES -------------- */
+
+.incomeItem {
+background: #6F747A;
+color: white;
 }
 
-input {
-	height: 30px;
+.incomeAmount {
+float: right;
 }
+
 
 #stats {
 	float: left;

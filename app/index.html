@@ -86,19 +86,6 @@
 
 </script>
 
-<script type="text/x-handlebars" id="bills/_income">
-      
-    <form class="form-horizontal">
-
-    {{input class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the bill name here"}}
-    {{input class="form-control" type="number" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
-    <label>{{input type="radio"  id="incomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
-
-    <button type="submit" class="btn btn-small btn-success form-control" value="submit" {{action "createIncomeItem"}}>Add New</button>
-
-  </form>
-</script>
-
 <script type="text/x-handlebars" id="bills/_edit">
  {{input type="text" insert-newline="acceptChanges" value=name}}
  {{input type="text" insert-newline="acceptChanges" value=amount}}
@@ -109,6 +96,33 @@
   </div>
 </script>
 
+<script type="text/x-handlebars" id="income">
+
+  <div id="incomeBlock">
+    <h3>{{view.incomeHeading}}</h3>
+ 
+  <form class="form-horizontal">
+
+    {{input class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the bill name here"}}
+    {{input class="form-control" type="number" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
+    <label>{{input type="radio"  id="incomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
+
+    <button type="submit" class="btn btn-small btn-success form-control" value="submit" {{action "createIncomeItem"}}>Add New</button>
+
+  </form>
+
+  <div id="incomeList">
+            {{#each itemController="income"}}
+            <div class="incomeItem">
+              <div class="incomeName"><p>{{name}}</p></div>
+              <div class="incomeAmount"><p>{{amount}}</p></div>
+              <div class="incomeFrequency"><p>{{frequency}}</p></div>
+            </div><!-- end incomeItem -->
+            {{/each}}
+  </div><!-- end income List -->   
+</div> <!-- end incomeBlock -->
+</script>
+
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
       
       <div id="financials" class="row-fluid">
@@ -116,34 +130,37 @@
          <div id="billsAndIncome" class="span4">
 
           <div id="billsBlock">
-          <h3>Enter Bills Below</h3>
+
+          <h3>{{view.billHeading}}</h3>
           {{partial 'bills/addBill'}}
           </div><!-- end financialBlock -->
 
-          <div id="incomeBlock">
-          <h3>Enter Income Below</h3>
-          {{partial 'bills/income'}}
-          </div> <!-- end incomeBlock -->
-      
-        </div> <!-- end bills and income -->
+          {{view App.IncomeView}} 
+          
+      </div> <!-- end bills and income -->
       
       <div id="billList" class="span8">
-      <h2>Your List of Bills</h2>
-       <div class="billCount">
-        <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
-      </div>
+
+        <h2>Your List of Bills</h2>
+
+        <div class="billCount">
+          <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
+        </div>
+
       {{#each itemController = "bill"}}
 
       <div class="billItem row-fluid">
 
-      
+        <div id="billItemLeft">
 
-      <div id="billItemLeft">
-      {{#if isEditing}}
-      <div id="deleteConfirmation">
-      {{partial 'bills/edit'}}
-      </div>
+        {{#if isEditing}}
+
+        <div id="deleteConfirmation">
+        {{partial 'bills/edit'}}
+        </div>
+
       {{/if}}
+
         <p class="billName"><h5>{{name}}</h5>
         <br/>
         <div id="changeButtons">
@@ -152,6 +169,7 @@
         <button {{action "delete"}} class="btn btn-mini btn-danger">Delete</button>
 
       </div> <!-- end changeButtons -->
+
       </div> <!-- close billItemLeft -->
 
       <div id="billItemRight">
