@@ -19,7 +19,6 @@
         <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Bills & Stuff</a>
           <ul class="dropdown-menu" role="menu">
             <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
-            <li>{{#link-to 'income'}}Income{{/link-to}}</li>
           </ul>
       </li>
       <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
@@ -114,10 +113,17 @@
 
   <div id="incomeList">
   <h3>Income</h3>
-            {{#each arrayController="income"}}
+            {{#each itemController="incomeItem"}}
             <div class="incomeItem">
-              <div class="incomeName"><p>{{name}}</p></div>
-              <div class="incomeAmount"><p>{{amount}}</p></div>
+              <div class="incomeName"><p>{{incomeName}}</p></div>
+               {{#if deleteMode}}
+                <div class="confirm-box span4">
+                  <h4>Really?</h4>
+                  <button class="btn btn-mini btn-danger" {{action "confirmIncomeDelete"}}> yes </button>
+                  <button class="btn btn-mini btn-warning" {{action "cancelDelete"}}> no </button>
+                </div>
+                {{/if}}
+              <div class="incomeAmount"><p>{{incomeAmount}}</p></div>
               <div class="incomeFrequency"><p>{{frequency}}</p></div>
               <button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button>
             </div><!-- end incomeItem -->
@@ -138,7 +144,7 @@
           {{partial 'bills/addBill'}}
           </div><!-- end financialBlock -->
 
-          {{view App.IncomeView}} 
+          {{outlet}} 
           
       </div> <!-- end bills and income -->
       

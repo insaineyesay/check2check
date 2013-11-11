@@ -57,6 +57,47 @@ App.FinancesController = Ember.Controller.extend({
     }
 });
 
+App.IncomeItemController = Ember.ObjectController.extend({
+  actions: {
+    deleteIncome: function() {
+      this.set('deleteMode', true);
+    },
+
+    confirmIncomeDelete: function() {
+      this.toggleProperty('deleteMode');
+      var income = this.get('model');
+      income.deleteRecord();
+      income.save();
+    }
+  }
+});
+
+App.IncomeController = Ember.ArrayController.extend({
+  actions: {
+  createIncomeItem: function() {
+      var name = this.get('newIncomeTitle');
+      var amount = this.get('newIncomeAmount');
+      var frequency = this.get('newIncomeFrequency');
+
+      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
+
+      var income = this.store.createRecord('income', {
+        incomeName: name,
+        incomeAmount: amount,
+        frequency: frequency
+      });
+
+      this.setProperties({
+        'newIncomeTitle': '',
+        'newIncomeAmount': '',
+        'newIncomeFrequency':  ''
+      });
+
+      income.save();
+    }
+  }
+});
+
 App.BillController = Ember.ObjectController.extend({
   deleteMode: false,
 
@@ -79,7 +120,7 @@ App.BillController = Ember.ObjectController.extend({
 		
 		},
 
-     editBill: function() {
+    editBill: function() {
       //Grab the model
       this.set('isEditing', true);
     },
@@ -97,41 +138,11 @@ App.BillController = Ember.ObjectController.extend({
   }
 });
 
-App.IncomeController = Ember.ObjectController.extend({
-
-});
-
-App.IncomeController = Ember.ArrayController.extend({
-  actions: {
-    createIncomeItem: function() {
-      var name = this.get('newIncomeTitle');
-      var amount = this.get('newIncomeAmount');
-      var frequency = this.get('newIncomeFrequency');
-
-      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
-
-      var income = this.store.createRecord('income', {
-        incomeName: name,
-        incomeAmount: amount,
-        frequency: frequency
-      });
-
-      this.setProperties({
-        'newIncomeTitle': '',
-        'newIncomeAmount': '',
-        'newIncomeFrequency':  ''
-      });
-
-      income.save();
-    }
-
-  }
-});
-
 App.BillsController = Ember.ArrayController.extend({
   isEditing: false,
 
   actions: {
+    
     createBillItem: function() {
 
     // Get the Bill title set by the new 'New Bill' text field
@@ -173,9 +184,23 @@ App.BillsController = Ember.ArrayController.extend({
     } else {
       this.get('model').save();
       }
+    },
+
+    deleteIncome: function() {
+      console.log('wtf');
+      this.set('deleteMode', true);
+    },
+
+    confirmIncomeDelete: function() {
+      this.toggleProperty('deleteMode');
+      var income = this.get('model');
+      income.deleteRecord();
+      income.save();
     }
 
   },
+
+  
 
   totalBills: function() {
       return this.getEach('.billItem').length;
@@ -223,7 +248,8 @@ App.BillsView = Ember.View.extend({
 });
 
 App.IncomeView = Ember.View.extend({
-  templateName:"income"
+  templateName: 'income',
+  incomeHeading: 'Enter Income Below'
 });
 // Components
 
