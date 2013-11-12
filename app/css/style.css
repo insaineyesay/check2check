@@ -52,6 +52,7 @@ input {
 	margin: 10px 0px;
 	padding: 10px;
 	background: #4ae;
+	/*box-shadow: 2px 2px 6px #332;*/
 }
 
 #billItemLeft {
@@ -79,7 +80,7 @@ input {
 /* ------------- INCOME STYLES -------------- */
 
 .incomeItem {
-background: #6F747A;
+background: #45D3A6;
 color: white;
 height: 50px;
 margin: 2px 0px;
