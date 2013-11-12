@@ -113,9 +113,11 @@ App.IncomeController = Ember.ArrayController.extend({
       var incomes = this.getEach('incomeAmount');
       var bills = this.get("controllers.bills.sumOfBills");
 
+      if(incomes.length > 0) {
       var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
          return parseInt(previousValue, 10) + parseInt(currentValue, 10); 
         });
+    };
       return incomeTotal - bills;
       }.property('@each')
     
