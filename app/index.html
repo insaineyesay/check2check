@@ -19,6 +19,7 @@
         <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Bills & Stuff</a>
           <ul class="dropdown-menu" role="menu">
             <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
+            <li>{{#link-to "income"}}My Income{{/link-to}}</li>
           </ul>
       </li>
       <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
@@ -77,11 +78,17 @@
   <form class="form-horizontal">
 
     {{input class="form-control" type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
-    {{input class="form-control" type="number" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon">$</span>
+        {{input class="form-control" type="number" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+      <span class="input-group-addon">.00</span>
+    </div>
+        
     {{input type="date" id="billDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
 
-    <button type="submit" class="btn btn-small btn-success form-control" value="submit" {{action "createBillItem"}}>Add New</button>
-
+    <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
+    <button type="button" class="btn btn-xs btn-info">{{#link-to "income"}}Add Income{{/link-to}}</button>
+    <button type="button" class="btn btn-xs btn-success">{{#link-to "bills"}}Done Adding Income{{/link-to}}</button>
   </form>
 
 </script>
@@ -97,30 +104,35 @@
 </script>
 
 <script type="text/x-handlebars" id="income" data-template-name="income">
-
   <div id="incomeBlock">
     <h3>{{view.incomeHeading}}</h3>
  
   <form class="form-horizontal">
+    <div class="input-group input-group-sm">
+       <span class="input-group-addon">Name:</span>{{input type="text" class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the bill name here"}}
+    </div>
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon">$</span>
+        {{input class="form-control" type="number" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
+      <span class="input-group-addon">.00</span>
+    </div>
 
-    {{input class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the bill name here"}}
-    {{input class="form-control" type="number" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
-    <label>{{input type="radio"  id="incomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
-
-    <button type="submit" class="btn btn-small btn-success form-control" value="submit" {{action "createIncomeItem"}}>Add New</button>
+    <label>{{input type="checkbox"  id="incomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
+    <br/>
+    <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
 
   </form>
 
   <div id="incomeList">
-  <h3>Income</h3>
-            {{#each itemController="incomeItem"}}
+  <h3>{{view.incomeListHeading}}</h3>
+  <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
+            {{#each itemController="incomeItem"}} 
             <div class="incomeItem">
               <div class="incomeName"><p>{{incomeName}}</p></div>
                {{#if deleteMode}}
-                <div class="confirm-box span4">
-                  <h4>Really?</h4>
-                  <button class="btn btn-mini btn-danger" {{action "confirmIncomeDelete"}}> yes </button>
-                  <button class="btn btn-mini btn-warning" {{action "cancelDelete"}}> no </button>
+                <div class="confirm-box">
+                  <button class="btn btn-xs btn-danger" {{action "confirmIncomeDelete"}}> confirm </button>
+                  <button class="btn btn-xs btn-warning" {{action "cancelIncomeDelete"}}> cancel </button>
                 </div>
                 {{/if}}
               <div class="incomeAmount"><p>{{incomeAmount}}</p></div>
@@ -150,10 +162,11 @@
       
       <div id="billList" class="span8">
 
-        <h2>Your List of Bills</h2>
-
+        <h2>{{view.billListHeading}}</h2>
+        <button class="btn btn-info btn-xs">{{#link-to "reports"}}My Reports{{/link-to}}</button>
+        <button class="btn btn-info btn-xs">{{#link-to "income"}}My Income{{/link-to}}</button>
         <div class="billCount">
-          <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report</p>
+          <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report totalling ${{sumOfBills}}.00 due each month</p>
         </div>
 
       {{#each itemController = "bill"}}
@@ -174,8 +187,8 @@
         <br/>
         <div id="changeButtons">
 
-        <button {{action 'editBill'}} class="btn btn-mini btn-warning">Edit</button>
-        <button {{action "delete"}} class="btn btn-mini btn-danger">Delete</button>
+        <button {{action 'editBill'}} class="btn btn-xs btn-warning">Edit</button>
+        <button {{action "delete"}} class="btn btn-xs btn-danger">Delete</button>
 
       </div> <!-- end changeButtons -->
 
@@ -191,8 +204,8 @@
         {{#if deleteMode}}
         <div class="confirm-box span4">
           <h4>Really?</h4>
-          <button class="btn btn-mini btn-danger" {{action "confirmDelete"}}> yes </button>
-          <button class="btn btn-mini btn-warning" {{action "cancelDelete"}}> no </button>
+          <button class="btn btn-xs btn-danger" {{action "confirmDelete"}}> yes </button>
+          <button class="btn btn-xs btn-warning" {{action "cancelDelete"}}> no </button>
         </div>
         {{/if}}
 
@@ -200,9 +213,7 @@
       </div><!-- end bill item -->
       {{/each}}
       
-      <div id="stats">
-      <p>You have ${{sumOfBills}}.00 you have to pay each month</p>
-      </div>
+      
 
       </div> <!-- end bills -->
 
@@ -214,6 +225,8 @@
 <script type="text/x-handlebars" id="reports">
    
       <div class="Reports">
+      <button class="btn btn-info btn-xs">{{#link-to "bills"}}My Bills{{/link-to}}</button>
+      <button class="btn btn-info btn-xs">{{#link-to "income"}}My Income{{/link-to}}</button>
           {{outlet}}
       </div><!-- end bill item -->
 
