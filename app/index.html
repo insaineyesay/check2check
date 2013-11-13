@@ -98,8 +98,8 @@
  {{input type="text" insert-newline="acceptChanges" value=amount}}
  {{input type="date" insert-newline="acceptChanges" value=date}}
  <div class="editButtons">
-  <button class="btn btn-mini btn-warning" {{action 'cancelEdit'}}>Cancel</button>
-  <button class="btn btn-mini btn-success" {{action 'doneEditing'}}>Done</button>
+  <button class="btn btn-xs btn-warning" {{action 'cancelEdit'}}>Cancel</button>
+  <button class="btn btn-xs btn-success" {{action 'doneEditing'}}>Done</button>
   </div>
 </script>
 
@@ -113,11 +113,11 @@
     </div>
     <div class="input-group input-group-sm">
       <span class="input-group-addon">$</span>
-        {{input class="form-control" type="number" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
+        {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
       <span class="input-group-addon">.00</span>
     </div>
 
-    <label>{{input type="checkbox"  id="incomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
+    <label class="checkbox-inline">{{input type="checkbox"  id="incomeFrequencyEntry" value="weekly" valueBinding="newIncomeFrequency"}} Weekly</label>
     <br/>
     <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
 
@@ -128,16 +128,28 @@
   <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
             {{#each itemController="incomeItem"}} 
             <div class="incomeItem">
-              <div class="incomeName"><p>{{incomeName}}</p></div>
+              <div class="incomeItemLeft">
+                <div class="incomeName span10">{{incomeName}}</div>
+                <div class="incomeDelete span2" ><button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button></div>
+              </div> <!-- end incomeItemLeft -->
+            {{#if isEditing}}
+              <div class="editIncome span3">
+                {{input type="text" insert-newline="acceptChanges" value=incomeName}}
+                {{input type="text" insert-newline="acceptChanges" value=incomeAmount}}
+                <button class="btn btn-xs btn-danger" {{action "confirmIncomeEdit"}}> confirm </button>
+                <button class="btn btn-xs btn-warning" {{action "cancelIncomeEdit"}}> cancel </button>
+              </div>
+            {{/if}}
+            <button class="btn btn-xs btn-warning" {{action 'editIncome'}}>edit</button>
                {{#if deleteMode}}
                 <div class="confirm-box">
                   <button class="btn btn-xs btn-danger" {{action "confirmIncomeDelete"}}> confirm </button>
                   <button class="btn btn-xs btn-warning" {{action "cancelIncomeDelete"}}> cancel </button>
                 </div>
-                {{/if}}
+               {{/if}}
               <div class="incomeAmount"><p>{{incomeAmount}}</p></div>
               <div class="incomeFrequency"><p>{{frequency}}</p></div>
-              <button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button>
+            
             </div><!-- end incomeItem -->
             {{/each}}
   </div><!-- end income List -->   

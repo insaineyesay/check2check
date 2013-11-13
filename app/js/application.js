@@ -53,6 +53,10 @@ App.IncomeRoute = Ember.Route.extend({
 // Controllers
 App.IncomeItemController = Ember.ObjectController.extend({
   actions: {
+    editIncome: function() {
+      this.toggleProperty('isEditing');
+    },
+    
     deleteIncome: function() {
       this.set('deleteMode', true);
     },
@@ -80,7 +84,7 @@ App.IncomeController = Ember.ArrayController.extend({
       var amount = this.get('newIncomeAmount');
       var frequency = this.get('newIncomeFrequency');
 
-      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
+      if (!name.trim() && !amount.trim()) { return; }
 
       var income = this.store.createRecord('income', {
         incomeName: name,
