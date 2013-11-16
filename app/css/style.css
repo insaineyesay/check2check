@@ -47,6 +47,36 @@ width: 100%;
 height: 100%;
 }
 
+/* ---------------- NAVIGATION AND SIDE NAVIGATION STYLE -------------------- */
+.navbar {
+	margin-bottom: 0;
+	border-radius: 0;
+}
+
+.navbar-inverse {
+	background: #01859e;
+	border: none;
+}
+
+#sideNavFixed {
+width: 3%;
+height: 100%;
+background: #fafafa;
+float: left;
+position: relative;
+top: 0px;
+left: 0px;
+padding: 0 17px;
+}
+
+.menuButton {
+	margin: 15px 0;
+}
+
+.addExpenseButtonSideNav {
+	margin: 30px 0;
+}
+
 /* --------------CANVAS STYLES --------------- */
 canvas {
 	width: 100%;

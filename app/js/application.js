@@ -24,6 +24,11 @@ App.Router.map(function() {
 
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
+  this.resource('income1', function() {
+    this.route('overview', {path: '/income/overview'}),
+    this.route('incomeGraphView', {path: '/income/graphView'}),
+    this.resource('incomeItemView', {path: '/income/listView'})
+  });
   this.resource('bills', {path: '/expenses'}, function() {
     this.resource('income');
 
@@ -52,6 +57,11 @@ App.IncomeRoute = Ember.Route.extend({
 });
 
 // Controllers
+App.ApplicationController = Ember.ObjectController.extend({
+  expenseModalTitle: 'Add Expenses Here',
+  incomeModalTitle: 'Add Income Items Here'
+});
+
 App.IncomeItemController = Ember.ObjectController.extend({
   actions: {
     editIncome: function() {
@@ -249,6 +259,8 @@ App.ReportsController = Ember.ObjectController.extend({
     needs: ['bills' , 'income'] 
 });
 
+
+
 // Objects
 
 // Models
@@ -273,7 +285,6 @@ App.ApplicationView = Ember.View.extend({
 
 App.BillsView = Ember.View.extend({
   templateName: 'bills',
-  billHeading: 'Bills',
   classNames: ['sideNavWrap'],
   billListHeading: 'Your List of Bills',
   didInsertElement: function() {
@@ -283,8 +294,7 @@ App.BillsView = Ember.View.extend({
 
 App.IncomeView = Ember.View.extend({
   templateName: 'income',
-  incomeListHeading: 'Income',
-  incomeHeading: 'Income'
+  incomeListHeading: 'Income'
 });
 
 

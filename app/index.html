@@ -4,8 +4,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/normalize.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
    <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+	
  
    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -20,7 +21,7 @@
  <div class="navbar navbar-inverse">
   <div class="navbar-inner">
     
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav navbar-right">
       <li>{{#link-to 'index'}}Home{{/link-to}}</li>
       <li>{{#link-to 'getting started'}}Get Started{{/link-to}}</li>
       <li class="dropdown">
@@ -36,13 +37,18 @@
     </ul>
   </div>
 </div>
+<div id="sideNavFixed">
+<div class="menuButton"><button><span class="glyphicon glyphicon-list setting"></span></button></div>
+<div class="menuButton"><button>{{#link-to "income"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
+<div class="menuButton"><button>{{#link-to 'bills'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
+</div>
 {{outlet}}
 <div id="footer">
 
 </div>
 </script>
 
-<script type="text/x-handlebars" id="index">p
+<script type="text/x-handlebars" id="index">
 <section>
 <h1>Home Page Text</h1>
 <div id="rotator" class="fullSizeImg"></div>
@@ -227,7 +233,7 @@
           
       </div> <!-- end bills and income -->
       
-      <div id="billList" class="col-md-11">
+      <div id="billList" class="col-md-10">
 
         <h2>{{view.billListHeading}}</h2>
         <button class="btn btn-info btn-xs">{{#link-to "reports"}}My Reports{{/link-to}}</button>
