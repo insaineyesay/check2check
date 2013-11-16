@@ -24,7 +24,7 @@ App.Router.map(function() {
 
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
-  this.resource('bills', function() {
+  this.resource('bills', {path: '/expenses'}, function() {
     this.resource('income');
 
   });
@@ -267,28 +267,38 @@ App.Bill = DS.Model.extend({
 });
 
 // Views
+App.ApplicationView = Ember.View.extend({
+  classNames: ['applicationWrap']
+});
+
 App.BillsView = Ember.View.extend({
   templateName: 'bills',
-  billHeading: 'Enter Bills Below',
-  billListHeading: 'Your List of Bills'
+  billHeading: 'Bills',
+  classNames: ['sideNavWrap'],
+  billListHeading: 'Your List of Bills',
+  didInsertElement: function() {
+    $('.tooltip').tooltip();
+  }
 });
 
 App.IncomeView = Ember.View.extend({
   templateName: 'income',
   incomeListHeading: 'Income',
-  incomeHeading: 'Enter Income Below'
+  incomeHeading: 'Income'
 });
+
 
 App.ReportsView = Ember.View.extend({
   templateName: 'reports',
   didInsertElement: function() {
     var lineChart = $('#lineChart').get(0).getContext("2d");
-     var $chart = $('#lineChart');
-     var height = $('#charts').height();
-     var width = $('#charts').width();
-     $chart.attr({
+    var $chart = $('#lineChart');
+    var height = $('#charts').height();
+    var width = $('#charts').width();
+    
+    $chart.attr({
       width: width,
-      height: height / 2
+      height: height /2
     });
    
     var data = {
