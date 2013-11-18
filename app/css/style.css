@@ -74,7 +74,11 @@ padding: 0 17px;
 }
 
 .addExpenseButtonSideNav {
-	margin: 30px 0;
+	margin: 30px 0 10px;
+}
+
+.addIncomeButtonSideNav {
+	margin: 30px 0 10px;
 }
 
 /* --------------CANVAS STYLES --------------- */

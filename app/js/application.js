@@ -24,13 +24,18 @@ App.Router.map(function() {
 
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
-  this.resource('income1', function() {
-    this.route('overview', {path: '/income/overview'}),
-    this.route('incomeGraphView', {path: '/income/graphView'}),
-    this.resource('incomeItemView', {path: '/income/listView'})
+  this.resource('financial', function() {
+    this.resource('income', function() {
+      this.route('incomeGraph'),
+      this.route('incomeList')
+    }),  
+    this.resource('expenses' , {path: '/expenses'}, function(){
+      this.route('expenseGraph'),
+      this.route('expenseList')
+    });
   });
   this.resource('bills', {path: '/expenses'}, function() {
-    this.resource('income');
+    
 
   });
 	this.resource('reports');
@@ -57,9 +62,62 @@ App.IncomeRoute = Ember.Route.extend({
 });
 
 // Controllers
-App.ApplicationController = Ember.ObjectController.extend({
-  expenseModalTitle: 'Add Expenses Here',
-  incomeModalTitle: 'Add Income Items Here'
+App.ApplicationController = Ember.ArrayController.extend({
+  actions: {
+    
+    createBillItem: function() {
+
+    // Get the Bill title set by the new 'New Bill' text field
+    var title = this.get('newTitle');
+    var amount = this.get('newAmount');
+    var date = this.get('newDate');
+
+    if (!title.trim() && !amount.trim() && !date.trim()) { return; }
+       
+    // Create the New Bill Model
+    var bill = this.store.createRecord('bill', {
+            name: title,
+            amount: amount,
+            date: date
+    });
+
+    // Clear the "New Bill" text field
+    this.setProperties({
+      'newTitle': '',
+      'newAmount': '',
+      'newDate': ''
+    });
+
+    // Save it
+    bill.save();
+  },
+
+  createIncomeItem: function() {
+      var name = this.get('newIncomeTitle');
+      var amount = this.get('newIncomeAmount');
+      var frequency = this.get('newIncomeFrequency');
+
+      if (!name.trim() && !amount.trim()) { return; }
+
+      var income = this.store.createRecord('income', {
+        incomeName: name,
+        incomeAmount: amount,
+        frequency: frequency
+      });
+
+      this.setProperties({
+        'newIncomeTitle': '',
+        'newIncomeAmount': '',
+        'newIncomeFrequency':  ''
+      });
+
+      income.save();
+    }
+}
+});
+
+App.ExpensesController = Ember.ArrayController.extend({
+
 });
 
 App.IncomeItemController = Ember.ObjectController.extend({
@@ -294,9 +352,13 @@ App.BillsView = Ember.View.extend({
 
 App.IncomeView = Ember.View.extend({
   templateName: 'income',
-  incomeListHeading: 'Income'
+  incomeListHeading: 'Income',
+  classNames: 'incomeView'
 });
 
+App.AddBillView = Ember.View.extend({
+  templateName: 'addBill'
+});
 
 App.ReportsView = Ember.View.extend({
   templateName: 'reports',

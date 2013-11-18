@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<script type="text/x-handlebars">
+<script type="text/x-handlebars" id="App" data-template-name="application">
  <div class="navbar navbar-inverse">
   <div class="navbar-inner">
     
@@ -25,10 +25,10 @@
       <li>{{#link-to 'index'}}Home{{/link-to}}</li>
       <li>{{#link-to 'getting started'}}Get Started{{/link-to}}</li>
       <li class="dropdown">
-        <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Bills & Stuff</a>
+        <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Financials</a>
           <ul class="dropdown-menu" role="menu">
-            <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
-            <li>{{#link-to "income"}}My Income{{/link-to}}</li>
+          <li>{{#link-to "income"}}My Income{{/link-to}}</li>
+          <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
           </ul>
       </li>
       <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
@@ -37,15 +37,96 @@
     </ul>
   </div>
 </div>
+
 <div id="sideNavFixed">
-<div class="menuButton"><button><span class="glyphicon glyphicon-list setting"></span></button></div>
-<div class="menuButton"><button>{{#link-to "income"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
-<div class="menuButton"><button>{{#link-to 'bills'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
+  <div class="menuButton"><button><span class="glyphicon glyphicon-list setting"></span></button></div>
+  <div class="menuButton"><button>{{#link-to "income"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
+  <div class="menuButton"><button>{{#link-to 'expenses'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
+
+   <!-- Add Income Button trigger modal -->
+      <button class="glyphicon glyphicon-plus addIncomeButtonSideNav menuButton" data-toggle="modal" data-target="#IncomeModal"></button>
+    
+      <!-- Modal -->
+      <div class="modal fade" id="IncomeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Add an Income</h4>
+            </div>
+            <div class="modal-body">
+             <form class="form-horizontal">
+    <div class="input-group input-group-sm">
+       <span class="input-group-addon">Name:</span>{{input type="text" class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the income name here"}}
+    </div>
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon">$</span>
+        {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
+      <span class="input-group-addon">.00</span>
+    </div>
+
+    <label class="checkbox-inline">{{input type="checkbox"  id="incomeFrequencyEntry" value="weekly" valueBinding="newIncomeFrequency"}} Weekly</label>
+    <br/>
+    <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
+
+  </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+
+   <!-- AddBill Button trigger modal -->
+      <button class="glyphicon glyphicon-minus addExpenseButtonSideNav menuButton" data-toggle="modal" data-target="#ExpenseModal"></button>
+    
+      <!-- Modal -->
+      <div class="modal fade" id="ExpenseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">Add an Expense</h4>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal">
+
+          {{input class="form-control" type="text" id="sbillNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
+          <div class="input-group input-group-sm">
+            <span class="input-group-addon">$</span>
+              {{input class="form-control" type="number" id="sbillAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+            <span class="input-group-addon">.00</span>
+          </div>
+              
+          {{input type="date" id="sbillDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
+
+          <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
+          <button type="button" class="btn btn-xs btn-info">{{#link-to "income"}}Add Income{{/link-to}}</button>
+          <button type="button" class="btn btn-xs btn-success">{{#link-to "bills"}}Done Adding Income{{/link-to}}</button>
+        </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
 </div>
 {{outlet}}
 <div id="footer">
 
-</div>
+</script>
+
+
+<script type="text/x-handlebars" id="subMenuButtons">
+      <div id="subMenu" class="col-md-offset-10">
+        <button class="btn btn-info btn-xs">{{#link-to "reports"}}My Reports{{/link-to}}</button>
+        <button class="btn btn-info btn-xs">{{#link-to "income"}}My Income{{/link-to}}</button>
+      </div>
 </script>
 
 <script type="text/x-handlebars" id="index">
@@ -73,62 +154,6 @@
 <script type = "text/x-handlebars" id="getting started">
  <p>Some Text</p>
 </script>
-	
-<script type = "text/x-handlebars" id="finances">
-  <section id="App">
-      <h1>Enter Values Below</h1>
-      <header id="header">
-
-        
-      </header><!-- close header -->
-      </section>
-
-      <div id="bills">
-      {{view.bills}}
-      </div>
-</script>
-
-<script type="text/x-handlebars" id="bills/_addBill">
-
-    <!-- Button trigger modal -->
-      <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">
-        +
-      </button>
-    
-      <!-- Modal -->
-      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-              <form class="form-horizontal">
-
-          {{input class="form-control" type="text" id="billNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
-          <div class="input-group input-group-sm">
-            <span class="input-group-addon">$</span>
-              {{input class="form-control" type="number" id="billAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
-            <span class="input-group-addon">.00</span>
-          </div>
-              
-          {{input type="date" id="billDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
-
-          <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
-          <button type="button" class="btn btn-xs btn-info">{{#link-to "income"}}Add Income{{/link-to}}</button>
-          <button type="button" class="btn btn-xs btn-success">{{#link-to "bills"}}Done Adding Income{{/link-to}}</button>
-        </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->
-
-</script>
 
 <script type="text/x-handlebars" id="bills/_edit">
  {{input type="text" insert-newline="acceptChanges" value=name}}
@@ -140,53 +165,18 @@
   </div>
 </script>
 
+
 <script type="text/x-handlebars" id="income" data-template-name="income">
-  <div id="incomeBlock">
+<div class="income">
+  <div id="incomeBlock" class="col-md-11">
     <h3>{{view.incomeHeading}}</h3>
-
-    <!-- Button trigger modal -->
-      <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myIncomeModal">
-        +
-      </button>
-    
-      <!-- Modal -->
-      <div class="modal fade" id="myIncomeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-             <form class="form-horizontal">
-    <div class="input-group input-group-sm">
-       <span class="input-group-addon">Name:</span>{{input type="text" class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the income name here"}}
-    </div>
-    <div class="input-group input-group-sm">
-      <span class="input-group-addon">$</span>
-        {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
-      <span class="input-group-addon">.00</span>
-    </div>
-
-    <label class="checkbox-inline">{{input type="checkbox"  id="incomeFrequencyEntry" value="weekly" valueBinding="newIncomeFrequency"}} Weekly</label>
-    <br/>
-    <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
-
-  </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->
-
+{{view App.ReportsView}}
+   
   <div id="incomeList">
   <h3>{{view.incomeListHeading}}</h3>
   <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
             {{#each itemController="incomeItem"}} 
-            <div class="incomeItem">
+            <div class="incomeItem row">
               <div class="incomeItemTop row">
                 <div class="incomeName">{{incomeName}}</div>
                 <div class="incomeDelete" ><button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button></div>
@@ -214,17 +204,79 @@
   </div><!-- end income List -->   
 
 </div> <!-- end incomeBlock -->
+</div>
+</script>
+
+<script type="text/x-handlebars" id="expenses" data-template-name="expenses">
+some text
+ 
+      
+      
+
+      <div id="billList" class="col-md-10">
+
+        <h2>{{view.billListHeading}}</h2>
+        
+        <div class="billCount">
+          <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report totalling ${{sumOfBills}}.00 due each month</p>
+        </div>
+        {{view App.ReportsView}}
+      {{#each itemController = "bill"}}
+
+      <div class="billItem row">
+
+        <div id="billItemLeft">
+
+        {{#if isEditing}}
+
+        <div id="deleteConfirmation">
+        {{partial 'bills/edit'}}
+        </div>
+
+      {{/if}}
+
+        <p class="billName"><h5>{{name}}</h5>
+        <br/>
+        <div id="changeButtons">
+
+        <button {{action 'editBill'}} class="btn btn-xs btn-warning">Edit</button>
+        <button {{action "delete"}} class="btn btn-xs btn-danger">Delete</button>
+
+      </div> <!-- end changeButtons -->
+
+      </div> <!-- close billItemLeft -->
+
+      <div id="billItemRight">
+        <div class="billAmount">${{amount}}.00</div>
+        <div class="billDate">{{date}}</div>
+        <div class="billDate">{{apr}}</div>
+      </div> <!-- close billitemRight -->
+        
+
+        {{#if deleteMode}}
+        <div class="confirm-box col-md-4">
+          <h4>Really?</h4>
+          <button class="btn btn-xs btn-danger" {{action "confirmDelete"}}> yes </button>
+          <button class="btn btn-xs btn-warning" {{action "cancelDelete"}}> no </button>
+        </div>
+        {{/if}}
+
+      
+      </div><!-- end bill item -->
+      {{/each}}
+      
+      
+
+      </div> <!-- end billList -->
+
+      </div><!-- end financials -->
 </script>
 
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
          
          <div id="billsAndIncome" class="col-md-1">
 
-          <div id="billsBlock">
-             <div class="sideMenu" role="menu">
-            <button class="btn btn-default btn-xs">{{#link-to 'bills'}}Bills{{/link-to}}</button>
-            <button class="btn btn-default btn-xs">{{#link-to "income"}}My Income{{/link-to}}</button>
-          </div>
+         
           <h3>{{view.billHeading}}</h3>
           {{partial 'bills/addBill'}}
           </div><!-- end financialBlock -->
@@ -233,11 +285,12 @@
           
       </div> <!-- end bills and income -->
       
+      
+
       <div id="billList" class="col-md-10">
 
         <h2>{{view.billListHeading}}</h2>
-        <button class="btn btn-info btn-xs">{{#link-to "reports"}}My Reports{{/link-to}}</button>
-        <button class="btn btn-info btn-xs">{{#link-to "income"}}My Income{{/link-to}}</button>
+        
         <div class="billCount">
           <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report totalling ${{sumOfBills}}.00 due each month</p>
         </div>
@@ -300,7 +353,7 @@
    
       <div class="Reports">
     
-      </div><!-- end bill item -->
+      
       {{outlet}}
       <div id="charts" class="row">
       <div id="chart1" class="col-md-8">
