@@ -40,6 +40,7 @@
 
 <div id="sideNavFixed">
   <div class="menuButton"><button><span class="glyphicon glyphicon-list setting"></span></button></div>
+  <div class="menuButton"><button>{{#link-to "financial"}}<span class="glyphicon glyphicon-home setting"></span>{{/link-to}}</button></div>
   <div class="menuButton"><button>{{#link-to "income"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
   <div class="menuButton"><button>{{#link-to 'expenses'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
 
@@ -120,6 +121,7 @@
 <div id="footer">
 
 </script>
+
 
 
 <script type="text/x-handlebars" id="subMenuButtons">
@@ -208,10 +210,6 @@
 </script>
 
 <script type="text/x-handlebars" id="expenses" data-template-name="expenses">
-some text
- 
-      
-      
 
       <div id="billList" class="col-md-10">
 
@@ -265,15 +263,56 @@ some text
       </div><!-- end bill item -->
       {{/each}}
       
-      
+      {{view App.LeftExpenseComponentView}}
+      {{view App.LeftExpenseComponentView}}
+      {{view App.LeftExpenseComponentView}}
 
       </div> <!-- end billList -->
 
       </div><!-- end financials -->
 </script>
 
+<script type="text/x-handlebars" id="leftExpenseComponent">
+  <div class="col-md-4">
+    <div id="leftComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="leftCompnentChart">
+            <canvas id="leftExpenseCompnentPieChart"> </div>
+          </div>
+        </div>
+    </div>
+</div>
+</script>
+
+<script type="text/x-handlebars" id="centerExpenseComponent">
+  <div class="col-md-4">
+    <div id="centerComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="centerCompnentChart">
+            <canvas id="centerExpenseCompnentPieChart"> </div>
+          </div>
+        </div>
+    </div>
+</div>
+</script>
+
+<script type="text/x-handlebars" id="rightExpenseComponent">
+  <div class="col-md-4">
+    <div id="rightComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="rightCompnentChart">
+            <canvas id="rightExpenseCompnentPieChart"> </div>
+          </div>
+        </div>
+    </div>
+</div>
+</script>
+
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
-         
+         some text
          <div id="billsAndIncome" class="col-md-1">
 
          
@@ -342,7 +381,7 @@ some text
       
 
       </div> <!-- end billList -->
-
+        
       </div><!-- end financials -->
      
 </script>

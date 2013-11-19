@@ -360,6 +360,102 @@ App.AddBillView = Ember.View.extend({
   templateName: 'addBill'
 });
 
+App.LeftExpenseComponentView = Ember.View.extend({
+  templateName: 'leftExpenseComponent',
+  didInsertElement: function() {
+    var pieChart = $('#leftExpenseCompnentPieChart').get(0).getContext("2d");
+    var $chart = $('#leftExpenseCompnentPieChart');
+    var h = $('#leftCompnent').height();
+    var w = $('#leftCompnent').width();
+
+    $chart.attr({
+      width: w ,
+      height: h - 30
+    });
+
+        var data = [
+      {
+        value: 30,
+        color:"#F38630"
+      },
+      {
+        value : 50,
+        color : "#E0E4CC"
+      },
+      {
+        value : 100,
+        color : "#69D2E7"
+      }     
+    ]
+    var newPieChart = new Chart(pieChart).Pie(data);
+  }
+
+});
+
+App.CenterExpenseComponentView = Ember.View.extend({
+  templateName: 'centerExpenseComponent',
+  didInsertElement: function() {
+    var pieChart = $('#centerExpenseCompnentPieChart').get(0).getContext("2d");
+    var $chart = $('#centerExpenseCompnentPieChart');
+    var h = $('#centerCompnent').height();
+    var w = $('#centerCompnent').width();
+
+    $chart.attr({
+      width: w,
+      height: h - 30
+    });
+
+        var data = [
+      {
+        value: 30,
+        color:"#F38630"
+      },
+      {
+        value : 50,
+        color : "#E0E4CC"
+      },
+      {
+        value : 100,
+        color : "#69D2E7"
+      }     
+    ]
+    var centerPieChart = new Chart(pieChart).Pie(data);
+  }
+
+});
+
+App.RightExpenseComponentView = Ember.View.extend({
+  templateName: 'rightExpenseComponent',
+  didInsertElement: function() {
+    var pieChart = $('#rightExpenseCompnentPieChart').get(0).getContext("2d");
+    var $chart = $('#rightExpenseCompnentPieChart');
+    var h = $('#rightCompnent').height();
+    var w = $('#rightCompnent').width();
+
+    $chart.attr({
+      width: w,
+      height: h - 30
+    });
+
+        var data = [
+      {
+        value: 30,
+        color:"#F38630"
+      },
+      {
+        value : 50,
+        color : "#E0E4CC"
+      },
+      {
+        value : 100,
+        color : "#69D2E7"
+      }     
+    ]
+    var rightPieChart = new Chart(pieChart).Pie(data);
+  }
+
+});
+
 App.ReportsView = Ember.View.extend({
   templateName: 'reports',
   didInsertElement: function() {
