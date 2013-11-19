@@ -155,3 +155,8 @@ float: right;
 	float: left;
 	clear: left;
 }
+
+/* ------------- REPORT STYLES -------------- */
+.reports {
+	margin-bottom: 20px;
+}

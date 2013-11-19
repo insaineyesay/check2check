@@ -262,11 +262,11 @@
       
       </div><!-- end bill item -->
       {{/each}}
-      
-      {{view App.LeftExpenseComponentView}}
-      {{view App.LeftExpenseComponentView}}
-      {{view App.LeftExpenseComponentView}}
-
+      <div class="row">
+        {{view App.LeftExpenseComponentView}}
+        {{view App.CenterExpenseComponentView}}
+        {{view App.RightExpenseComponentView}}
+      </div>
       </div> <!-- end billList -->
 
       </div><!-- end financials -->
@@ -278,24 +278,26 @@
       <div class="panel-heading">Income Distribution</div>
         <div class="panel-body">
           <div id="leftCompnentChart">
-            <canvas id="leftExpenseCompnentPieChart"> </div>
+            <canvas id="leftExpenseCompnentPieChart"> 
+          </div>
           </div>
         </div>
     </div>
-</div>
+
 </script>
 
 <script type="text/x-handlebars" id="centerExpenseComponent">
   <div class="col-md-4">
     <div id="centerComponent" class="panel panel-default">
-      <div class="panel-heading">Income Distribution</div>
+      <div class="panel-heading">Income Vs. Bills</div>
         <div class="panel-body">
-          <div id="centerCompnentChart">
-            <canvas id="centerExpenseCompnentPieChart"> </div>
-          </div>
-        </div>
-    </div>
-</div>
+            <div id="centerCompnentChart">
+              <canvas id="centerExpenseCompnentPieChart"> 
+            </div>
+         </div>
+      </div>
+  </div>
+
 </script>
 
 <script type="text/x-handlebars" id="rightExpenseComponent">
@@ -303,12 +305,13 @@
     <div id="rightComponent" class="panel panel-default">
       <div class="panel-heading">Income Distribution</div>
         <div class="panel-body">
-          <div id="rightCompnentChart">
-            <canvas id="rightExpenseCompnentPieChart"> </div>
-          </div>
+            <div id="rightCompnentChart">
+              <canvas id="rightExpenseCompnentPieChart"> 
+            </div>
         </div>
-    </div>
-</div>
+      </div>
+  </div>
+
 </script>
 
 <script type="text/x-handlebars" id="bills" data-template-name="bills">
@@ -389,19 +392,17 @@
 
 
 <script type="text/x-handlebars" id="reports">
-   
-      <div class="Reports">
-    
-      
-      {{outlet}}
+  <div class="reports"   >
       <div id="charts" class="row">
-      <div id="chart1" class="col-md-8">
-       <canvas id="lineChart"></canvas>
+        <div id="chart1" class="col-md-8">
+         <canvas id="lineChart"></canvas>
+        </div>
+        <div id="chartBreakdown" class="col-md-4">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum.
+          </p>
+        </div>
       </div>
-      <div id="chartBreakdown" class="col-md-4">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum.
-        </p>
-      </div>
+  </div>
 </script>
 
 <!-- dependencies -->

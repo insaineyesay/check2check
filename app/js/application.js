@@ -387,7 +387,12 @@ App.LeftExpenseComponentView = Ember.View.extend({
         color : "#69D2E7"
       }     
     ]
-    var newPieChart = new Chart(pieChart).Pie(data);
+
+      var options = {
+          animationEasing: "easeInOutCubic",
+        }
+
+    var newPieChart = new Chart(pieChart).Pie(data, options);
   }
 
 });
@@ -458,6 +463,7 @@ App.RightExpenseComponentView = Ember.View.extend({
 
 App.ReportsView = Ember.View.extend({
   templateName: 'reports',
+  classNames: 'reports',
   didInsertElement: function() {
     var lineChart = $('#lineChart').get(0).getContext("2d");
     var $chart = $('#lineChart');
