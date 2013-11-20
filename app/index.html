@@ -28,7 +28,7 @@
         <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Financials</a>
           <ul class="dropdown-menu" role="menu">
           <li>{{#link-to "income"}}My Income{{/link-to}}</li>
-          <li>{{#link-to 'bills'}}Bills{{/link-to}}</li>
+          
           </ul>
       </li>
       <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
@@ -39,7 +39,29 @@
 </div>
 
 <div id="sideNavFixed">
-  <div class="menuButton"><button><span class="glyphicon glyphicon-list setting"></span></button></div>
+  <div class="menuButton">
+    <button class="glyphicon glyphicon-list listSideNav menuButton" data-toggle="modal" data-target="#settingsModal"></button>
+  </div>
+
+   <!-- Modal -->
+      <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="settingsModal">Preferences</h4>
+            </div>
+            <div class="modal-body">
+             <p>Preferences form will go here</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+  
   <div class="menuButton"><button>{{#link-to "financial"}}<span class="glyphicon glyphicon-home setting"></span>{{/link-to}}</button></div>
   <div class="menuButton"><button>{{#link-to "income"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
   <div class="menuButton"><button>{{#link-to 'expenses'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
@@ -167,50 +189,74 @@
   </div>
 </script>
 
+<script type="text/x-handlebars" id="financial" data-template-name="financial">
+  <div class="container">
+    <h1>Financial Overview Page</h1>
+      <div class="col-md-12 financialcharts">
+        {{view App.FinancialOverviewChartsView}}
+      </div>
+       <div id="financialNews" class="col-md-12">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum.
+        </p>
+      </div>
+      <div class="col-md-12">
+        {{view App.LeftFinancialComponentView}}
+        {{view App.CenterFinancialComponentView}}
+        {{view App.RightFinancialComponentView}}
+      </div>
+  </div>
+</script>
+
+<script type="text/x-handlebars" id="financialOverviewCharts" data-template-name"financialOverviewCharts">
+  <div id="financialPageCharts" class="row">
+      <div id="financialChart" class="col-md-12">
+       <canvas id="financialLineChart"></canvas>
+      </div>
+  </div>
+</script>
 
 <script type="text/x-handlebars" id="income" data-template-name="income">
-<div class="income">
-  <div id="incomeBlock" class="col-md-11">
-    <h3>{{view.incomeHeading}}</h3>
-{{view App.ReportsView}}
+  <div class="income">
+    <div id="incomeBlock" class="col-md-11">
+      <h3>{{view.incomeHeading}}</h3>
+        {{view App.ReportsView}}
    
-  <div id="incomeList">
-  <h3>{{view.incomeListHeading}}</h3>
-  <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
+    <div id="incomeList">
+      <h3>{{view.incomeListHeading}}</h3>
+        <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
             {{#each itemController="incomeItem"}} 
             <div class="incomeItem row">
               <div class="incomeItemTop row">
                 <div class="incomeName">{{incomeName}}</div>
-                <div class="incomeDelete" ><button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button></div>
-              </div> <!-- end incomeItemTop -->
-            {{#if isEditing}}
-              <div class="editIncome col-md-3">
-                {{input type="text" insert-newline="acceptChanges" value=incomeName}}
-                {{input type="text" insert-newline="acceptChanges" value=incomeAmount}}
-                <button class="btn btn-xs btn-danger" {{action "confirmIncomeEdit"}}> confirm </button>
-                <button class="btn btn-xs btn-warning" {{action "cancelIncomeEdit"}}> cancel </button>
-              </div>
-            {{/if}}
-            <button class="btn btn-xs btn-warning" {{action 'editIncome'}}>edit</button>
-               {{#if deleteMode}}
-                <div class="confirm-box">
-                  <button class="btn btn-xs btn-danger" {{action "confirmIncomeDelete"}}> confirm </button>
-                  <button class="btn btn-xs btn-warning" {{action "cancelIncomeDelete"}}> cancel </button>
-                </div>
-               {{/if}}
-              <div class="incomeAmount"><p>{{incomeAmount}}</p></div>
-              <div class="incomeFrequency"><p>{{frequency}}</p></div>
-            
+                  <div class="incomeDelete" ><button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button></div>
+                </div> <!-- end incomeItemTop -->
+                  {{#if isEditing}}
+                    <div class="editIncome col-md-3">
+                      {{input type="text" insert-newline="acceptChanges" value=incomeName}}
+                      {{input type="text" insert-newline="acceptChanges" value=incomeAmount}}
+                      <button class="btn btn-xs btn-danger" {{action "confirmIncomeEdit"}}> confirm </button>
+                      <button class="btn btn-xs btn-warning" {{action "cancelIncomeEdit"}}> cancel </button>
+                    </div>
+                  {{/if}}
+                      <button class="btn btn-xs btn-warning" {{action 'editIncome'}}>edit</button>
+                  {{#if deleteMode}}
+                    <div class="confirm-box">
+                      <button class="btn btn-xs btn-danger" {{action "confirmIncomeDelete"}}> confirm </button>
+                      <button class="btn btn-xs btn-warning" {{action "cancelIncomeDelete"}}> cancel </button>
+                    </div>
+                  {{/if}}
+                    <div class="incomeAmount"><p>{{incomeAmount}}</p></div>
+                    <div class="incomeFrequency"><p>{{frequency}}</p></div>
             </div><!-- end incomeItem -->
             {{/each}}
-  </div><!-- end income List -->   
+      </div><!-- end income List -->   
 
-</div> <!-- end incomeBlock -->
-</div>
+    </div> <!-- end incomeBlock -->
+  </div>
 </script>
 
 <script type="text/x-handlebars" id="expenses" data-template-name="expenses">
-
+  <h1>Expenses Page</h1>
       <div id="billList" class="col-md-10">
 
         <h2>{{view.billListHeading}}</h2>
@@ -272,6 +318,45 @@
       </div><!-- end financials -->
 </script>
 
+<script type="text/x-handlebars" id="leftFinancialComponent">
+  <div class="col-md-4">
+    <div id="leftFinancialComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="leftFinancialCompnentChart">
+            <canvas id="leftFinancialCompnentPieChart"> 
+          </div>
+          </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="centerFinancialComponent">
+  <div class="col-md-4">
+    <div id="centerFinancialComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="centerFinancialCompnentChart">
+            <canvas id="centerFinancialCompnentPieChart"> 
+          </div>
+          </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="rightFinancialComponent">
+  <div class="col-md-4">
+    <div id="rightFinancialComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="rightFinancialCompnentChart">
+            <canvas id="rightFinancialCompnentPieChart"> 
+          </div>
+          </div>
+        </div>
+    </div>
+</script>
+
 <script type="text/x-handlebars" id="leftExpenseComponent">
   <div class="col-md-4">
     <div id="leftComponent" class="panel panel-default">
@@ -283,7 +368,6 @@
           </div>
         </div>
     </div>
-
 </script>
 
 <script type="text/x-handlebars" id="centerExpenseComponent">
@@ -314,95 +398,18 @@
 
 </script>
 
-<script type="text/x-handlebars" id="bills" data-template-name="bills">
-         some text
-         <div id="billsAndIncome" class="col-md-1">
-
-         
-          <h3>{{view.billHeading}}</h3>
-          {{partial 'bills/addBill'}}
-          </div><!-- end financialBlock -->
-
-          {{outlet}} 
-          
-      </div> <!-- end bills and income -->
-      
-      
-
-      <div id="billList" class="col-md-10">
-
-        <h2>{{view.billListHeading}}</h2>
-        
-        <div class="billCount">
-          <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report totalling ${{sumOfBills}}.00 due each month</p>
-        </div>
-        {{view App.ReportsView}}
-      {{#each itemController = "bill"}}
-
-      <div class="billItem row">
-
-        <div id="billItemLeft">
-
-        {{#if isEditing}}
-
-        <div id="deleteConfirmation">
-        {{partial 'bills/edit'}}
-        </div>
-
-      {{/if}}
-
-        <p class="billName"><h5>{{name}}</h5>
-        <br/>
-        <div id="changeButtons">
-
-        <button {{action 'editBill'}} class="btn btn-xs btn-warning">Edit</button>
-        <button {{action "delete"}} class="btn btn-xs btn-danger">Delete</button>
-
-      </div> <!-- end changeButtons -->
-
-      </div> <!-- close billItemLeft -->
-
-      <div id="billItemRight">
-        <div class="billAmount">${{amount}}.00</div>
-        <div class="billDate">{{date}}</div>
-        <div class="billDate">{{apr}}</div>
-      </div> <!-- close billitemRight -->
-        
-
-        {{#if deleteMode}}
-        <div class="confirm-box col-md-4">
-          <h4>Really?</h4>
-          <button class="btn btn-xs btn-danger" {{action "confirmDelete"}}> yes </button>
-          <button class="btn btn-xs btn-warning" {{action "cancelDelete"}}> no </button>
-        </div>
-        {{/if}}
-
-      
-      </div><!-- end bill item -->
-      {{/each}}
-      
-      
-
-      </div> <!-- end billList -->
-        
-      </div><!-- end financials -->
-     
-</script>
-
-
-
 <script type="text/x-handlebars" id="reports">
-  <div class="reports"   >
-      <div id="charts" class="row">
-        <div id="chart1" class="col-md-8">
-         <canvas id="lineChart"></canvas>
-        </div>
-        <div id="chartBreakdown" class="col-md-4">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum.
-          </p>
-        </div>
+  
+    <div id="charts" class="row">
+      <div id="chart1" class="col-md-8">
+       <canvas id="lineChart"></canvas>
       </div>
-  </div>
+      <div id="chartBreakdown" class="col-md-4">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum.
+        </p>
+      </div>
+    </div>
+  
 </script>
 
 <!-- dependencies -->

@@ -24,24 +24,21 @@ App.Router.map(function() {
 
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
-  this.resource('financial', function() {
-    this.resource('income', function() {
+  this.resource('financial'),
+  this.resource('income', function() {
       this.route('incomeGraph'),
       this.route('incomeList')
-    }),  
-    this.resource('expenses' , {path: '/expenses'}, function(){
+    });  
+  this.resource('expenses' , {path: '/expenses'}, function(){
       this.route('expenseGraph'),
       this.route('expenseList')
     });
-  });
-  this.resource('bills', {path: '/expenses'}, function() {
-    
-
-  });
+  this.resource('bills');
 	this.resource('reports');
 	this.resource('contact');
 
 });
+
 
 App.IndexRoute = Ember.Route.extend({
 	beforeModel: function() {
@@ -353,11 +350,27 @@ App.BillsView = Ember.View.extend({
 App.IncomeView = Ember.View.extend({
   templateName: 'income',
   incomeListHeading: 'Income',
-  classNames: 'incomeView'
+  
 });
 
 App.AddBillView = Ember.View.extend({
   templateName: 'addBill'
+});
+
+App.IncomeView = Ember.View.extend({
+  templateName: 'income'
+});
+
+App.LeftFinancialComponentView = Ember.View.extend({
+  templateName: 'leftFinancialComponent'
+});
+
+App.CenterFinancialComponentView = Ember.View.extend({
+  templateName: 'centerFinancialComponent'
+});
+
+App.RightFinancialComponentView = Ember.View.extend({
+  templateName: 'rightFinancialComponent'
 });
 
 App.LeftExpenseComponentView = Ember.View.extend({
@@ -459,6 +472,42 @@ App.RightExpenseComponentView = Ember.View.extend({
     var rightPieChart = new Chart(pieChart).Pie(data);
   }
 
+});
+
+App.FinancialOverviewChartsView = Ember.View.extend({
+  templateName: "financialOverviewCharts",
+  didInsertElement: function() {
+    var lineChart = $('#financialLineChart').get(0).getContext("2d");
+    var $chart = $('#financialLineChart');
+    var height = $('#financialPageCharts').height();
+    var width = $('#financialPageCharts').width();
+    
+    $chart.attr({
+      width: width,
+      height: height /2
+    });
+   
+    var data = {
+      labels : ["January","February","March","April","May","June","July"],
+      datasets : [
+        {
+          fillColor : "rgba(220,220,220,0.5)",
+          strokeColor : "rgba(220,220,220,1)",
+          pointColor : "rgba(220,220,220,1)",
+          pointStrokeColor : "#fff",
+          data : [65,59,90,81,56,55,40]
+        },
+        {
+          fillColor : "rgba(151,187,205,0.5)",
+          strokeColor : "rgba(151,187,205,1)",
+          pointColor : "rgba(151,187,205,1)",
+          pointStrokeColor : "#fff",
+          data : [28,48,40,19,96,27,100]
+        }
+      ]
+    }
+    var financialLineChart = new Chart(lineChart).Line(data);
+  }
 });
 
 App.ReportsView = Ember.View.extend({

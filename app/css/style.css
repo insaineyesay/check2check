@@ -33,6 +33,10 @@ body {
 	font-smoothing: antialiased;
 }
 
+.container {
+	width: 95%;
+}
+
 #rotator {
 	background: grey;
 	height: 200px;
@@ -84,6 +88,18 @@ padding: 0 17px;
 /* --------------CANVAS STYLES --------------- */
 canvas {
 	width: 100%;
+}
+
+
+/* --------------FINANCIAL STYLES --------------- */
+
+.financialcharts {
+	height: 400px;
+	margin-bottom: 60px;
+}
+
+#financialNews {
+margin: 40px 0;
 }
 /* ----------  BILL STYLES  ------------- */
 
