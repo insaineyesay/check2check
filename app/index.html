@@ -27,8 +27,8 @@
       <li class="dropdown">
         <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Financials</a>
           <ul class="dropdown-menu" role="menu">
-          <li>{{#link-to "income"}}My Income{{/link-to}}</li>
-          
+            <li>{{#link-to "incomeOverview"}}My Income{{/link-to}}</li>
+            <li>{{#link-to "expensesOverview"}}My Expenses{{/link-to}}</li>
           </ul>
       </li>
       <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
@@ -63,8 +63,8 @@
       </div><!-- /.modal -->
   
   <div class="menuButton"><button>{{#link-to "financial"}}<span class="glyphicon glyphicon-home setting"></span>{{/link-to}}</button></div>
-  <div class="menuButton"><button>{{#link-to "income"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
-  <div class="menuButton"><button>{{#link-to 'expenses'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
+  <div class="menuButton"><button>{{#link-to "incomeOverview"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
+  <div class="menuButton"><button>{{#link-to 'expensesOverview'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
 
    <!-- Add Income Button trigger modal -->
       <button class="glyphicon glyphicon-plus addIncomeButtonSideNav menuButton" data-toggle="modal" data-target="#IncomeModal"></button>
@@ -127,7 +127,7 @@
           {{input type="date" id="sbillDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
 
           <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
-          <button type="button" class="btn btn-xs btn-info">{{#link-to "income"}}Add Income{{/link-to}}</button>
+          <button type="button" class="btn btn-xs btn-info">{{#link-to "incomeOverview"}}Add Income{{/link-to}}</button>
           <button type="button" class="btn btn-xs btn-success">{{#link-to "bills"}}Done Adding Income{{/link-to}}</button>
         </form>
             </div>
@@ -143,8 +143,6 @@
 <div id="footer">
 
 </script>
-
-
 
 <script type="text/x-handlebars" id="subMenuButtons">
       <div id="subMenu" class="col-md-offset-10">
@@ -215,8 +213,25 @@
   </div>
 </script>
 
-<script type="text/x-handlebars" id="income" data-template-name="income">
+<script type="text/x-handlebars" id="innerButtons" data-template-name="innerButtons">
+  <div id="InnerButtons" class="col-md-offset-10">
+    <button class="btn btn-xs btn-default">{{#link-to "incomeOverview.incomeList"}}Income Reports{{/link-to}}</button>
+    <button class="btn btn-xs btn-default">{{#link-to "incomeOverview.incomeGraph"}}Income List{{/link-to}}</button>
+  </div>
+</script>
+
+<script type = "text/x-handlebars" id="incomeList" data-template-name="incomeList">
+ <p>Some Text</p>
+</script>
+
+<script type = "text/x-handlebars" id="incomeGraph" data-template-name="incomeGraph">
+ <p>Some Text</p>
+</script>
+
+<script type="text/x-handlebars" id="income" data-template-name="incomeOverview">
+<h1>Income View</h1>
   <div class="income">
+  {{view App.InnerButtonsView}}
     <div id="incomeBlock" class="col-md-11">
       <h3>{{view.incomeHeading}}</h3>
         {{view App.ReportsView}}
@@ -255,7 +270,7 @@
   </div>
 </script>
 
-<script type="text/x-handlebars" id="expenses" data-template-name="expenses">
+<script type="text/x-handlebars" id="expenses" data-template-name="expensesOverview">
   <h1>Expenses Page</h1>
       <div id="billList" class="col-md-10">
 

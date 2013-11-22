@@ -24,14 +24,14 @@ App.Router.map(function() {
 
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
-  this.resource('financial'),
-  this.resource('income', function() {
-      this.route('incomeGraph'),
-      this.route('incomeList')
-    });  
-  this.resource('expenses' , {path: '/expenses'}, function(){
-      this.route('expenseGraph'),
-      this.route('expenseList')
+  this.resource('financial');
+  this.resource('incomeOverview', function() {
+      this.route('incomeList');
+      this.route('incomeGraph');
+  });
+  this.resource('expensesOverview' , {path: '/expenses'}, function(){
+      this.route('expenseList');
+      this.route('expenseGraph');
     });
   this.resource('bills');
 	this.resource('reports');
@@ -113,7 +113,7 @@ App.ApplicationController = Ember.ArrayController.extend({
 }
 });
 
-App.ExpensesController = Ember.ArrayController.extend({
+App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 });
 
@@ -141,7 +141,7 @@ App.IncomeItemController = Ember.ObjectController.extend({
   }
 });
 
-App.IncomeController = Ember.ArrayController.extend({
+App.IncomeOverviewController = Ember.ArrayController.extend({
   needs: "bills",
 
   actions: {
@@ -173,10 +173,11 @@ App.IncomeController = Ember.ArrayController.extend({
 
     if(incomes.length > 0) {
       var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
-        return parseInt(previousValue, 10) + parseInt(currentValue, 10); 
+        return parseInt(previousValue, 10) + parseInt(currentValue, 10);
       });
-    };
       return incomeTotal;
+    }
+      
     }.property('@each'),
 
     disposableIncome: function () {
@@ -185,10 +186,11 @@ App.IncomeController = Ember.ArrayController.extend({
 
       if(incomes.length > 0) {
       var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
-         return parseInt(previousValue, 10) + parseInt(currentValue, 10); 
+         return parseInt(previousValue, 10) + parseInt(currentValue, 10);
         });
-    };
       return incomeTotal - bills;
+    }
+      
       }.property('@each')
     
 });
@@ -304,14 +306,15 @@ App.BillsController = Ember.ArrayController.extend({
       var billTotals = bills.reduce(function (previousValue, currentValue, index, array) {
         return parseInt(previousValue, 10) + parseInt(currentValue, 10);
       });
-     };
-     return billTotals;
+      return billTotals;
+     }
+     
     }.property('@each')
 
 });
 
 App.ReportsController = Ember.ObjectController.extend({
-    needs: ['bills' , 'income'] 
+    needs: ['bills' , 'income']
 });
 
 
@@ -338,6 +341,18 @@ App.ApplicationView = Ember.View.extend({
   classNames: ['applicationWrap']
 });
 
+App.InnerButtonsView = Ember.View.extend({
+  templateName: 'innerButtons'
+});
+
+App.IncomeGraphView = Ember.View.extend({
+  templateName: 'incomeGraph'
+});
+
+App.IncomeListView = Ember.View.extend({
+  templateName: 'incomeList'
+});
+
 App.BillsView = Ember.View.extend({
   templateName: 'bills',
   classNames: ['sideNavWrap'],
@@ -347,8 +362,8 @@ App.BillsView = Ember.View.extend({
   }
 });
 
-App.IncomeView = Ember.View.extend({
-  templateName: 'income',
+App.IncomeOverviewView = Ember.View.extend({
+  templateName: 'incomeOverview',
   incomeListHeading: 'Income',
   
 });
@@ -398,12 +413,12 @@ App.LeftExpenseComponentView = Ember.View.extend({
       {
         value : 100,
         color : "#69D2E7"
-      }     
-    ]
+      }
+    ];
 
       var options = {
           animationEasing: "easeInOutCubic",
-        }
+        };
 
     var newPieChart = new Chart(pieChart).Pie(data, options);
   }
@@ -435,8 +450,8 @@ App.CenterExpenseComponentView = Ember.View.extend({
       {
         value : 100,
         color : "#69D2E7"
-      }     
-    ]
+      }
+    ];
     var centerPieChart = new Chart(pieChart).Pie(data);
   }
 
@@ -467,8 +482,8 @@ App.RightExpenseComponentView = Ember.View.extend({
       {
         value : 100,
         color : "#69D2E7"
-      }     
-    ]
+      }
+    ];
     var rightPieChart = new Chart(pieChart).Pie(data);
   }
 
@@ -505,7 +520,7 @@ App.FinancialOverviewChartsView = Ember.View.extend({
           data : [28,48,40,19,96,27,100]
         }
       ]
-    }
+    };
     var financialLineChart = new Chart(lineChart).Line(data);
   }
 });
@@ -542,7 +557,7 @@ App.ReportsView = Ember.View.extend({
           data : [28,48,40,19,96,27,100]
         }
       ]
-    }
+    };
     var myNewChart = new Chart(lineChart).Line(data);
   }
 });
