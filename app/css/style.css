@@ -101,9 +101,17 @@ canvas {
 #financialNews {
 margin: 40px 0;
 }
+
+
+/* ----------  INCOME STYLES  ------------- */
+.incomeList {
+	height: 400px;
+	background-color:  grey;
+}
+
 /* ----------  BILL STYLES  ------------- */
 
-#billsAndIncome {
+.billsAndIncome {
 background: #F5F5F5;
 padding: 10px;
 border: 1px solid #999;

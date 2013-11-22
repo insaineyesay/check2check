@@ -215,17 +215,35 @@
 
 <script type="text/x-handlebars" id="innerButtons" data-template-name="innerButtons">
   <div id="InnerButtons" class="col-md-offset-10">
-    <button class="btn btn-xs btn-default">{{#link-to "incomeOverview.incomeList"}}Income Reports{{/link-to}}</button>
-    <button class="btn btn-xs btn-default">{{#link-to "incomeOverview.incomeGraph"}}Income List{{/link-to}}</button>
+    <button class="btn btn-xs btn-default">{{#link-to "incomeList"}}Income List{{/link-to}}</button>
+    <button class="btn btn-xs btn-default">{{#link-to "incomeGraph"}}Income Reports{{/link-to}}</button>
   </div>
 </script>
 
 <script type = "text/x-handlebars" id="incomeList" data-template-name="incomeList">
- <p>Some Text</p>
+  <div class="row">
+    
+      <div class="col-md-1 billsAndIncome">
+
+      </div>
+      {{view App.InnerButtonsView}}
+
+      <div id="incomeListContainer" class="col-md-10 incomeList">
+        <div id="incomeTable" class="col-md-10">
+
+        </div>
+      </div>
+  </div>
 </script>
 
 <script type = "text/x-handlebars" id="incomeGraph" data-template-name="incomeGraph">
- <p>Some Text</p>
+ <div class="row">
+    
+      <div class="col-md-1 billsAndIncome">
+
+      </div>
+      {{view App.InnerButtonsView}}
+  </div>
 </script>
 
 <script type="text/x-handlebars" id="income" data-template-name="incomeOverview">
@@ -270,8 +288,26 @@
   </div>
 </script>
 
+<script type="text/x-handlebars" id="innerExpenseButtons" data-template-name="innerExpenseButtons">
+  <div id="InnerButtons" class="col-md-offset-10">
+    <button class="btn btn-xs btn-default">{{#link-to "expenseList"}}Expense Reports{{/link-to}}</button>
+    <button class="btn btn-xs btn-default">{{#link-to "expenseGraph"}}Expense List{{/link-to}}</button>
+  </div>
+</script>
+
+<script type = "text/x-handlebars" id="expenseList" data-template-name="expenseList">
+{{view App.InnerExpenseButtonsView}}
+ <p>Some Text</p>
+</script>
+
+<script type = "text/x-handlebars" id="expenseGraph" data-template-name="expenseGraph">
+{{view App.InnerExpenseButtonsView}}
+ <p>Some Text</p>
+</script>
+
 <script type="text/x-handlebars" id="expenses" data-template-name="expensesOverview">
   <h1>Expenses Page</h1>
+  {{view App.InnerExpenseButtonsView}}
       <div id="billList" class="col-md-10">
 
         <h2>{{view.billListHeading}}</h2>
@@ -437,6 +473,26 @@
 <script src="js/libs/Chart.js"></script>
 <script src="js/application.js"></script>
 <script src="js/libs/jquery-ui-1.10.3.custom.js"></script>
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type="text/javascript">
+ google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Name');
+        data.addColumn('number', 'Salary');
+        data.addColumn('boolean', 'Full Time Employee');
+        data.addRows([
+          ['Mike',  {v: 10000, f: '$10,000'}, true],
+          ['Jim',   {v:8000,   f: '$8,000'},  false],
+          ['Alice', {v: 12500, f: '$12,500'}, true],
+          ['Bob',   {v: 7000,  f: '$7,000'},  true]
+        ]);
+
+        var table = new google.visualization.Table(document.getElementById('incomeTable'));
+        table.draw(data, {showRowNumber: true});
+      };
+  </script>
 
 </body>
 </html>
