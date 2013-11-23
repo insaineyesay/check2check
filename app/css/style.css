@@ -68,8 +68,8 @@ height: 100%;
 background: #fafafa;
 float: left;
 position: relative;
-top: 0px;
-left: 0px;
+top: 0;
+left: 0;
 padding: 0 17px;
 }
 
@@ -98,7 +98,7 @@ canvas {
 	margin-bottom: 60px;
 }
 
-#financialNews {
+.financialNews {
 margin: 40px 0;
 }
 
@@ -106,7 +106,6 @@ margin: 40px 0;
 /* ----------  INCOME STYLES  ------------- */
 .incomeList {
 	height: 400px;
-	background-color:  grey;
 }
 
 /* ----------  BILL STYLES  ------------- */

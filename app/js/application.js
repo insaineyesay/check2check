@@ -24,6 +24,7 @@ App.Router.map(function() {
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
   this.resource('financial');
+  this.resource('income');
   this.resource('incomeOverview', {path: '/income'});
   this.resource('incomeList');
   this.resource('incomeGraph');
@@ -49,7 +50,7 @@ App.BillsRoute = Ember.Route.extend({
 	}
 });
 
-App.IncomeRoute = Ember.Route.extend({
+App.IncomeListRoute = Ember.Route.extend({
   model: function() {
     return this.store.find('income');
   }
@@ -113,8 +114,15 @@ App.ApplicationController = Ember.ArrayController.extend({
 App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 });
+App.IncomeItemListController = Ember.ObjectController.extend({
 
-App.IncomeItemController = Ember.ObjectController.extend({
+});
+
+App.IncomeListController = Ember.ArrayController.extend({
+
+});
+
+App.IncomeController = Ember.ObjectController.extend({
   actions: {
     editIncome: function() {
       this.toggleProperty('isEditing');
@@ -138,7 +146,7 @@ App.IncomeItemController = Ember.ObjectController.extend({
   }
 });
 
-App.IncomeOverviewController = Ember.ArrayController.extend({
+App.IncomeItemController = Ember.ArrayController.extend({
   needs: "bills",
 
   actions: {
@@ -147,18 +155,17 @@ App.IncomeOverviewController = Ember.ArrayController.extend({
       var amount = this.get('newIncomeAmount');
       var frequency = this.get('newIncomeFrequency');
 
-      if (!name.trim() && !amount.trim()) { return; }
+      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
 
       var income = this.store.createRecord('income', {
         incomeName: name,
         incomeAmount: amount,
-        frequency: frequency
+        incomeFrequency: frequency
       });
 
       this.setProperties({
         'newIncomeTitle': '',
         'newIncomeAmount': '',
-        'newIncomeFrequency':  ''
       });
 
       income.save();
@@ -322,7 +329,7 @@ App.ReportsController = Ember.ObjectController.extend({
 App.Income = DS.Model.extend({
   incomeName: DS.attr(),
   incomeAmount: DS.attr(),
-  frequency: DS.attr()
+  incomeFrequency: DS.attr()
 });
 
 App.Bill = DS.Model.extend({
@@ -352,7 +359,11 @@ App.IncomeGraphView = Ember.View.extend({
 
 App.IncomeListView = Ember.View.extend({
   templateName: 'incomeList',
-  didInsertElement:  function drawTable() {
+  didInsertElement:  function() {
+     google.load('visualization', '1', {packages:['table']});
+      
+
+    function drawTable() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Name');
         data.addColumn('number', 'Salary');
@@ -367,6 +378,8 @@ App.IncomeListView = Ember.View.extend({
         var table = new google.visualization.Table(document.getElementById('incomeTable'));
         table.draw(data, {showRowNumber: true});
       }
+      google.setOnLoadCallback(drawTable);
+  }
 });
 
 App.BillsView = Ember.View.extend({
