@@ -90,14 +90,26 @@ App.ApplicationController = Ember.ArrayController.extend({
   createIncomeItem: function() {
       var name = this.get('newIncomeTitle');
       var amount = this.get('newIncomeAmount');
-      var frequency = function() {
-        if(this.get('newIncomeFrequency') == 'on') {
-          return 'weekly';
-        }
+      var frequency = this.get('newIncomeFrequency');
+
+      console.log(frequency);
+      if((this.get('weeklyIncome').value == 'on')) {
+        console.log('weekly');
+      } else
+        if ((this.get('biweeklyIncome').value == 'on')) {
+          console.log('biweekly');
+        } else
+          if ((this.get('monthlyIncome').value == 'on')) {
+            consoloe.log('monthly');
+          } else
+            if ((this.get('dailyIncome').value == 'on')) {
+              console.log('daily');
+            } else {
+                console.log('One time');
       }
 
       console.log(frequency);
-      if (!name.trim() && !amount.trim()) { return; }
+      if (!name.trim() && !amount.trim() && !frequency.trim()) { return; }
 
       var income = this.store.createRecord('income', {
         incomeName: name,
@@ -107,8 +119,7 @@ App.ApplicationController = Ember.ArrayController.extend({
 
       this.setProperties({
         'newIncomeTitle': '',
-        'newIncomeAmount': '',
-        'newIncomeFrequency':  ''
+        'newIncomeAmount': ''
       });
 
       income.save();
@@ -159,29 +170,7 @@ App.IncomeController = Ember.ObjectController.extend({
 App.IncomeItemController = Ember.ArrayController.extend({
   needs: "bills",
 
-  actions: {
-  createIncomeItem: function() {
-      var name = this.get('newIncomeTitle');
-      var amount = this.get('newIncomeAmount');
-      var frequency = this.get('newIncomeFrequency');
-
-      console.log(frequency);
-      if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
-
-      var income = this.store.createRecord('income', {
-        incomeName: name,
-        incomeAmount: amount,
-        incomeFrequency: frequency
-      });
-
-      this.setProperties({
-        'newIncomeTitle': '',
-        'newIncomeAmount': '',
-      });
-
-      income.save();
-    }
-  },
+ 
 
   incomeTotal: function() {
     var incomes = this.getEach('incomeAmount');

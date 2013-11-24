@@ -87,8 +87,18 @@
         {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
       <span class="input-group-addon">.00</span>
     </div>
-
-    <label class="radio-inline">{{input type="radio" checked="weekly"  id="incomeFrequencyEntry" value="weekly" valueBinding="newIncomeFrequency"}} Weekly</label>
+    <div class="radio-inline">
+    <label >{{input type="radio" name="optionsRadio" id="dailyIncomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Daily</label>
+    </div>
+    <div class="radio-inline">
+    <label >{{input type="radio" name="optionsRadio" id="weeklyIncomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
+    </div>
+    <div class="radio-inline">
+    <label >{{input type="radio" name="optionsRadio"  id="biweeklyIncomeFrequencyEntry"  valueBinding="newIncomeFrequency"}} Bi-Weekly</label>
+    </div>
+    <div class="radio-inline">
+    <label >{{input type="radio"  name="optionsRadio"  id="monthlyIncomeFrequencyEntry" value="weekly" valueBinding="newIncomeFrequency"}} Monthly</label>
+    </div>
     <br/>
     <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
 
