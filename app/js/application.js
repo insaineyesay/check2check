@@ -90,14 +90,19 @@ App.ApplicationController = Ember.ArrayController.extend({
   createIncomeItem: function() {
       var name = this.get('newIncomeTitle');
       var amount = this.get('newIncomeAmount');
-      var frequency = this.get('newIncomeFrequency');
+      var frequency = function() {
+        if(this.get('newIncomeFrequency') == 'on') {
+          return 'weekly';
+        }
+      }
 
+      console.log(frequency);
       if (!name.trim() && !amount.trim()) { return; }
 
       var income = this.store.createRecord('income', {
         incomeName: name,
         incomeAmount: amount,
-        frequency: frequency
+        incomeFrequency: frequency
       });
 
       this.setProperties({
@@ -111,18 +116,14 @@ App.ApplicationController = Ember.ArrayController.extend({
 }
 });
 
+App.IncomeOverviewController = Ember.ArrayController.extend({
+  needs: 'bills'
+});
+
 App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 });
 App.IncomeItemListController = Ember.ObjectController.extend({
-
-});
-
-App.IncomeListController = Ember.ArrayController.extend({
-
-});
-
-App.IncomeController = Ember.ObjectController.extend({
   actions: {
     editIncome: function() {
       this.toggleProperty('isEditing');
@@ -146,6 +147,15 @@ App.IncomeController = Ember.ObjectController.extend({
   }
 });
 
+App.IncomeListController = Ember.ArrayController.extend({
+  
+});
+
+App.IncomeController = Ember.ObjectController.extend({
+  needs: 'bills'
+  
+});
+
 App.IncomeItemController = Ember.ArrayController.extend({
   needs: "bills",
 
@@ -155,6 +165,7 @@ App.IncomeItemController = Ember.ArrayController.extend({
       var amount = this.get('newIncomeAmount');
       var frequency = this.get('newIncomeFrequency');
 
+      console.log(frequency);
       if (!name.trim() && !amount.trim() && frequency.trim()) { return; }
 
       var income = this.store.createRecord('income', {
@@ -359,27 +370,6 @@ App.IncomeGraphView = Ember.View.extend({
 
 App.IncomeListView = Ember.View.extend({
   templateName: 'incomeList',
-  didInsertElement:  function() {
-     google.load('visualization', '1', {packages:['table']});
-      
-
-    function drawTable() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Name');
-        data.addColumn('number', 'Salary');
-        data.addColumn('boolean', 'Full Time Employee');
-        data.addRows([
-          ['Mike',  {v: 10000, f: '$10,000'}, true],
-          ['Jim',   {v:8000,   f: '$8,000'},  false],
-          ['Alice', {v: 12500, f: '$12,500'}, true],
-          ['Bob',   {v: 7000,  f: '$7,000'},  true]
-        ]);
-
-        var table = new google.visualization.Table(document.getElementById('incomeTable'));
-        table.draw(data, {showRowNumber: true});
-      }
-      google.setOnLoadCallback(drawTable);
-  }
 });
 
 App.BillsView = Ember.View.extend({
