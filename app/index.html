@@ -19,24 +19,24 @@
 
 <script type="text/x-handlebars" id="App" data-template-name="application">
  <div class="navbar navbar-inverse">
-  <div class="navbar-inner">
+    <div class="navbar-inner">
     
-    <ul class="nav navbar-nav navbar-right">
-      <li>{{#link-to 'index'}}Home{{/link-to}}</li>
-      <li>{{#link-to 'getting started'}}Get Started{{/link-to}}</li>
-      <li class="dropdown">
-        <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Financials</a>
-          <ul class="dropdown-menu" role="menu">
-            <li>{{#link-to "incomeOverview"}}My Income{{/link-to}}</li>
-            <li>{{#link-to "expensesOverview"}}My Expenses{{/link-to}}</li>
-          </ul>
-      </li>
-      <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
-      <li>{{#link-to 'contact'}}Contact{{/link-to}}</li>
-      
-    </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>{{#link-to 'index'}}Home{{/link-to}}</li>
+        <li>{{#link-to 'getting started'}}Get Started{{/link-to}}</li>
+        <li class="dropdown">
+          <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Financials</a>
+            <ul class="dropdown-menu" role="menu">
+              <li>{{#link-to "incomeOverview"}}My Income{{/link-to}}</li>
+              <li>{{#link-to "expensesOverview"}}My Expenses{{/link-to}}</li>
+            </ul>
+        </li>
+        <li>{{#link-to 'reports'}}Reports{{/link-to}}</li>
+        <li>{{#link-to 'contact'}}Contact{{/link-to}}</li>
+        
+      </ul>
+    </div>
   </div>
-</div>
 
 <div id="sideNavFixed">
   <div class="menuButton">
@@ -79,30 +79,19 @@
             </div>
             <div class="modal-body">
              <form class="form-horizontal">
-    <div class="input-group input-group-sm">
+      <div class="input-group input-group-sm">
        <span class="input-group-addon">Name:</span>{{input type="text" class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the income name here"}}
-    </div>
-    <div class="input-group input-group-sm">
-      <span class="input-group-addon">$</span>
-        {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
-      <span class="input-group-addon">.00</span>
-    </div>
-    <div class="radio-inline">
-    <label >{{input type="radio" name="optionsRadio" id="dailyIncomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Daily</label>
-    </div>
-    <div class="radio-inline">
-    <label >{{input type="radio" name="optionsRadio" id="weeklyIncomeFrequencyEntry" valueBinding="newIncomeFrequency"}} Weekly</label>
-    </div>
-    <div class="radio-inline">
-    <label >{{input type="radio" name="optionsRadio"  id="biweeklyIncomeFrequencyEntry"  valueBinding="newIncomeFrequency"}} Bi-Weekly</label>
-    </div>
-    <div class="radio-inline">
-    <label >{{input type="radio"  name="optionsRadio"  id="monthlyIncomeFrequencyEntry" value="weekly" valueBinding="newIncomeFrequency"}} Monthly</label>
-    </div>
-    <br/>
-    <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
+      </div>
+      <div class="input-group input-group-sm">
+        <span class="input-group-addon">$</span>
+          {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
+        <span class="input-group-addon">.00</span>
+      </div>
+        {{view App.MultiSelectView }}
+        <br/>
+        <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
 
-  </form>
+   </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -148,9 +137,10 @@
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal -->
-</div>
-{{outlet}}
-<div id="footer">
+  </div>
+    {{outlet}}
+  <div id="footer">
+  </div>
 
 </script>
 
@@ -161,25 +151,29 @@
       </div>
 </script>
 
+<script type="text/x-handlebars" id="multiSelect">
+
+</script>
+
 <script type="text/x-handlebars" id="index">
-<section>
-<h1>Home Page Text</h1>
-<div id="rotator" class="fullSizeImg"></div>
-<div id="homeContent" class="row-fluid">
-<div id="leftHomeContent" class="text span4">
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. </p>
-</div>
+  <section>
+  <h1>Home Page Text</h1>
+  <div id="rotator" class="fullSizeImg"></div>
+  <div id="homeContent" class="row-fluid">
+  <div id="leftHomeContent" class="text span4">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. </p>
+  </div>
 
-<!-- end left home content -->
+  <!-- end left home content -->
 
-<div id="rightHomeContent" class="span8">
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. Vestibulum sit amet erat at tellus iaculis tristique. Vestibulum tempus turpis nibh, a cursus orci adipiscing vitae. Nullam pharetra risus cursus mattis gravida. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula.</p>
-</div>
+  <div id="rightHomeContent" class="span8">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. Vestibulum sit amet erat at tellus iaculis tristique. Vestibulum tempus turpis nibh, a cursus orci adipiscing vitae. Nullam pharetra risus cursus mattis gravida. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis inputd scelerisque vehicula.</p>
+  </div>
 
-<!-- ed right home content -->
+  <!-- ed right home content -->
 
-</div>
-<!-- end home content -->
+  </div>
+  <!-- end home content -->
 </section>
 </script>
 
@@ -231,7 +225,7 @@
 </script>
 
 <script type = "text/x-handlebars" id="incomeList" data-template-name="incomeList">
-  <div class="row">
+  <div class="col-md-12">
     
       <div class="col-md-1 billsAndIncome">
 
@@ -256,7 +250,18 @@
             </tr>
             {{/each}}
           </table>
-       
+      </div>
+        
+      <div id="quickStatsSouth" class="col-md-10 quickStatsSouth">
+        <div class="col-md-3">
+          <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
+        </div>
+        <div class="col-md-3">
+          <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
+        </div>
+        <div class="col-md-3">
+          <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
+        </div>
       </div>
   </div>
 </script>
@@ -272,45 +277,45 @@
 </script>
 
 <script type="text/x-handlebars" id="income" data-template-name="incomeOverview">
-<h1>Income View</h1>
-  <div class="income">
-  {{view App.InnerButtonsView}}
-    <div id="incomeBlock" class="col-md-11">
-      <h3>{{view.incomeHeading}}</h3>
-        {{view App.ReportsView}}
-   
-    <div id="incomeList">
-      <h3>{{view.incomeListHeading}}</h3>
-        <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
-            {{#each itemController="incomeItem"}} 
-            <div class="incomeItem row">
-              <div class="incomeItemTop row">
-                <div class="incomeName">{{incomeName}}</div>
-                  <div class="incomeDelete" ><button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button></div>
-                </div> <!-- end incomeItemTop -->
-                  {{#if isEditing}}
-                    <div class="editIncome col-md-3">
-                      {{input type="text" insert-newline="acceptChanges" value=incomeName}}
-                      {{input type="text" insert-newline="acceptChanges" value=incomeAmount}}
-                      <button class="btn btn-xs btn-danger" {{action "confirmIncomeEdit"}}> confirm </button>
-                      <button class="btn btn-xs btn-warning" {{action "cancelIncomeEdit"}}> cancel </button>
-                    </div>
-                  {{/if}}
-                      <button class="btn btn-xs btn-warning" {{action 'editIncome'}}>edit</button>
-                  {{#if deleteMode}}
-                    <div class="confirm-box">
-                      <button class="btn btn-xs btn-danger" {{action "confirmIncomeDelete"}}> confirm </button>
-                      <button class="btn btn-xs btn-warning" {{action "cancelIncomeDelete"}}> cancel </button>
-                    </div>
-                  {{/if}}
-                    <div class="incomeAmount"><p>{{incomeAmount}}</p></div>
-                    <div class="incomeFrequency"><p>{{incomeFrequency}}</p></div>
-            </div><!-- end incomeItem -->
-            {{/each}}
-      </div><!-- end income List -->   
+  <h1>Income View</h1>
+    <div class="income">
+    {{view App.InnerButtonsView}}
+      <div id="incomeBlock" class="col-md-11">
+        <h3>{{view.incomeHeading}}</h3>
+          {{view App.ReportsView}}
+     
+      <div id="incomeList">
+        <h3>{{view.incomeListHeading}}</h3>
+          <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
+              {{#each itemController="incomeItem"}} 
+              <div class="incomeItem row">
+                <div class="incomeItemTop row">
+                  <div class="incomeName">{{incomeName}}</div>
+                    <div class="incomeDelete" ><button class="deleteButton glyphicon glyphicon-remove-sign" {{action "deleteIncome" }}> </button></div>
+                  </div> <!-- end incomeItemTop -->
+                    {{#if isEditing}}
+                      <div class="editIncome col-md-3">
+                        {{input type="text" insert-newline="acceptChanges" value=incomeName}}
+                        {{input type="text" insert-newline="acceptChanges" value=incomeAmount}}
+                        <button class="btn btn-xs btn-danger" {{action "confirmIncomeEdit"}}> confirm </button>
+                        <button class="btn btn-xs btn-warning" {{action "cancelIncomeEdit"}}> cancel </button>
+                      </div>
+                    {{/if}}
+                        <button class="btn btn-xs btn-warning" {{action 'editIncome'}}>edit</button>
+                    {{#if deleteMode}}
+                      <div class="confirm-box">
+                        <button class="btn btn-xs btn-danger" {{action "confirmIncomeDelete"}}> confirm </button>
+                        <button class="btn btn-xs btn-warning" {{action "cancelIncomeDelete"}}> cancel </button>
+                      </div>
+                    {{/if}}
+                      <div class="incomeAmount"><p>{{incomeAmount}}</p></div>
+                      <div class="incomeFrequency"><p>{{incomeFrequency}}</p></div>
+              </div><!-- end incomeItem -->
+              {{/each}}
+        </div><!-- end income List -->   
 
-    </div> <!-- end incomeBlock -->
-  </div>
+      </div> <!-- end incomeBlock -->
+    </div>
 </script>
 
 <script type="text/x-handlebars" id="innerExpenseButtons" data-template-name="innerExpenseButtons">
@@ -321,18 +326,18 @@
 </script>
 
 <script type = "text/x-handlebars" id="expenseList" data-template-name="expenseList">
-{{view App.InnerExpenseButtonsView}}
- <p>Some Text</p>
+  {{view App.InnerExpenseButtonsView}}
+    <p>Some Text</p>
 </script>
 
 <script type = "text/x-handlebars" id="expenseGraph" data-template-name="expenseGraph">
-{{view App.InnerExpenseButtonsView}}
- <p>Some Text</p>
+  {{view App.InnerExpenseButtonsView}}
+     <p>Some Text</p>
 </script>
 
 <script type="text/x-handlebars" id="expenses" data-template-name="expensesOverview">
-  <h1>Expenses Page</h1>
-  {{view App.InnerExpenseButtonsView}}
+    <h1>Expenses Page</h1>
+      {{view App.InnerExpenseButtonsView}}
       <div id="billList" class="col-md-10">
 
         <h2>{{view.billListHeading}}</h2>

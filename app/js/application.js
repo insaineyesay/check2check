@@ -90,25 +90,8 @@ App.ApplicationController = Ember.ArrayController.extend({
   createIncomeItem: function() {
       var name = this.get('newIncomeTitle');
       var amount = this.get('newIncomeAmount');
-      var frequency = this.get('newIncomeFrequency');
+      
 
-      console.log(frequency);
-      if((this.get('weeklyIncome').value == 'on')) {
-        console.log('weekly');
-      } else
-        if ((this.get('biweeklyIncome').value == 'on')) {
-          console.log('biweekly');
-        } else
-          if ((this.get('monthlyIncome').value == 'on')) {
-            consoloe.log('monthly');
-          } else
-            if ((this.get('dailyIncome').value == 'on')) {
-              console.log('daily');
-            } else {
-                console.log('One time');
-      }
-
-      console.log(frequency);
       if (!name.trim() && !amount.trim() && !frequency.trim()) { return; }
 
       var income = this.store.createRecord('income', {
@@ -124,7 +107,14 @@ App.ApplicationController = Ember.ArrayController.extend({
 
       income.save();
     }
-}
+},
+
+frequency: ["daily", "weekly", "bi-weekly", "monthly", "one-time"]
+    
+});
+
+App.ApplicationController = Ember.Controller.extend({
+  
 });
 
 App.IncomeOverviewController = Ember.ArrayController.extend({
@@ -359,6 +349,12 @@ App.IncomeGraphView = Ember.View.extend({
 
 App.IncomeListView = Ember.View.extend({
   templateName: 'incomeList',
+});
+
+App.MultiSelectView = Ember.Select.create({
+  frequency: ["daily", "weekly", "bi-weekly", "monthly", "one-time"],
+  classNames: ['form-control']
+
 });
 
 App.BillsView = Ember.View.extend({
