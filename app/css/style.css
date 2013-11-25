@@ -130,6 +130,11 @@ color: orange;
 color: #428bca;
 font-family: "helvetica", sa;
 }
+
+.innerButtons {
+margin-bottom: 30px;
+}
+
 /* ----------  BILL STYLES  ------------- */
 
 .billsAndIncome {

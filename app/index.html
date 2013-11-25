@@ -87,7 +87,13 @@
           {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
         <span class="input-group-addon">.00</span>
       </div>
-        {{view App.MultiSelectView }}
+        <select id="addIncomeFrequency" class="form-control">
+          <option>Daily</option>
+          <option>Weekly</option>
+          <option>Bi-Weekly</option>
+          <option>Monthly</option>
+          <option>One Time</option>
+      </select>
         <br/>
         <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
 
@@ -151,10 +157,6 @@
       </div>
 </script>
 
-<script type="text/x-handlebars" id="multiSelect">
-
-</script>
-
 <script type="text/x-handlebars" id="index">
   <section>
   <h1>Home Page Text</h1>
@@ -212,7 +214,6 @@
 <script type="text/x-handlebars" id="financialOverviewCharts" data-template-name"financialOverviewCharts">
   <div id="financialPageCharts" class="row">
       <div id="financialChart" class="col-md-12">
-       <canvas id="financialLineChart"></canvas>
       </div>
   </div>
 </script>
@@ -226,19 +227,21 @@
 
 <script type = "text/x-handlebars" id="incomeList" data-template-name="incomeList">
   <div class="col-md-12">
-    
+      
       <div class="col-md-1 billsAndIncome">
 
       </div>
-      {{view App.InnerButtonsView}}
 
       <div id="incomeListContainer"  class="col-md-9 incomeList">
-        
+        <h1>Income List View</h1>
+        {{view App.InnerButtonsView}}
           <table class="table">
             <tr>
               <th>Income Name</th>
               <th>Income Frequency</th>
               <th>Income Amount</th>
+              <th>Edit</th>
+              <th>Delete</th>
             </tr>
             {{#each itemController = "incomeItemList"}}
             <tr>
@@ -246,9 +249,19 @@
                 <td>{{incomeFrequency}}</td>
                 <td>${{incomeAmount}}</td>
                 <td><button class="btn btn-xs btn-warning" {{action 'editIncome'}}>edit</button></td>
-                <td><button type="submit" class="btn btn-xs btn-success" value="submit" {{action "confirmIncomeDelete"}}>Delete</button></td>
+                <td>
+                {{#if deleteMode}}
+                <button type="submit" class="btn btn-xs btn-danger" value="submit" {{action "confirmIncomeDelete"}}>Sure?</button>
+                {{/if}}
+                <button id="delete1" type="submit" class="btn btn-xs btn-success" value="submit" {{action "deleteIncome"}}>Delete</button></td>
             </tr>
             {{/each}}
+          <tfoot>
+            <tr>
+              <td colspan="2">Total</td>
+            </tr>
+          </tfoot>
+
           </table>
       </div>
         
@@ -313,7 +326,11 @@
               </div><!-- end incomeItem -->
               {{/each}}
         </div><!-- end income List -->   
-
+        <div class="row">
+          {{view App.LeftIncomeComponentView}}
+          {{view App.CenterIncomeComponentView}}
+          {{view App.RightIncomeComponentView}}
+        </div>
       </div> <!-- end incomeBlock -->
     </div>
 </script>
@@ -346,36 +363,36 @@
           <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report totalling ${{sumOfBills}}.00 due each month</p>
         </div>
         {{view App.ReportsView}}
-      {{#each itemController = "bill"}}
+        {{#each itemController = "bill"}}
 
-      <div class="billItem row">
+        <div class="billItem row">
 
         <div id="billItemLeft">
 
         {{#if isEditing}}
 
         <div id="deleteConfirmation">
-        {{partial 'bills/edit'}}
+          {{partial 'bills/edit'}}
         </div>
 
-      {{/if}}
+        {{/if}}
 
-        <p class="billName"><h5>{{name}}</h5>
-        <br/>
+          <p class="billName"><h5>{{name}}</h5>
+          <br/>
         <div id="changeButtons">
 
-        <button {{action 'editBill'}} class="btn btn-xs btn-warning">Edit</button>
-        <button {{action "delete"}} class="btn btn-xs btn-danger">Delete</button>
+          <button {{action 'editBill'}} class="btn btn-xs btn-warning">Edit</button>
+          <button {{action "delete"}} class="btn btn-xs btn-danger">Delete</button>
 
-      </div> <!-- end changeButtons -->
+        </div> <!-- end changeButtons -->
 
-      </div> <!-- close billItemLeft -->
+        </div> <!-- close billItemLeft -->
 
-      <div id="billItemRight">
-        <div class="billAmount">${{amount}}.00</div>
-        <div class="billDate">{{date}}</div>
-        <div class="billDate">{{apr}}</div>
-      </div> <!-- close billitemRight -->
+        <div id="billItemRight">
+          <div class="billAmount">${{amount}}.00</div>
+          <div class="billDate">{{date}}</div>
+          <div class="billDate">{{apr}}</div>
+        </div> <!-- close billitemRight -->
         
 
         {{#if deleteMode}}
@@ -388,7 +405,7 @@
 
       
       </div><!-- end bill item -->
-      {{/each}}
+        {{/each}}
       <div class="row">
         {{view App.LeftExpenseComponentView}}
         {{view App.CenterExpenseComponentView}}
@@ -404,8 +421,8 @@
     <div id="leftFinancialComponent" class="panel panel-default">
       <div class="panel-heading">Income Distribution</div>
         <div class="panel-body">
-          <div id="leftFinancialCompnentChart">
-            <canvas id="leftFinancialCompnentPieChart"> 
+          <div id="leftFinancialComponentChart">
+            <canvas id="leftFinancialComponentPieChart"> 
           </div>
           </div>
         </div>
@@ -417,8 +434,8 @@
     <div id="centerFinancialComponent" class="panel panel-default">
       <div class="panel-heading">Income Distribution</div>
         <div class="panel-body">
-          <div id="centerFinancialCompnentChart">
-            <canvas id="centerFinancialCompnentPieChart"> 
+          <div id="centerFinancialComponentChart">
+            <canvas id="centerFinancialComponentPieChart"> 
           </div>
           </div>
         </div>
@@ -430,8 +447,47 @@
     <div id="rightFinancialComponent" class="panel panel-default">
       <div class="panel-heading">Income Distribution</div>
         <div class="panel-body">
-          <div id="rightFinancialCompnentChart">
-            <canvas id="rightFinancialCompnentPieChart"> 
+          <div id="rightFinancialComponentChart">
+            <canvas id="rightFinancialComponentPieChart"> 
+          </div>
+          </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="leftIncomeComponent">
+  <div class="col-md-4">
+    <div id="leftIncomeComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="leftIncomeComponentChart">
+            <canvas id="leftIncomeComponentPieChart"> 
+          </div>
+          </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="centerIncomeComponent">
+  <div class="col-md-4">
+    <div id="centerIncomeComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="centerIncomeComponentChart">
+            <canvas id="centerIncomeComponentPieChart"> 
+          </div>
+          </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="rightIncomeComponent">
+  <div class="col-md-4">
+    <div id="rightIncomeComponent" class="panel panel-default">
+      <div class="panel-heading">Income Distribution</div>
+        <div class="panel-body">
+          <div id="rightIncomeComponentChart">
+            <canvas id="rightIncomeComponentPieChart"> 
           </div>
           </div>
         </div>
@@ -443,8 +499,8 @@
     <div id="leftComponent" class="panel panel-default">
       <div class="panel-heading">Income Distribution</div>
         <div class="panel-body">
-          <div id="leftCompnentChart">
-            <canvas id="leftExpenseCompnentPieChart"> 
+          <div id="leftComponentChart">
+            <canvas id="leftExpenseComponentPieChart"> 
           </div>
           </div>
         </div>
@@ -456,8 +512,8 @@
     <div id="centerComponent" class="panel panel-default">
       <div class="panel-heading">Income Vs. Bills</div>
         <div class="panel-body">
-            <div id="centerCompnentChart">
-              <canvas id="centerExpenseCompnentPieChart"> 
+            <div id="centerComponentChart">
+              <canvas id="centerExpenseComponentPieChart"> 
             </div>
          </div>
       </div>
@@ -470,8 +526,8 @@
     <div id="rightComponent" class="panel panel-default">
       <div class="panel-heading">Income Distribution</div>
         <div class="panel-body">
-            <div id="rightCompnentChart">
-              <canvas id="rightExpenseCompnentPieChart"> 
+            <div id="rightComponentChart">
+              <canvas id="rightExpenseComponentPieChart"> 
             </div>
         </div>
       </div>

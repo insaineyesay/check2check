@@ -90,7 +90,9 @@ App.ApplicationController = Ember.ArrayController.extend({
   createIncomeItem: function() {
       var name = this.get('newIncomeTitle');
       var amount = this.get('newIncomeAmount');
-      
+      var payFrequency = document.getElementById("addIncomeFrequency");
+      var frequency = payFrequency.options[payFrequency.selectedIndex].value;
+
 
       if (!name.trim() && !amount.trim() && !frequency.trim()) { return; }
 
@@ -107,15 +109,9 @@ App.ApplicationController = Ember.ArrayController.extend({
 
       income.save();
     }
-},
-
-frequency: ["daily", "weekly", "bi-weekly", "monthly", "one-time"]
-    
+}    
 });
 
-App.ApplicationController = Ember.Controller.extend({
-  
-});
 
 App.IncomeOverviewController = Ember.ArrayController.extend({
   needs: 'bills'
@@ -125,6 +121,7 @@ App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 });
 App.IncomeItemListController = Ember.ObjectController.extend({
+
   actions: {
     editIncome: function() {
       this.toggleProperty('isEditing');
@@ -132,6 +129,7 @@ App.IncomeItemListController = Ember.ObjectController.extend({
     
     deleteIncome: function() {
       this.set('deleteMode', true);
+      document.getElementById('delete1').style.display="none";
     },
 
     confirmIncomeDelete: function() {
@@ -336,7 +334,8 @@ App.ApplicationView = Ember.View.extend({
 });
 
 App.InnerButtonsView = Ember.View.extend({
-  templateName: 'innerButtons'
+  templateName: 'innerButtons',
+  classNames: ['innerButtons']
 });
 
 App.InnerExpenseButtonsView = Ember.View.extend({
@@ -349,12 +348,6 @@ App.IncomeGraphView = Ember.View.extend({
 
 App.IncomeListView = Ember.View.extend({
   templateName: 'incomeList',
-});
-
-App.MultiSelectView = Ember.Select.create({
-  frequency: ["daily", "weekly", "bi-weekly", "monthly", "one-time"],
-  classNames: ['form-control']
-
 });
 
 App.BillsView = Ember.View.extend({
@@ -392,13 +385,115 @@ App.RightFinancialComponentView = Ember.View.extend({
   templateName: 'rightFinancialComponent'
 });
 
+App.LeftIncomeComponentView = Ember.View.extend({
+  templateName: 'leftIncomeComponent',
+  didInsertElement: function() {
+    var pieChart = $('#leftIncomeComponentPieChart').get(0).getContext("2d");
+    var $chart = $('#leftIncomeComponentPieChart');
+    var h = $('#leftComponent').height();
+    var w = $('#leftComponent').width();
+
+    $chart.attr({
+      width: w ,
+      height: h - 30
+    });
+
+        var data = [
+      {
+        value: 30,
+        color:"#F38630"
+      },
+      {
+        value : 50,
+        color : "#E0E4CC"
+      },
+      {
+        value : 100,
+        color : "#69D2E7"
+      }
+    ];
+
+      var options = {
+          animationEasing: "easeInOutCubic",
+        };
+
+    var leftIncomePieChart = new Chart(pieChart).Pie(data, options);
+  }
+
+});
+
+App.CenterIncomeComponentView = Ember.View.extend({
+  templateName: 'centerIncomeComponent',
+  didInsertElement: function() {
+    var pieChart = $('#centerIncomeComponentPieChart').get(0).getContext("2d");
+    var $chart = $('#centerIncomeComponentPieChart');
+    var h = $('#centerComponent').height();
+    var w = $('#centerComponent').width();
+
+    $chart.attr({
+      width: w,
+      height: h - 30
+    });
+
+        var data = [
+      {
+        value: 30,
+        color:"#F38630"
+      },
+      {
+        value : 50,
+        color : "#E0E4CC"
+      },
+      {
+        value : 100,
+        color : "#69D2E7"
+      }
+    ];
+    var centerIncomePieChart = new Chart(pieChart).Pie(data);
+  }
+
+});
+
+App.RightIncomeComponentView = Ember.View.extend({
+  templateName: 'rightIncomeComponent',
+  didInsertElement: function() {
+    var pieChart = $('#rightIncomeComponentPieChart').get(0).getContext("2d");
+    var $chart = $('#rightIncomeComponentPieChart');
+    var h = $('#rightComponent').height();
+    var w = $('#rightComponent').width();
+
+    $chart.attr({
+      width: w,
+      height: h - 30
+    });
+
+        var data = [
+      {
+        value: 30,
+        color:"#F38630"
+      },
+      {
+        value : 50,
+        color : "#E0E4CC"
+      },
+      {
+        value : 100,
+        color : "#69D2E7"
+      }
+    ];
+    var rightIncomePieChart = new Chart(pieChart).Pie(data);
+  }
+
+});
+
+
 App.LeftExpenseComponentView = Ember.View.extend({
   templateName: 'leftExpenseComponent',
   didInsertElement: function() {
-    var pieChart = $('#leftExpenseCompnentPieChart').get(0).getContext("2d");
-    var $chart = $('#leftExpenseCompnentPieChart');
-    var h = $('#leftCompnent').height();
-    var w = $('#leftCompnent').width();
+    var pieChart = $('#leftExpenseComponentPieChart').get(0).getContext("2d");
+    var $chart = $('#leftExpenseComponentPieChart');
+    var h = $('#leftComponent').height();
+    var w = $('#leftComponent').width();
 
     $chart.attr({
       width: w ,
@@ -432,10 +527,10 @@ App.LeftExpenseComponentView = Ember.View.extend({
 App.CenterExpenseComponentView = Ember.View.extend({
   templateName: 'centerExpenseComponent',
   didInsertElement: function() {
-    var pieChart = $('#centerExpenseCompnentPieChart').get(0).getContext("2d");
-    var $chart = $('#centerExpenseCompnentPieChart');
-    var h = $('#centerCompnent').height();
-    var w = $('#centerCompnent').width();
+    var pieChart = $('#centerExpenseComponentPieChart').get(0).getContext("2d");
+    var $chart = $('#centerExpenseComponentPieChart');
+    var h = $('#centerComponent').height();
+    var w = $('#centerComponent').width();
 
     $chart.attr({
       width: w,
@@ -464,10 +559,10 @@ App.CenterExpenseComponentView = Ember.View.extend({
 App.RightExpenseComponentView = Ember.View.extend({
   templateName: 'rightExpenseComponent',
   didInsertElement: function() {
-    var pieChart = $('#rightExpenseCompnentPieChart').get(0).getContext("2d");
-    var $chart = $('#rightExpenseCompnentPieChart');
-    var h = $('#rightCompnent').height();
-    var w = $('#rightCompnent').width();
+    var pieChart = $('#rightExpenseComponentPieChart').get(0).getContext("2d");
+    var $chart = $('#rightExpenseComponentPieChart');
+    var h = $('#rightComponent').height();
+    var w = $('#rightComponent').width();
 
     $chart.attr({
       width: w,
