@@ -232,7 +232,7 @@
 
       </div>
 
-      <div id="incomeListContainer"  class="col-md-9 incomeList">
+      <div id="incomeListContainer"  class="col-md-10 incomeList">
         <h1>Income List View</h1>
         {{view App.InnerButtonsView}}
           <table class="table">
@@ -245,18 +245,23 @@
             </tr>
             {{#each itemController = "incomeItemList"}}
             <tr>
-                <td>{{incomeName}}</td>
-                <td>{{incomeFrequency}}</td>
-                <td>${{incomeAmount}}</td>
-                <td><button class="btn btn-xs btn-warning" {{action 'editIncome'}}>edit</button></td>
-                <td>
+                <td colspan="1">{{incomeName}}</td>
+                <td colspan="1">{{incomeFrequency}}</td>
+                <td colspan="1">${{incomeAmount}}</td>
+                <td colspan="1"><button class="btn btn-xs btn-info" {{action 'editIncome'}}>edit</button></td>
+                <td width="200">
                 {{#if deleteMode}}
-                <button type="submit" class="btn btn-xs btn-danger" value="submit" {{action "confirmIncomeDelete"}}>Sure?</button>
+                  <button type="submit" class="btn btn-xs btn-danger" value="submit" {{action "confirmIncomeDelete"}}>Sure?</button>
+                  <button type="submit" class="btn btn-xs btn-warning" value="submit" {{action "cancelIncomeDelete"}}>Nevermind</button>
+                </td>
                 {{/if}}
-                <button id="delete1" type="submit" class="btn btn-xs btn-success" value="submit" {{action "deleteIncome"}}>Delete</button></td>
+                  <button id="delete1" type="submit" class="btn btn-xs btn-success" value="submit" {{action "deleteIncome"}}>Delete</button></td>
             </tr>
             {{/each}}
           <tfoot>
+            <tr>
+              <td></td>
+            </tr>
             <tr>
               <td colspan="2">Total</td>
             </tr>
@@ -266,16 +271,44 @@
       </div>
         
       <div id="quickStatsSouth" class="col-md-10 quickStatsSouth">
-        <div class="col-md-3">
+        <div class="col-md-3 col-md-offset-1">
           <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 ">
           <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 ">
           <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
         </div>
       </div>
+
+      <div id="incomeStatsTable" class="col-md-10 incomeStatsTable">
+        <table class="table">
+          <tr>
+            <th class=""></th>
+            <th class="">This vs. That</th>
+            <th class="">This vs. That</th>
+            <th>This vs. That</th>
+          </tr>
+          <tr>
+            <td class="rightBorderTableCell leftBorderTableCell"><span class="smallBlueNumbers">November 13th</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td><span class="smallBlueNumbers">$3,234.84</span></td>
+          </tr>
+          <tr>
+            <td class="rightBorderTableCell leftBorderTableCell"><span class="smallBlueNumbers">November 13th</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td><span class="smallBlueNumbers">$3,234.84</span></td>
+          </tr>
+          <tr>
+            <td class="rightBorderTableCell leftBorderTableCell"><span class="smallBlueNumbers">November 13th</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td><span class="smallBlueNumbers">$3,234.84</span></td>
+          </tr>
+        </table>
   </div>
 </script>
 

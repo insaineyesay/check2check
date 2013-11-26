@@ -109,7 +109,9 @@ App.ApplicationController = Ember.ArrayController.extend({
 
       income.save();
     }
-}    
+  },
+
+   
 });
 
 
@@ -129,7 +131,7 @@ App.IncomeItemListController = Ember.ObjectController.extend({
     
     deleteIncome: function() {
       this.set('deleteMode', true);
-      document.getElementById('delete1').style.display="none";
+      document.getElementById('delete1').style.visibility="hidden";
     },
 
     confirmIncomeDelete: function() {
@@ -141,6 +143,7 @@ App.IncomeItemListController = Ember.ObjectController.extend({
 
     cancelIncomeDelete: function() {
       this.set('deleteMode', false);
+      document.getElementById('delete1').style.visibility="visible";
     }
 
   }

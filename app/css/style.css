@@ -116,8 +116,8 @@ margin: 40px 0;
 
 .quickStatsSouth {
 text-align: center;
-border-top: 1px solid #000;
 padding: 20px 0;
+margin: 40px 20px;
 }
 
 .largeOrangeNumbers {
@@ -135,6 +135,23 @@ font-family: "helvetica", sa;
 margin-bottom: 30px;
 }
 
+.rightBorderTableCell {
+border-right: 1px solid black;
+}
+
+.leftBorderTableCell {
+/*border-left: 1px solid black;*/
+}
+
+.table > tbody > tr > th {
+border-top: none;
+border-bottom: 1px solid #dddddd;
+}
+
+#incomeListContainer {
+margin-bottom: 20px;
+border-bottom: 1px solid #ddd;
+}
 /* ----------  BILL STYLES  ------------- */
 
 .billsAndIncome {
