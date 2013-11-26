@@ -235,7 +235,7 @@
       <div id="incomeListContainer"  class="col-md-10 incomeList">
         <h1>Income List View</h1>
         {{view App.InnerButtonsView}}
-          <table class="table">
+          <table id="incomeListTable" class="table">
             <tr>
               <th>Income Name</th>
               <th>Income Frequency</th>
@@ -252,10 +252,10 @@
                 <td width="200">
                 {{#if deleteMode}}
                   <button type="submit" class="btn btn-xs btn-danger" value="submit" {{action "confirmIncomeDelete"}}>Sure?</button>
-                  <button type="submit" class="btn btn-xs btn-warning" value="submit" {{action "cancelIncomeDelete"}}>Nevermind</button>
+                  <button id="nevermind" type="submit" class="btn btn-xs btn-warning nevermind" value="submit" {{action "cancelIncomeDelete"}}>Nevermind</button>
                 </td>
                 {{/if}}
-                  <button id="delete1" type="submit" class="btn btn-xs btn-success" value="submit" {{action "deleteIncome"}}>Delete</button></td>
+                  <button id="delete1" type="submit" class="btn btn-xs btn-success deleteButton" value="submit" {{action "deleteIncome"}}>Delete</button></td>
             </tr>
             {{/each}}
           <tfoot>
