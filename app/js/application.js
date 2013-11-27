@@ -133,9 +133,16 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       this.set('deleteMode', true);
       var table = document.getElementById('incomeListTable');
       for (var i = 0, row; row = table.rows[i]; i++) {
-        console.log(row);
+        for ( c = 0, deleteButtons = table.rows[i].cells.length; c < deleteButtons; c++) {
+        
+          // console.log(table.rows[i].cells[c].lastChild.nodeValue  );
+          table.rows[i].cells[c].lastChild.id = "delete" + [i];
+          console.log(delete[i]);
+          
+        }
+
       }
-      document.getElementById('delete1').style.visibility="hidden";
+     
     },
 
     confirmIncomeDelete: function() {
