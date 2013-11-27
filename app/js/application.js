@@ -56,6 +56,22 @@ App.IncomeListRoute = Ember.Route.extend({
   }
 });
 
+App.IncomeItemListRoute = Ember.Route.extend({
+  activate: function() {
+     for (var i = 0, row; row = table.rows[i]; i++) {
+        for ( c = 0, deleteButtons = table.rows[i].cells.length; c < deleteButtons; c++) {
+          // console.log(table.rows[i].cells[c].lastChild.nodeValue  );
+          table.rows[i].cells[c].lastChild.id = "delete" + [i];
+          var deleteButton = table.rows[i].cells[c].lastChild.id;
+
+           
+            
+      //     for (deleteButton in deleteButton) {
+          }
+        }
+      }
+});
+
 // Controllers
 App.ApplicationController = Ember.ArrayController.extend({
   actions: {
@@ -131,14 +147,17 @@ App.IncomeItemListController = Ember.ObjectController.extend({
     
     deleteIncome: function() {
       this.set('deleteMode', true);
-      var table = document.getElementById('incomeListTable');
-      for (var i = 0, row; row = table.rows[i]; i++) {
-        for ( c = 0, deleteButtons = table.rows[i].cells.length; c < deleteButtons; c++) {
-          // console.log(table.rows[i].cells[c].lastChild.nodeValue  );
-          table.rows[i].cells[c].lastChild.id = "delete" + [i];
-        }
+       var table = document.getElementById('incomeListTable');
+       var deleteButtons = new Array(table.getElementsByClassName('deleteButton'));
+          
+           console.log(deleteButtons.length);
 
-      }
+         var getButtons = function() {
+            deleteButton.onclick = function() {
+              deleteButton.style.visibility="hidden";
+            }
+          }
+       
      
     },
 
@@ -154,7 +173,8 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       document.getElementById('delete1').style.visibility="visible";
     }
 
-  }
+  },
+
 });
 
 App.IncomeListController = Ember.ArrayController.extend({
@@ -359,6 +379,22 @@ App.IncomeGraphView = Ember.View.extend({
 
 App.IncomeListView = Ember.View.extend({
   templateName: 'incomeList',
+});
+
+App.IncomeItemListView = Ember.View.extend({
+  didInsertElement: function () {
+     for (var i = 0, row; row = table.rows[i]; i++) {
+        for ( c = 0, deleteButtons = table.rows[i].cells.length; c < deleteButtons; c++) {
+          // console.log(table.rows[i].cells[c].lastChild.nodeValue  );
+          table.rows[i].cells[c].lastChild.id = "delete" + [i];
+          var deleteButton = table.rows[i].cells[c].lastChild.id;
+
+           
+            
+      //     for (deleteButton in deleteButton) {
+          }
+        }
+  }
 });
 
 App.BillsView = Ember.View.extend({
