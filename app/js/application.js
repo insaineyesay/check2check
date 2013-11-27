@@ -134,11 +134,8 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       var table = document.getElementById('incomeListTable');
       for (var i = 0, row; row = table.rows[i]; i++) {
         for ( c = 0, deleteButtons = table.rows[i].cells.length; c < deleteButtons; c++) {
-        
           // console.log(table.rows[i].cells[c].lastChild.nodeValue  );
           table.rows[i].cells[c].lastChild.id = "delete" + [i];
-          console.log(delete[i]);
-          
         }
 
       }
