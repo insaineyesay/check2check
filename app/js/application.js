@@ -301,6 +301,9 @@ App.ReportsController = Ember.ObjectController.extend({
 
 
 // Objects
+App.IncomeItemDeleteButton = Ember.Object.extend({
+  
+});
 
 // Models
 App.Income = DS.Model.extend({
@@ -655,15 +658,19 @@ App.ReportsView = Ember.View.extend({
 
 // Components
 App.DeleteIncomeComponent = Ember.Component.extend({
+  classNamesBindings: ['isDeleting:enabled'],
+  isDeleting: true,
   actions: {
     delete: function() {
       this.toggleProperty('deleteMode');
+      this.toggleProperty('isDeleting');
     },
     confirm: function(incomeItem) {
       this.sendAction('action','confirmIncomeDelete');
     },
     cancel: function() {
       this.toggleProperty('deleteMode');
+      this.toggleProperty('isDeleting');
     }
   }
 });

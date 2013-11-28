@@ -152,6 +152,13 @@ border-bottom: 1px solid #dddddd;
 margin-bottom: 20px;
 border-bottom: 1px solid #ddd;
 }
+
+.is-Deleting {
+	visibility: visible;
+}
+.enabled {
+	visibility: visible;
+}
 /* ----------  BILL STYLES  ------------- */
 
 .billsAndIncome {

@@ -314,8 +314,9 @@
     <button type="submit" class="btn btn-xs btn-danger" {{action "confirm"}}>Sure?</button>
     <button type="submit" class="btn btn-xs btn-warning nevermind" {{action "cancel"}}>Nevermind</button>
   {{/if}}
-    <button id="delete" class="btn btn-xs btn-success deleteButton"  {{action "delete" incomeItem}}>Delete</button>
-
+  {{#if isDeleting}}
+    <button id="delete" class="btn btn-xs btn-success" {{action "delete" incomeItem}} >Delete</button>
+  {{/if}}
 </script>
 
 <script type = "text/x-handlebars" id="incomeGraph" data-template-name="incomeGraph">
