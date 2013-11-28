@@ -249,7 +249,9 @@
                 <td colspan="1">{{incomeFrequency}}</td>
                 <td colspan="1">${{incomeAmount}}</td>
                 <td colspan="1"><button class="btn btn-xs btn-info" {{action 'editIncome'}}>edit</button></td>
+                <td class="deleteColumn" width="200">
                 {{delete-income action="confirmIncomeDelete" cancel="cancelIncomeDelete"}}
+                </td>
             </tr>
             {{/each}}
           <tfoot>
@@ -307,13 +309,13 @@
 </script>
 
 <script type="text/x-handlebars" id="components/delete-income">
-<td class="deleteColumn" width="200">
+
   {{#if deleteMode}}
-    <button type="submit" class="btn btn-xs btn-danger" value="submit" {{action "confirm"}}>Sure?</button>
-    <button id="nevermind" class="btn btn-xs btn-warning nevermind" {{action "cancel"}}>Nevermind</button>
-  </td>
+    <button type="submit" class="btn btn-xs btn-danger" {{action "confirm"}}>Sure?</button>
+    <button type="submit" class="btn btn-xs btn-warning nevermind" {{action "cancel"}}>Nevermind</button>
   {{/if}}
     <button id="delete" class="btn btn-xs btn-success deleteButton"  {{action "delete" incomeItem}}>Delete</button>
+
 </script>
 
 <script type = "text/x-handlebars" id="incomeGraph" data-template-name="incomeGraph">

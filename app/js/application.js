@@ -56,10 +56,6 @@ App.IncomeListRoute = Ember.Route.extend({
   }
 });
 
-App.IncomeItemListRoute = Ember.Route.extend({
-  
-});
-
 // Controllers
 App.ApplicationController = Ember.ArrayController.extend({
   actions: {
@@ -114,8 +110,6 @@ App.ApplicationController = Ember.ArrayController.extend({
       income.save();
     }
   }
-
-   
 });
 
 
@@ -127,7 +121,6 @@ App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 });
 App.IncomeItemListController = Ember.ObjectController.extend({
-
   actions: {
     editIncome: function() {
       this.toggleProperty('isEditing');
@@ -144,24 +137,18 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       this.set('deleteMode', false);
     }
 
-  },
-
+  }
 });
 
 App.IncomeListController = Ember.ArrayController.extend({
-  
 });
 
 App.IncomeController = Ember.ObjectController.extend({
   needs: 'bills'
-  
 });
 
 App.IncomeItemController = Ember.ArrayController.extend({
   needs: "bills",
-
- 
-
   incomeTotal: function() {
     var incomes = this.getEach('incomeAmount');
 
@@ -671,13 +658,12 @@ App.DeleteIncomeComponent = Ember.Component.extend({
   actions: {
     delete: function() {
       this.toggleProperty('deleteMode');
-      console.log(this);
     },
     confirm: function(incomeItem) {
       this.sendAction('action','confirmIncomeDelete');
     },
     cancel: function() {
-      this.sendAction('action', 'cancelIncomeDelete');
+      this.toggleProperty('deleteMode');
     }
   }
 });
