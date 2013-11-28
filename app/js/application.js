@@ -57,19 +57,7 @@ App.IncomeListRoute = Ember.Route.extend({
 });
 
 App.IncomeItemListRoute = Ember.Route.extend({
-  activate: function() {
-     for (var i = 0, row; row = table.rows[i]; i++) {
-        for ( c = 0, deleteButtons = table.rows[i].cells.length; c < deleteButtons; c++) {
-          // console.log(table.rows[i].cells[c].lastChild.nodeValue  );
-          table.rows[i].cells[c].lastChild.id = "delete" + [i];
-          var deleteButton = table.rows[i].cells[c].lastChild.id;
-
-           
-            
-      //     for (deleteButton in deleteButton) {
-          }
-        }
-      }
+  
 });
 
 // Controllers
@@ -125,7 +113,7 @@ App.ApplicationController = Ember.ArrayController.extend({
 
       income.save();
     }
-  },
+  }
 
    
 });
@@ -144,22 +132,6 @@ App.IncomeItemListController = Ember.ObjectController.extend({
     editIncome: function() {
       this.toggleProperty('isEditing');
     },
-    
-    deleteIncome: function() {
-      this.set('deleteMode', true);
-       var table = document.getElementById('incomeListTable');
-       var deleteButtons = new Array(table.getElementsByClassName('deleteButton'));
-          
-           console.log(deleteButtons.length);
-
-         var getButtons = function() {
-            deleteButton.onclick = function() {
-              deleteButton.style.visibility="hidden";
-            }
-          }
-       
-     
-    },
 
     confirmIncomeDelete: function() {
       this.toggleProperty('deleteMode');
@@ -170,7 +142,6 @@ App.IncomeItemListController = Ember.ObjectController.extend({
 
     cancelIncomeDelete: function() {
       this.set('deleteMode', false);
-      document.getElementById('delete1').style.visibility="visible";
     }
 
   },
@@ -382,19 +353,6 @@ App.IncomeListView = Ember.View.extend({
 });
 
 App.IncomeItemListView = Ember.View.extend({
-  didInsertElement: function () {
-     for (var i = 0, row; row = table.rows[i]; i++) {
-        for ( c = 0, deleteButtons = table.rows[i].cells.length; c < deleteButtons; c++) {
-          // console.log(table.rows[i].cells[c].lastChild.nodeValue  );
-          table.rows[i].cells[c].lastChild.id = "delete" + [i];
-          var deleteButton = table.rows[i].cells[c].lastChild.id;
-
-           
-            
-      //     for (deleteButton in deleteButton) {
-          }
-        }
-  }
 });
 
 App.BillsView = Ember.View.extend({
@@ -709,9 +667,17 @@ App.ReportsView = Ember.View.extend({
 });
 
 // Components
-
-// JSON 
-//App.Bill.url = "https://insaineyesay.iriscouch.com/bill";
-//App.Bill.collectionKey = "bill";
-
-// jQuery UI
+App.DeleteIncomeComponent = Ember.Component.extend({
+  actions: {
+    delete: function() {
+      this.toggleProperty('deleteMode');
+      console.log(this);
+    },
+    confirm: function(incomeItem) {
+      this.sendAction('action','confirmIncomeDelete');
+    },
+    cancel: function() {
+      this.sendAction('action', 'cancelIncomeDelete');
+    }
+  }
+});
