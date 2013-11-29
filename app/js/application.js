@@ -13,7 +13,6 @@ window.App = Ember.Application.create({
 
 // Adapters
 App.ApplicationAdapter = DS.LSAdapter.extend({
-  namespace: 'bills-emberjs'
 });
 //App.ApplicationAdapter = DS.RESTAdapter.extend({
   //host: 'https://insaineyesay.iriscouch.com/'
@@ -126,6 +125,14 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       this.toggleProperty('isEditing');
     },
 
+    editIncomeFrequency: function() {
+      this.toggleProperty('isEditingFrequency');
+    },
+
+    editIncomeAmount: function() {
+      this.toggleProperty('isEditingAmount');
+    },
+
     confirmIncomeDelete: function() {
       this.toggleProperty('deleteMode');
       var income = this.get('model');
@@ -135,6 +142,38 @@ App.IncomeItemListController = Ember.ObjectController.extend({
 
     cancelIncomeDelete: function() {
       this.set('deleteMode', false);
+    },
+
+    acceptIncomeChanges: function() {
+      console.log('yay');
+      this.set('isEditing', false);
+      var income = this.get('model');
+      if (Ember.isEmpty(this.get('model.incomeName'))) {
+        this.send('cancelIncomeEdit');
+      } else {
+        income.save();
+      }
+    },
+
+    acceptIncomeFrequencyChanges: function() {
+      console.log('yay');
+      this.set('isEditingFrequency', false);
+      var income = this.get('model');
+      if (Ember.isEmpty(this.get('model.incomeFrequency'))) {
+        this.send('cancelIncomeEdit');
+      } else {
+        income.save();
+      }
+    },
+    acceptIncomeAmountChanges: function() {
+      console.log('yay');
+      this.set('isEditingAmount', false);
+      var income = this.get('model');
+      if (Ember.isEmpty(this.get('model.incomeAmount'))) {
+        this.send('cancelIncomeEdit');
+      } else {
+        income.save();
+      }
     }
 
   }
@@ -272,25 +311,25 @@ App.BillsController = Ember.ArrayController.extend({
 
   },
 
-  totalBills: function() {
-      return this.getEach('.billItem').length;
-      }.property('@each.billItem'),
-
-  inflection: function() {
-      var totalBills = this.get('totalBills');
-      return totalBills === 1 ? 'bill' : 'bills';
+    totalBills: function() {
+        return this.getEach('.billItem').length;
         }.property('@each.billItem'),
-  
-  sumOfBills: function() {
-     var bills = this.getEach('amount');
-     if(bills.length > 0) {
-      var billTotals = bills.reduce(function (previousValue, currentValue, index, array) {
-        return parseInt(previousValue, 10) + parseInt(currentValue, 10);
-      });
-      return billTotals;
-     }
-     
-    }.property('@each')
+
+    inflection: function() {
+        var totalBills = this.get('totalBills');
+        return totalBills === 1 ? 'bill' : 'bills';
+          }.property('@each.billItem'),
+    
+    sumOfBills: function() {
+       var bills = this.getEach('amount');
+       if(bills.length > 0) {
+        var billTotals = bills.reduce(function (previousValue, currentValue, index, array) {
+          return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+        });
+        return billTotals;
+       }
+       
+      }.property('@each')
 
 });
 
@@ -341,6 +380,22 @@ App.IncomeGraphView = Ember.View.extend({
 App.IncomeListView = Ember.View.extend({
   templateName: 'incomeList',
 });
+
+App.EditIncomeView = Ember.TextField.extend({
+  didInsertElement: function() {
+    this.$().focus();
+  }
+});
+
+Ember.Handlebars.helper('edit-income', App.EditIncomeView);
+
+App.EditFrequencyView = Ember.TextField.extend({
+  didInsertElement: function() {
+    this.$().focus();
+  }
+});
+
+Ember.Handlebars.helper('edit-frequency', App.EditFrequencyView);
 
 App.IncomeItemListView = Ember.View.extend({
 });

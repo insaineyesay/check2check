@@ -245,9 +245,31 @@
             </tr>
             {{#each itemController = "incomeItemList"}}
             <tr>
-                <td colspan="1">{{incomeName}}</td>
-                <td colspan="1">{{incomeFrequency}}</td>
-                <td colspan="1">${{incomeAmount}}</td>
+
+              <td colspan="1" {{bind-attr class="isEditing:editing"}}>
+                {{#if isEditing}}
+                  {{edit-income class="edit" value=incomeName focus-out="acceptIncomeChanges" insert-newline="acceptIncomeChanges"}}
+                {{else}}
+                  <p {{action "editIncome" on="doubleClick" }}>{{incomeName}}</p>
+                {{/if}}
+              </td>
+
+              <td colspan="1" {{bind-attr class="isEditingFrequency:editing"}}>
+                {{#if isEditingFrequency}}
+                  {{edit-frequency class="edit" value=incomeFrequency focus-out="acceptIncomeFrequencyChanges" insert-newline="acceptIncomeFrequencyChanges"}}
+                {{else}}
+                  <p {{action "editIncomeFrequency" on="doubleClick" }}>{{incomeFrequency}}</p>
+                {{/if}}
+              </td>
+
+              <td colspan="1">
+                {{#if isEditingAmount}}
+                  {{edit-income class="edit" value=incomeAmount focus-out="acceptIncomeAmountChanges" insert-newline="acceptIncomeAmountChanges"}}
+                {{else}}
+                  <p {{action "editIncomeAmount" on="doubleClick" }}>${{incomeAmount}}</p>
+                {{/if}}
+              </td>
+
                 <td colspan="1"><button class="btn btn-xs btn-info" {{action 'editIncome'}}>edit</button></td>
                 <td class="deleteColumn" width="200">
                 {{delete-income action="confirmIncomeDelete" cancel="cancelIncomeDelete"}}
