@@ -43,7 +43,7 @@ App.IndexRoute = Ember.Route.extend({
 	}
 });
 
-App.BillsRoute = Ember.Route.extend({
+App.ExpenseListRoute = Ember.Route.extend({
 	model: function() {
 		return this.store.find('bill');
 	}
@@ -120,6 +120,33 @@ App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 });
 App.IncomeItemListController = Ember.ObjectController.extend({
+  needs: "bills",
+
+  incomeTotal: function() {
+    var incomes = this.getEach('incomeAmount');
+
+    if(incomes.length > 0) {
+      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
+        return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+      });
+      return incomeTotal;
+    }
+      
+    }.property('@each'),
+
+    disposableIncome: function () {
+      var incomes = this.getEach('incomeAmount');
+      var bills = this.get("controllers.bills.sumOfBills");
+
+      if(incomes.length > 0) {
+      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
+         return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+        });
+      return incomeTotal - bills;
+    }
+      
+      }.property('@each'),
+  
   actions: {
     editIncome: function() {
       this.toggleProperty('isEditing');
@@ -174,7 +201,20 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       } else {
         income.save();
       }
-    }
+    },
+
+    accept: function(value){
+      console.log(value);
+      var incomeFrequency = value;
+      this.set('isEditingFrequency', false);
+      var income = this.get('model');
+      console.log(income);
+      if(Ember.isEmpty(this.get('model.incomeFrequency'))) {
+        this.send('cancelIncomeEdit');
+      } else {
+        income.set('incomeFrequency', value).save();
+      }
+  }
 
   }
 });
@@ -348,7 +388,8 @@ App.IncomeItemDeleteButton = Ember.Object.extend({
 App.Income = DS.Model.extend({
   incomeName: DS.attr(),
   incomeAmount: DS.attr(),
-  incomeFrequency: DS.attr()
+  incomeFrequency: DS.attr(),
+  incomeDate: DS.attr()
 });
 
 App.Bill = DS.Model.extend({
@@ -370,7 +411,7 @@ App.InnerButtonsView = Ember.View.extend({
 });
 
 App.InnerExpenseButtonsView = Ember.View.extend({
-  templateName: 'innerButtons'
+  templateName: 'innerExpenseButtons'
 });
 
 App.IncomeGraphView = Ember.View.extend({
@@ -379,6 +420,39 @@ App.IncomeGraphView = Ember.View.extend({
 
 App.IncomeListView = Ember.View.extend({
   templateName: 'incomeList',
+});
+
+App.CalendarDatePicker = Ember.TextField.extend({
+  _picker: null,
+ 
+  modelChangedValue: function(){
+    var picker = this.get("_picker");
+    if (picker){
+      picker.setDate(this.get("value"));
+    }
+  }.observes("value"),
+ 
+  didInsertElement: function(){
+    currentYear = (new Date()).getFullYear();
+    formElement = this.$()[0];
+    picker = new Pikaday({
+      field: formElement,
+      yearRange: [1900,currentYear+2]
+    });
+    this.set("_picker", picker);
+  },
+ 
+  willDestroyElement: function(){
+    picker = this.get("_picker");
+    if (picker) {
+      picker.destroy();
+    }
+    this.set("_picker", null);
+  },
+
+  accept: function(event){
+    this.sendAction('action');
+  }
 });
 
 App.EditIncomeView = Ember.TextField.extend({
@@ -424,7 +498,39 @@ App.IncomeView = Ember.View.extend({
 });
 
 App.LeftFinancialComponentView = Ember.View.extend({
-  templateName: 'leftFinancialComponent'
+  templateName: 'leftFinancialComponent',
+  didInsertElement: function() {
+    var pieChart = $('#leftFinancialComponentPieChart').get(0).getContext("2d");
+    var $chart = $('#leftFinancialComponentPieChart');
+    var height = $('#leftFinancialComponent').height();
+    var width = $('#leftFinancialComponent').width();
+    
+    $chart.attr({
+      width: width,
+      height: height
+    });
+   
+     var data = [
+      {
+        value: 30,
+        color:"#F38630"
+      },
+      {
+        value : 50,
+        color : "#E0E4CC"
+      },
+      {
+        value : 100,
+        color : "#69D2E7"
+      }
+    ];
+
+      var options = {
+          animationEasing: "easeInOutCubic",
+        };
+
+    var leftFinancialPieChart = new Chart(pieChart).Pie(data, options);
+  }
 });
 
 App.CenterFinancialComponentView = Ember.View.extend({
@@ -440,8 +546,8 @@ App.LeftIncomeComponentView = Ember.View.extend({
   didInsertElement: function() {
     var pieChart = $('#leftIncomeComponentPieChart').get(0).getContext("2d");
     var $chart = $('#leftIncomeComponentPieChart');
-    var h = $('#leftComponent').height();
-    var w = $('#leftComponent').width();
+    var h = $('#leftIncomeComponent').height();
+    var w = $('#leftIncomeComponent').width();
 
     $chart.attr({
       width: w ,

@@ -6,6 +6,7 @@
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
    <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.css">
+   <link rel="stylesheet" type="text/css" href="css/pikaday.css">
 	
  
    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -82,6 +83,11 @@
       <div class="input-group input-group-sm">
        <span class="input-group-addon">Name:</span>{{input type="text" class="form-control" type="text" id="incomeNameEntry"  valueBinding="newIncomeTitle" placeholder="Enter the income name here"}}
       </div>
+
+      <div class="input-group input-group-sm">
+       <span class="input-group-addon">billName:</span>{{input type="date" class="form-control" type="text" id="incomeDateEntry"  valueBinding="newIncomeDate"}}
+      </div>
+
       <div class="input-group input-group-sm">
         <span class="input-group-addon">$</span>
           {{input class="form-control" type="text" id="incomeAmountEntry" valueBinding="newIncomeAmount" placeholder="Enter the amount here"}}
@@ -93,8 +99,9 @@
           <option>Bi-Weekly</option>
           <option>Monthly</option>
           <option>One Time</option>
-      </select>
+        </select>
         <br/>
+
         <button type="submit" class="btn btn-xs btn-success" value="submit" {{action "createIncomeItem"}}>Add New</button>
 
    </form>
@@ -214,6 +221,7 @@
 <script type="text/x-handlebars" id="financialOverviewCharts" data-template-name"financialOverviewCharts">
   <div id="financialPageCharts" class="row">
       <div id="financialChart" class="col-md-12">
+        <canvas id="financialLineChart">
       </div>
   </div>
 </script>
@@ -239,6 +247,7 @@
             <tr>
               <th>Income Name</th>
               <th>Income Frequency</th>
+              <th>Date</th>
               <th>Income Amount</th>
               <th>Edit</th>
               <th>Delete</th>
@@ -256,9 +265,17 @@
 
               <td colspan="1" {{bind-attr class="isEditingFrequency:editing"}}>
                 {{#if isEditingFrequency}}
-                  {{edit-frequency class="edit" value=incomeFrequency focus-out="acceptIncomeFrequencyChanges" insert-newline="acceptIncomeFrequencyChanges"}}
+{{view App.CalendarDatePicker value=incomeFrequency insert-newline="accept"}}
                 {{else}}
                   <p {{action "editIncomeFrequency" on="doubleClick" }}>{{incomeFrequency}}</p>
+                {{/if}}
+              </td>
+
+              <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
+                {{#if isEditingDate}}
+{{view App.CalendarDatePicker value=incomeFrequency insert-newline="accept"}}
+                {{else}}
+                  <p {{action "editIncomeDate" on="doubleClick" }}>{{incomeDate}}</p>
                 {{/if}}
               </td>
 
@@ -282,6 +299,9 @@
             </tr>
             <tr>
               <td colspan="2">Total</td>
+            </tr>
+            <tr>
+              <td colspan="1">{{incomeTotal}}</td>
             </tr>
           </tfoot>
 
@@ -399,14 +419,80 @@
 
 <script type="text/x-handlebars" id="innerExpenseButtons" data-template-name="innerExpenseButtons">
   <div id="InnerButtons" class="col-md-offset-10">
-    <button class="btn btn-xs btn-default">{{#link-to "expenseList"}}Expense Reports{{/link-to}}</button>
-    <button class="btn btn-xs btn-default">{{#link-to "expenseGraph"}}Expense List{{/link-to}}</button>
+    <button class="btn btn-xs btn-default">{{#link-to "expenseList"}}Expense List{{/link-to}}</button>
+    <button class="btn btn-xs btn-default">{{#link-to "expenseGraph"}}Expense Reports{{/link-to}}</button>
   </div>
 </script>
 
 <script type = "text/x-handlebars" id="expenseList" data-template-name="expenseList">
   {{view App.InnerExpenseButtonsView}}
-    <p>Some Text</p>
+    <div id="expenseListContainer"  class="col-md-10 expenseList">
+        <h1>expense List View</h1>
+        {{view App.InnerButtonsView}}
+          <table id="expenseListTable" class="table">
+            <tr>
+              <th>Expense Name</th>
+              <th>Expense Frequency</th>
+              <th>Date</th>
+              <th>Expense Amount</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+            {{#each itemController = "expenseItemList"}}
+            <tr>
+
+              <td colspan="1" {{bind-attr class="isEditing:editing"}}>
+                {{#if isEditing}}
+                  {{edit-expense class="edit" value=expenseName focus-out="acceptexpenseChanges" insert-newline="acceptexpenseChanges"}}
+                {{else}}
+                  <p {{action "editexpense" on="doubleClick" }}>{{expenseName}}</p>
+                {{/if}}
+              </td>
+
+              <td colspan="1" {{bind-attr class="isEditingFrequency:editing"}}>
+                {{#if isEditingFrequency}}
+{{view App.CalendarDatePicker value=expenseFrequency insert-newline="accept"}}
+                {{else}}
+                  <p {{action "editexpenseFrequency" on="doubleClick" }}>{{expenseFrequency}}</p>
+                {{/if}}
+              </td>
+
+              <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
+                {{#if isEditingDate}}
+{{view App.CalendarDatePicker value=expenseFrequency insert-newline="accept"}}
+                {{else}}
+                  <p {{action "editExpenseDate" on="doubleClick" }}>{{expenseDate}}</p>
+                {{/if}}
+              </td>
+
+              <td colspan="1">
+                {{#if isEditingAmount}}
+                  {{edit-expense class="edit" value=expenseAmount focus-out="acceptExpenseAmountChanges" insert-newline="acceptExpenseAmountChanges"}}
+                {{else}}
+                  <p {{action "editExpenseAmount" on="doubleClick" }}>${{expenseAmount}}</p>
+                {{/if}}
+              </td>
+
+                <td colspan="1"><button class="btn btn-xs btn-info" {{action 'editExpense'}}>edit</button></td>
+                <td class="deleteColumn" width="200">
+                {{delete-expense action="confirmExpenseDelete" cancel="cancelExpenseDelete"}}
+                </td>
+            </tr>
+            {{/each}}
+          <tfoot>
+            <tr>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="2">Total</td>
+            </tr>
+            <tr>
+              <td colspan="1">{{expenseTotal}}</td>
+            </tr>
+          </tfoot>
+
+          </table>
+      </div>
 </script>
 
 <script type = "text/x-handlebars" id="expenseGraph" data-template-name="expenseGraph">
@@ -478,7 +564,7 @@
       </div><!-- end financials -->
 </script>
 
-<script type="text/x-handlebars" id="leftFinancialComponent">
+<script type="text/x-handlebars" id="leftFinancialComponent" data-template-name="leftFinancialComponent">
   <div class="col-md-4">
     <div id="leftFinancialComponent" class="panel panel-default">
       <div class="panel-heading">Income Distribution</div>
@@ -618,9 +704,9 @@
 <script src="js/libs/ember.js"></script>
 <script src="http://builds.emberjs.com/beta/ember-data.js"></script>
 <script src="js/libs/localstorage_adapter.js"></script>
+<script src="js/libs/pikaday.js"></script>
 <script src="js/libs/Chart.js"></script>
 <script src="js/application.js"></script>
-<script src="js/libs/jquery-ui-1.10.3.custom.js"></script>
 
 </body>
 </html>
