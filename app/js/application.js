@@ -62,24 +62,24 @@ App.ApplicationController = Ember.ArrayController.extend({
     createBillItem: function() {
 
     // Get the Bill title set by the new 'New Bill' text field
-    var title = this.get('newTitle');
-    var amount = this.get('newAmount');
-    var date = this.get('newDate');
+    var title = this.get('newExpenseTitle');
+    var amount = this.get('newExpenseAmount');
+    var date = this.get('newExpenseDate');
 
     if (!title.trim() && !amount.trim() && !date.trim()) { return; }
        
     // Create the New Bill Model
     var bill = this.store.createRecord('bill', {
-            name: title,
-            amount: amount,
-            date: date
+            expenseName: title,
+            expenseAmount: amount,
+            expenseDate: date
     });
 
     // Clear the "New Bill" text field
     this.setProperties({
-      'newTitle': '',
-      'newAmount': '',
-      'newDate': ''
+      'newExpenseTitle': '',
+      'newExpenseAmount': '',
+      'newExpenseDate': ''
     });
 
     // Save it
@@ -113,40 +113,13 @@ App.ApplicationController = Ember.ArrayController.extend({
 
 
 App.IncomeOverviewController = Ember.ArrayController.extend({
-  needs: 'bills'
+  needs: 'expenses'
 });
 
 App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 });
 App.IncomeItemListController = Ember.ObjectController.extend({
-  needs: "bills",
-
-  incomeTotal: function() {
-    var incomes = this.getEach('incomeAmount');
-
-    if(incomes.length > 0) {
-      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
-        return parseInt(previousValue, 10) + parseInt(currentValue, 10);
-      });
-      return incomeTotal;
-    }
-      
-    }.property('@each'),
-
-    disposableIncome: function () {
-      var incomes = this.getEach('incomeAmount');
-      var bills = this.get("controllers.bills.sumOfBills");
-
-      if(incomes.length > 0) {
-      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
-         return parseInt(previousValue, 10) + parseInt(currentValue, 10);
-        });
-      return incomeTotal - bills;
-    }
-      
-      }.property('@each'),
-  
   actions: {
     editIncome: function() {
       this.toggleProperty('isEditing');
@@ -220,20 +193,14 @@ App.IncomeItemListController = Ember.ObjectController.extend({
 });
 
 App.IncomeListController = Ember.ArrayController.extend({
-});
+  needs: ["expenses","incomeItemList"],
 
-App.IncomeController = Ember.ObjectController.extend({
-  needs: 'bills'
-});
-
-App.IncomeItemController = Ember.ArrayController.extend({
-  needs: "bills",
   incomeTotal: function() {
     var incomes = this.getEach('incomeAmount');
-
+    console.log(incomes);
     if(incomes.length > 0) {
       var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
-        return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+        return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
       });
       return incomeTotal;
     }
@@ -242,11 +209,43 @@ App.IncomeItemController = Ember.ArrayController.extend({
 
     disposableIncome: function () {
       var incomes = this.getEach('incomeAmount');
-      var bills = this.get("controllers.bills.sumOfBills");
+      var bills = this.get("controllers.expenses.sumOfBills");
 
       if(incomes.length > 0) {
       var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
-         return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+         return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+        });
+      return incomeTotal - bills;
+    }
+      
+      }.property('@each'),
+});
+
+App.IncomeController = Ember.ObjectController.extend({
+  needs: 'expenses'
+});
+
+App.IncomeItemController = Ember.ArrayController.extend({
+  needs: ["expenses", "incomeItemList"],
+  incomeTotal: function() {
+    var incomes = this.getEach('incomeAmount');
+
+    if(incomes.length > 0) {
+      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
+        return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+      });
+      return incomeTotal;
+    }
+      
+    }.property('@each'),
+
+    disposableIncome: function () {
+      var incomes = this.getEach('incomeAmount');
+      var bills = this.get("controllers.expenses.sumOfBills");
+
+      if(incomes.length > 0) {
+      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
+         return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
         });
       return incomeTotal - bills;
     }
@@ -255,7 +254,7 @@ App.IncomeItemController = Ember.ArrayController.extend({
     
 });
 
-App.BillController = Ember.ObjectController.extend({
+App.ExpenseItemListController = Ember.ObjectController.extend({
   deleteMode: false,
 
 	actions: {
@@ -264,7 +263,7 @@ App.BillController = Ember.ObjectController.extend({
       this.set('deleteMode', false);
     },
 
-    confirmDelete: function() {
+    confirmExpenseDelete: function() {
       this.toggleProperty('deleteMode');
       var bill = this.get('model');
       bill.deleteRecord();
@@ -295,7 +294,51 @@ App.BillController = Ember.ObjectController.extend({
   }
 });
 
-App.BillsController = Ember.ArrayController.extend({
+App.ExpenseListController = Ember.ArrayController.extend({
+  needs: ['expenses', 'incomeList'],
+  
+    sumOfBills: function() {
+      console.log('yay');
+      var bills = this.getEach('expenseAmount');
+      if (bills.length > 0) {
+        var billTotals = bills.reduce(function (previousValue, currentValue, index) {
+          return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+        });
+        return billTotals;
+      }
+    
+    }.property('@each'),
+
+    totalIncome: function() {
+      console.log('yay');
+      var income = this.getEach('controllers.incomeList.incomeTotal');
+      console.log(income);
+      if (income.length > 0) {
+        var incomeTotals = income.reduce(function (previousValue, currentValue, index) {
+          return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+        });
+        return incomeTotals;
+      }
+    }.property('@each'),
+
+    disposableIncome: function () {
+      var incomes = this.getEach('controllers.incomeList.incomeTotal');
+      console.log(incomes);
+      console.log(sumOfBills);
+      var bills = this.get("controllers.expenses.sumOfBills");
+      console.log(bills);
+      if(incomes.length > 0) {
+      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
+         return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+        });
+      return incomeTotal - bills;
+    }
+      
+      }.property('@each')
+  
+});
+
+App.ExpensesController = Ember.ArrayController.extend({
   isEditing: false,
 
   actions: {
@@ -311,9 +354,9 @@ App.BillsController = Ember.ArrayController.extend({
        
     // Create the New Bill Model
     var bill = this.store.createRecord('bill', {
-            name: title,
-            amount: amount,
-            date: date
+            expenseName: title,
+            expenseAmount: amount,
+            expenseDate: date
     });
 
     // Clear the "New Bill" text field
@@ -361,7 +404,8 @@ App.BillsController = Ember.ArrayController.extend({
           }.property('@each.billItem'),
     
     sumOfBills: function() {
-       var bills = this.getEach('amount');
+
+       var bills = this.getEach('expenseAmount');
        if(bills.length > 0) {
         var billTotals = bills.reduce(function (previousValue, currentValue, index, array) {
           return parseInt(previousValue, 10) + parseInt(currentValue, 10);
@@ -374,7 +418,7 @@ App.BillsController = Ember.ArrayController.extend({
 });
 
 App.ReportsController = Ember.ObjectController.extend({
-    needs: ['bills' , 'income']
+    needs: ['expenses' , 'income']
 });
 
 
@@ -393,11 +437,11 @@ App.Income = DS.Model.extend({
 });
 
 App.Bill = DS.Model.extend({
-	name: DS.attr(),
-	amount: DS.attr(),
-	date: DS.attr(),
-  apr: DS.attr(),
-  priority: DS.attr()
+	expenseName: DS.attr(),
+	expenseAmount: DS.attr(),
+	expenseDate: DS.attr(),
+  expenseApr: DS.attr(),
+  expensePriority: DS.attr()
 });
 
 // Views
@@ -828,6 +872,24 @@ App.DeleteIncomeComponent = Ember.Component.extend({
     },
     confirm: function(incomeItem) {
       this.sendAction('action','confirmIncomeDelete');
+    },
+    cancel: function() {
+      this.toggleProperty('deleteMode');
+      this.toggleProperty('isDeleting');
+    }
+  }
+});
+
+App.DeleteExpenseComponent = Ember.Component.extend({
+  classNamesBindings: ['isDeleting:enabled'],
+  isDeleting: true,
+  actions: {
+    delete: function() {
+      this.toggleProperty('deleteMode');
+      this.toggleProperty('isDeleting');
+    },
+    confirm: function(expenseItem) {
+      this.sendAction('action','confirmExpenseDelete');
     },
     cancel: function() {
       this.toggleProperty('deleteMode');

@@ -65,7 +65,16 @@
   
   <div class="menuButton"><button>{{#link-to "financial"}}<span class="glyphicon glyphicon-home setting"></span>{{/link-to}}</button></div>
   <div class="menuButton"><button>{{#link-to "incomeOverview"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
+
+  <div class="menuButton"><button>{{#link-to "incomeList"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
+
+  <div class="menuButton"><button>{{#link-to "incomeGraph"}}<span class="glyphicon glyphicon-usd addIncome"></span>{{/link-to}}</button></div>
+
   <div class="menuButton"><button>{{#link-to 'expensesOverview'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
+
+  <div class="menuButton"><button>{{#link-to 'expenseList'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
+
+  <div class="menuButton"><button>{{#link-to 'expenseGraph'}}<span class="glyphicon glyphicon-credit-card addExpense"></span>{{/link-to}}</button></div>
 
    <!-- Add Income Button trigger modal -->
       <button class="glyphicon glyphicon-plus addIncomeButtonSideNav menuButton" data-toggle="modal" data-target="#IncomeModal"></button>
@@ -129,14 +138,14 @@
             <div class="modal-body">
               <form class="form-horizontal">
 
-          {{input class="form-control" type="text" id="sbillNameEntry"  valueBinding="newTitle" placeholder="Enter the bill name here"}}
+          {{input class="form-control" type="text" id="sbillNameEntry"  valueBinding="newExpenseTitle" placeholder="Enter the bill name here"}}
           <div class="input-group input-group-sm">
             <span class="input-group-addon">$</span>
-              {{input class="form-control" type="number" id="sbillAmountEntry" valueBinding="newAmount" placeholder="Enter the amount here"}}
+              {{input class="form-control" type="number" id="sbillAmountEntry" valueBinding="newExpenseAmount" placeholder="Enter the amount here"}}
             <span class="input-group-addon">.00</span>
           </div>
               
-          {{input type="date" id="sbillDateEntry" valueBinding="newDate" placeholder="Enter the date here"}}
+          {{input type="date" id="sbillDateEntry" valueBinding="newExpenseDate" placeholder="Enter the date here"}}
 
           <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
           <button type="button" class="btn btn-xs btn-info">{{#link-to "incomeOverview"}}Add Income{{/link-to}}</button>
@@ -294,15 +303,12 @@
             </tr>
             {{/each}}
           <tfoot>
+            
             <tr>
-              <td></td>
-            </tr>
-            <tr>
-              <td colspan="2">Total</td>
-            </tr>
-            <tr>
+              <td colspan="3">Total</td>
               <td colspan="1">{{incomeTotal}}</td>
             </tr>
+           
           </tfoot>
 
           </table>
@@ -361,6 +367,17 @@
   {{/if}}
 </script>
 
+<script type="text/x-handlebars" id="components/delete-expense">
+
+  {{#if deleteMode}}
+    <button type="submit" class="btn btn-xs btn-danger" {{action "confirm"}}>Sure?</button>
+    <button type="submit" class="btn btn-xs btn-warning nevermind" {{action "cancel"}}>Nevermind</button>
+  {{/if}}
+  {{#if isDeleting}}
+    <button id="delete" class="btn btn-xs btn-success" {{action "delete" expenseItem}} >Delete</button>
+  {{/if}}
+</script>
+
 <script type = "text/x-handlebars" id="incomeGraph" data-template-name="incomeGraph">
  <div class="row">
     
@@ -381,7 +398,7 @@
      
       <div id="incomeList">
         <h3>{{view.incomeListHeading}}</h3>
-          <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.bills.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
+          <small>You have ${{incomeTotal}}.00 coming in each month to kill bills ${{controllers.expenses.sumOfBills}}.00 which means you have ${{disposableIncome}}.00 left to play!</small>
               {{#each itemController="incomeItem"}} 
               <div class="incomeItem row">
                 <div class="incomeItemTop row">
@@ -425,10 +442,11 @@
 </script>
 
 <script type = "text/x-handlebars" id="expenseList" data-template-name="expenseList">
-  {{view App.InnerExpenseButtonsView}}
-    <div id="expenseListContainer"  class="col-md-10 expenseList">
-        <h1>expense List View</h1>
-        {{view App.InnerButtonsView}}
+  
+    <div id="expenseListContainer"  class="col-md-10 expenseList col-md-offset-1">
+    {{view App.InnerExpenseButtonsView}}
+        <h1>Expense List View</h1>
+        You have a total of ${{sumOfBills}} to pay every month. While you have a total of ${{controllers.incomeList.incomeTotal}} coming in as revenue. This means you have ${{controllers.incomeList.disposableIncome}} remaining to save.
           <table id="expenseListTable" class="table">
             <tr>
               <th>Expense Name</th>
@@ -443,9 +461,9 @@
 
               <td colspan="1" {{bind-attr class="isEditing:editing"}}>
                 {{#if isEditing}}
-                  {{edit-expense class="edit" value=expenseName focus-out="acceptexpenseChanges" insert-newline="acceptexpenseChanges"}}
+                  {{edit-expense class="edit" value=expenseName focus-out="acceptExpenseChanges" insert-newline="acceptExpenseChanges"}}
                 {{else}}
-                  <p {{action "editexpense" on="doubleClick" }}>{{expenseName}}</p>
+                  <p {{action "editExpense" on="doubleClick" }}>{{expenseName}}</p>
                 {{/if}}
               </td>
 
@@ -481,10 +499,8 @@
             {{/each}}
           <tfoot>
             <tr>
-              <td></td>
-            </tr>
-            <tr>
-              <td colspan="2">Total</td>
+              <td colspan="3">Total</td>
+              <td colspan="1">{{sumOfBills}}</td>
             </tr>
             <tr>
               <td colspan="1">{{expenseTotal}}</td>
