@@ -443,7 +443,11 @@
 
 <script type = "text/x-handlebars" id="expenseList" data-template-name="expenseList">
   
-    <div id="expenseListContainer"  class="col-md-10 expenseList col-md-offset-1">
+          <div class="col-md-1 billsAndIncome">
+
+      </div>
+    <div id="expenseListContainer"  class="col-md-10 expenseListContainer">
+
     {{view App.InnerExpenseButtonsView}}
         <h1>Expense List View</h1>
         You have a total of ${{sumOfBills}} to pay every month. While you have a total of ${{controllers.incomeList.incomeTotal}} coming in as revenue. This means you have ${{controllers.incomeList.disposableIncome}} remaining to save.
@@ -508,7 +512,50 @@
           </tfoot>
 
           </table>
+
+
       </div>
+
+       <div id="quickStatsSouth" class="col-md-10 quickStatsSouth">
+        <div class="col-md-3 col-md-offset-1">
+          <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
+        </div>
+        <div class="col-md-3 ">
+          <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
+        </div>
+        <div class="col-md-3 ">
+          <p><span class="largeOrangeNumbers">$34,345.95</span>/<span class="smallBlueNumbers">$3,234.84</span></p>
+        </div>
+      </div>
+
+      <div id="incomeStatsTable" class="col-md-10 incomeStatsTable">
+        <table class="table">
+          <tr>
+            <th class=""></th>
+            <th class="">This vs. That</th>
+            <th class="">This vs. That</th>
+            <th>This vs. That</th>
+          </tr>
+          <tr>
+            <td class="rightBorderTableCell leftBorderTableCell"><span class="smallBlueNumbers">November 13th</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td><span class="smallBlueNumbers">$3,234.84</span></td>
+          </tr>
+          <tr>
+            <td class="rightBorderTableCell leftBorderTableCell"><span class="smallBlueNumbers">November 13th</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td><span class="smallBlueNumbers">$3,234.84</span></td>
+          </tr>
+          <tr>
+            <td class="rightBorderTableCell leftBorderTableCell"><span class="smallBlueNumbers">November 13th</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td class="rightBorderTableCell"><span class="smallBlueNumbers">$3,234.84</span></td>
+            <td><span class="smallBlueNumbers">$3,234.84</span></td>
+          </tr>
+        </table>
+  </div>
 </script>
 
 <script type = "text/x-handlebars" id="expenseGraph" data-template-name="expenseGraph">
@@ -527,7 +574,7 @@
           <p>You have <span class="bold">{{totalBills}}</span> {{inflection}} in your report totalling ${{sumOfBills}}.00 due each month</p>
         </div>
         {{view App.ReportsView}}
-        {{#each itemController = "bill"}}
+        {{#each itemController = "expense"}}
 
         <div class="billItem row">
 
@@ -553,7 +600,7 @@
         </div> <!-- close billItemLeft -->
 
         <div id="billItemRight">
-          <div class="billAmount">${{amount}}.00</div>
+          <div class="billAmount">${{expenseAmount}}</div>
           <div class="billDate">{{date}}</div>
           <div class="billDate">{{apr}}</div>
         </div> <!-- close billitemRight -->

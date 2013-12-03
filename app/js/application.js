@@ -43,6 +43,12 @@ App.IndexRoute = Ember.Route.extend({
 	}
 });
 
+App.ExpensesOverviewRoute = Ember.Route.extend({
+  model: function() {
+    return this.store.find('bill');
+  }
+});
+
 App.ExpenseListRoute = Ember.Route.extend({
 	model: function() {
 		return this.store.find('bill');
@@ -55,8 +61,39 @@ App.IncomeListRoute = Ember.Route.extend({
   }
 });
 
+// Objects
+App.IncomeItemDeleteButton = Ember.Object.extend({
+  
+});
+
+App.IncomeItem = Ember.Object.extend({
+  incomeName: function(name) {
+    this.get(name);
+  },
+  frequency: function(frequency) {
+    this.get(frequency);
+  }
+});
+
+// Models
+App.Income = DS.Model.extend({
+  incomeName: DS.attr(),
+  incomeAmount: DS.attr(),
+  incomeFrequency: DS.attr(),
+  incomeDate: DS.attr()
+});
+
+App.Bill = DS.Model.extend({
+  expenseName: DS.attr(),
+  expenseAmount: DS.attr(),
+  expenseDate: DS.attr(),
+  expenseApr: DS.attr(),
+  expensePriority: DS.attr()
+});
+
 // Controllers
 App.ApplicationController = Ember.ArrayController.extend({
+  needs: ['income', 'incomeList', 'expenses', 'expenseList'],
   actions: {
     
     createBillItem: function() {
@@ -94,6 +131,7 @@ App.ApplicationController = Ember.ArrayController.extend({
 
 
       if (!name.trim() && !amount.trim() && !frequency.trim()) { return; }
+      var newincome = IncomeItem.create();
 
       var income = this.store.createRecord('income', {
         incomeName: name,
@@ -108,7 +146,28 @@ App.ApplicationController = Ember.ArrayController.extend({
 
       income.save();
     }
-  }
+  },
+
+      totalBills: function() {
+        return this.getEach('.billItem').length;
+        }.property('@each.billItem'),
+
+      inflection: function() {
+        var totalBills = this.get('totalBills');
+        return totalBills === 1 ? 'bill' : 'bills';
+          }.property('@each.billItem'),
+    
+      sumOfBills: function() {
+        console.log('applicationControllerCall');
+       var bills = this.getEach('expenseAmount');
+       if(bills.length > 0) {
+        var billTotals = bills.reduce(function (previousValue, currentValue, index, array) {
+          return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+        });
+        return billTotals;
+       }
+       
+      }.property('@each')
 });
 
 
@@ -117,8 +176,20 @@ App.IncomeOverviewController = Ember.ArrayController.extend({
 });
 
 App.ExpensesOverviewController = Ember.ArrayController.extend({
-
+  needs: ['income', 'incomeList', 'expenses', 'expenseList'],
+  totalBills: function() {
+    // console.log('yay');
+    var bills = this.getEach('controllers.expenseList.expenseAmount');
+    // console.log(bills);
+    if(bills.length > 0) {
+      var totalBills = bills.reduce(function (previousValue, currentValue, index) {
+        return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+      });
+      return totalBills;
+    }
+  }.property('@each')
 });
+
 App.IncomeItemListController = Ember.ObjectController.extend({
   actions: {
     editIncome: function() {
@@ -338,6 +409,10 @@ App.ExpenseListController = Ember.ArrayController.extend({
   
 });
 
+App.ExpenseController = Ember.ObjectController.extend({
+
+});
+
 App.ExpensesController = Ember.ArrayController.extend({
   isEditing: false,
 
@@ -421,28 +496,6 @@ App.ReportsController = Ember.ObjectController.extend({
     needs: ['expenses' , 'income']
 });
 
-
-
-// Objects
-App.IncomeItemDeleteButton = Ember.Object.extend({
-  
-});
-
-// Models
-App.Income = DS.Model.extend({
-  incomeName: DS.attr(),
-  incomeAmount: DS.attr(),
-  incomeFrequency: DS.attr(),
-  incomeDate: DS.attr()
-});
-
-App.Bill = DS.Model.extend({
-	expenseName: DS.attr(),
-	expenseAmount: DS.attr(),
-	expenseDate: DS.attr(),
-  expenseApr: DS.attr(),
-  expensePriority: DS.attr()
-});
 
 // Views
 App.ApplicationView = Ember.View.extend({
