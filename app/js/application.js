@@ -131,7 +131,7 @@ App.ApplicationController = Ember.ArrayController.extend({
 
 
       if (!name.trim() && !amount.trim() && !frequency.trim()) { return; }
-      var newincome = IncomeItem.create();
+    
 
       var income = this.store.createRecord('income', {
         incomeName: name,
@@ -380,32 +380,32 @@ App.ExpenseListController = Ember.ArrayController.extend({
     
     }.property('@each'),
 
-    totalIncome: function() {
-      console.log('yay');
-      var income = this.getEach('controllers.incomeList.incomeTotal');
-      console.log(income);
-      if (income.length > 0) {
-        var incomeTotals = income.reduce(function (previousValue, currentValue, index) {
-          return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
-        });
-        return incomeTotals;
-      }
-    }.property('@each'),
+    // totalIncome: function() {
+    //   console.log('yay');
+    //   var income = this.getEach('controllers.incomeList.incomeTotal');
+    //   console.log(income);
+    //   if (income.length > 0) {
+    //     var incomeTotals = income.reduce(function (previousValue, currentValue, index) {
+    //       return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+    //     });
+    //     return incomeTotals;
+    //   }
+    // }.property('@each'),
 
-    disposableIncome: function () {
-      var incomes = this.getEach('controllers.incomeList.incomeTotal');
-      console.log(incomes);
-      console.log(sumOfBills);
-      var bills = this.get("controllers.expenses.sumOfBills");
-      console.log(bills);
-      if(incomes.length > 0) {
-      var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
-         return parseInt(previousValue, 10) + parseInt(currentValue, 10);
-        });
-      return incomeTotal - bills;
-    }
+    // disposableIncome: function () {
+    //   var incomes = this.getEach('controllers.incomeList.incomeTotal');
+    //   console.log(incomes);
+    //   console.log(sumOfBills);
+    //   var bills = this.get("controllers.expenses.sumOfBills");
+    //   console.log(bills);
+    //   if(incomes.length > 0) {
+    //   var incomeTotal = incomes.reduce(function (previousValue, currentValue, index, array) {
+    //      return parseInt(previousValue, 10) + parseInt(currentValue, 10);
+    //     });
+    //   return incomeTotal - bills;
+    // }
       
-      }.property('@each')
+    //   }.property('@each')
   
 });
 
