@@ -19,6 +19,9 @@
 <body>
 
 <script type="text/x-handlebars" id="App" data-template-name="application">
+
+
+<!-- NAVIGATION ITEMS -->
  <div class="navbar navbar-inverse">
     <div class="navbar-inner">
     
@@ -38,7 +41,9 @@
       </ul>
     </div>
   </div>
+<!--  END OF TOP NAVIGATION ITEMS -->
 
+ <!-- BEGIN SIDE NAVIGATION ITEMS -->
 <div id="sideNavFixed">
   <div class="menuButton">
     <button class="glyphicon glyphicon-list listSideNav menuButton" data-toggle="modal" data-target="#settingsModal"></button>
@@ -127,7 +132,7 @@
    <!-- AddBill Button trigger modal -->
       <button class="glyphicon glyphicon-minus addExpenseButtonSideNav menuButton" data-toggle="modal" data-target="#ExpenseModal"></button>
     
-      <!-- Modal -->
+      <!-- EXPENSE MODAL WINDOW FOR ADDING NEW EXPENES -->
       <div class="modal fade" id="ExpenseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -139,6 +144,8 @@
               <form class="form-horizontal">
 
           {{input class="form-control" type="text" id="sbillNameEntry"  valueBinding="newExpenseTitle" placeholder="Enter the bill name here"}}
+
+          {{input class="form-control" type="text" id="billPayee"  valueBinding="newExpenseAssignee" placeholder="Enter the assignee name here"}}
           <div class="input-group input-group-sm">
             <span class="input-group-addon">$</span>
               {{input class="form-control" type="number" id="sbillAmountEntry" valueBinding="newExpenseAmount" placeholder="Enter the amount here"}}
@@ -185,7 +192,7 @@
   <!-- end left home content -->
 
   <div id="rightHomeContent" class="span8">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. Vestibulum sit amet erat at tellus iaculis tristique. Vestibulum tempus turpis nibh, a cursus orci adipiscing vitae. Nullam pharetra risus cursus mattis gravida. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis inputd scelerisque vehicula.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sitmet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. Vestibulum sit amet erat at tellus iaculis tristique. Vestibulum tempus turpis nibh, a cursus orci adipiscing vitae. Nullam pharetra risus cursus mattis gravida. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis inputd scelerisque vehicula.</p>
   </div>
 
   <!-- ed right home content -->
@@ -242,6 +249,18 @@
   </div>
 </script>
 
+<script type="text/x-handlebars" id="incomeFrequencySelection" data-template-name="incomeFrequencySelection">
+ 
+ <select id="addIncomeFrequency" class="form-control">
+    <option value="Daily">Daily</option>
+    <option value="Weekly">Weekly</option>
+    <option value="Bi-Weekly">Bi-Weekly</option>
+    <option value="Monthly">Monthly</option>
+    <option value="OneTime">One Time</option>
+  </select>
+
+</script>
+
 <script type = "text/x-handlebars" id="incomeList" data-template-name="incomeList">
   <div class="col-md-12">
       
@@ -256,7 +275,7 @@
             <tr>
               <th>Income Name</th>
               <th>Income Frequency</th>
-              <th>Date</th>
+              <!-- <th>Income Date</th> -->
               <th>Income Amount</th>
               <th>Edit</th>
               <th>Delete</th>
@@ -274,19 +293,19 @@
 
               <td colspan="1" {{bind-attr class="isEditingFrequency:editing"}}>
                 {{#if isEditingFrequency}}
-{{view App.CalendarDatePicker value=incomeFrequency insert-newline="accept"}}
+{{view App.FrequencySelectionView value=incomeFrequency focus-out="acceptIncomeFrequencyChanges" insert-newline="acceptIncomeFrequencyChanges"}}
                 {{else}}
                   <p {{action "editIncomeFrequency" on="doubleClick" }}>{{incomeFrequency}}</p>
                 {{/if}}
               </td>
 
-              <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
+             <!-- <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
                 {{#if isEditingDate}}
-{{view App.CalendarDatePicker value=incomeFrequency insert-newline="accept"}}
+{{view App.CalendarDatePicker value=incomeDate insert-newline="accept"}}
                 {{else}}
                   <p {{action "editIncomeDate" on="doubleClick" }}>{{incomeDate}}</p>
                 {{/if}}
-              </td>
+              </td> -->
 
               <td colspan="1">
                 {{#if isEditingAmount}}
@@ -305,7 +324,7 @@
           <tfoot>
             
             <tr>
-              <td colspan="3">Total</td>
+              <td colspan="2">Total</td>
               <td colspan="1">{{incomeTotal}}</td>
             </tr>
            
@@ -434,6 +453,9 @@
     </div>
 </script>
 
+<!-- END OF INCOME VIEWS -->
+
+<!-- BEGIN EXPENSE VIEWS -->
 <script type="text/x-handlebars" id="innerExpenseButtons" data-template-name="innerExpenseButtons">
   <div id="InnerButtons" class="col-md-offset-10">
     <button class="btn btn-xs btn-default">{{#link-to "expenseList"}}Expense List{{/link-to}}</button>
@@ -457,6 +479,7 @@
               <th>Expense Frequency</th>
               <th>Date</th>
               <th>Expense Amount</th>
+              <th>Expense Assignee</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -467,21 +490,21 @@
                 {{#if isEditing}}
                   {{edit-expense class="edit" value=expenseName focus-out="acceptExpenseChanges" insert-newline="acceptExpenseChanges"}}
                 {{else}}
-                  <p {{action "editExpense" on="doubleClick" }}>{{expenseName}}</p>
+                  <p {{action "editExpenseName" on="doubleClick" }}>{{expenseName}}</p>
                 {{/if}}
               </td>
 
               <td colspan="1" {{bind-attr class="isEditingFrequency:editing"}}>
                 {{#if isEditingFrequency}}
-{{view App.CalendarDatePicker value=expenseFrequency insert-newline="accept"}}
+                  {{view App.CalendarDatePicker value=expenseFrequency insert-newline="accept"}}
                 {{else}}
-                  <p {{action "editexpenseFrequency" on="doubleClick" }}>{{expenseFrequency}}</p>
+                  <p {{action "editExpenseFrequency" on="doubleClick" }}>{{expenseFrequency}}</p>
                 {{/if}}
               </td>
 
               <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
                 {{#if isEditingDate}}
-{{view App.CalendarDatePicker value=expenseFrequency insert-newline="accept"}}
+                  {{view App.CalendarDatePicker value=expenseDate insert-newline="accept"}}
                 {{else}}
                   <p {{action "editExpenseDate" on="doubleClick" }}>{{expenseDate}}</p>
                 {{/if}}
@@ -492,6 +515,14 @@
                   {{edit-expense class="edit" value=expenseAmount focus-out="acceptExpenseAmountChanges" insert-newline="acceptExpenseAmountChanges"}}
                 {{else}}
                   <p {{action "editExpenseAmount" on="doubleClick" }}>${{expenseAmount}}</p>
+                {{/if}}
+              </td>
+
+              <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
+                {{#if isEditingAssignee}}
+                  {{view App.CalendarDatePicker value=expenseAssignee insert-newline="accept"}}
+                {{else}}
+                  <p {{action "editExpenseAssignee" on="doubleClick" }}>{{expenseAssignee}}</p>
                 {{/if}}
               </td>
 
@@ -770,6 +801,7 @@
 <script src="js/libs/pikaday.js"></script>
 <script src="js/libs/Chart.js"></script>
 <script src="js/application.js"></script>
+
 
 </body>
 </html>

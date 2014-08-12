@@ -88,7 +88,8 @@ App.Bill = DS.Model.extend({
   expenseAmount: DS.attr(),
   expenseDate: DS.attr(),
   expenseApr: DS.attr(),
-  expensePriority: DS.attr()
+  expensePriority: DS.attr(),
+  expenseAssignee: DS.attr()
 });
 
 // Controllers
@@ -102,21 +103,24 @@ App.ApplicationController = Ember.ArrayController.extend({
     var title = this.get('newExpenseTitle');
     var amount = this.get('newExpenseAmount');
     var date = this.get('newExpenseDate');
+    var assignee = this.get('newExpenseAssignee');
 
-    if (!title.trim() && !amount.trim() && !date.trim()) { return; }
+    if (!title.trim() && !amount.trim() && !date.trim() && !assignee.trim()) { return; }
        
     // Create the New Bill Model
     var bill = this.store.createRecord('bill', {
             expenseName: title,
             expenseAmount: amount,
-            expenseDate: date
+            expenseDate: date,
+            expenseAssignee: assignee
     });
 
     // Clear the "New Bill" text field
     this.setProperties({
       'newExpenseTitle': '',
       'newExpenseAmount': '',
-      'newExpenseDate': ''
+      'newExpenseDate': '',
+      'newExpenseAssignee': ''
     });
 
     // Save it
@@ -192,6 +196,7 @@ App.ExpensesOverviewController = Ember.ArrayController.extend({
 
 App.IncomeItemListController = Ember.ObjectController.extend({
   actions: {
+    frequencyOptions: ["Daily", "Weekly", "Bi-Weekly" , "Monthly", "One-Time"],
     editIncome: function() {
       this.toggleProperty('isEditing');
     },
@@ -220,22 +225,13 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       this.set('isEditing', false);
       var income = this.get('model');
       if (Ember.isEmpty(this.get('model.incomeName'))) {
-        this.send('cancelIncomeEdit');
+        this.send('cancelIncomeFrequencyIncomeEdit');
       } else {
         income.save();
       }
     },
 
-    acceptIncomeFrequencyChanges: function() {
-      console.log('yay');
-      this.set('isEditingFrequency', false);
-      var income = this.get('model');
-      if (Ember.isEmpty(this.get('model.incomeFrequency'))) {
-        this.send('cancelIncomeEdit');
-      } else {
-        income.save();
-      }
-    },
+    
     acceptIncomeAmountChanges: function() {
       console.log('yay');
       this.set('isEditingAmount', false);
@@ -247,14 +243,15 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       }
     },
 
-    accept: function(value){
-      console.log(value);
-      var incomeFrequency = value;
+    acceptIncomeFrequencyChanges: function(value){
+      var payFrequency = document.getElementById("addIncomeFrequency");
+      var value = payFrequency.options[payFrequency.selectedIndex].value;
+      // var incomeFrequency = value;
       this.set('isEditingFrequency', false);
       var income = this.get('model');
       console.log(income);
       if(Ember.isEmpty(this.get('model.incomeFrequency'))) {
-        this.send('cancelIncomeEdit');
+        this.send('cancelIncomeFrequencyEdit');
       } else {
         income.set('incomeFrequency', value).save();
       }
@@ -341,16 +338,41 @@ App.ExpenseItemListController = Ember.ObjectController.extend({
       bill.save();
     },
 
+    editExpenseName: function() {
+      //Grab the model
+      this.toggleProperty('isEditing', true);
+    },
+
+    editExpenseFrequency: function() {
+      //Grab the model
+      this.set('isEditing', true);
+    },
+
+    editExpenseDate: function() {
+      //Grab the model
+      this.set('isEditing', true);
+    },
+
+    editExpense: function() {
+      //Grab the model
+      this.set('isEditing', true);
+    },
+
+    editExpenseAmount: function() {
+      //Grab the model
+      this.set('isEditing', true);
+    },
+
+    editExpenseAssignee: function() {
+      //Grab the model
+      this.set('isEditing', true);
+    },
+
 		delete: function() {
 		// change delete mode to true
     this.set('deleteMode', true);
 		
 		},
-
-    editBill: function() {
-      //Grab the model
-      this.set('isEditing', true);
-    },
 
     cancelEdit: function() {
       this.set('isEditing', false);
@@ -361,6 +383,17 @@ App.ExpenseItemListController = Ember.ObjectController.extend({
       //set editing back to false
       this.set('isEditing', false);
       this.get('model').save();
+    },
+
+    acceptExpenseChanges: function() {
+      console.log('yay');
+      this.set('isEditing', false);
+      var income = this.get('model');
+      if (Ember.isEmpty(this.get('model.expenseName'))) {
+        this.send('cancelExepenseEdit');
+      } else {
+        income.save();
+      }
     }
   }
 });
@@ -424,6 +457,7 @@ App.ExpensesController = Ember.ArrayController.extend({
     var title = this.get('newTitle');
     var amount = this.get('newAmount');
     var date = this.get('newDate');
+    var assignee = this.get('newExpenseAssignee');
 
     if (!title.trim() && !amount.trim() && !date.trim()) { return; }
        
@@ -431,14 +465,16 @@ App.ExpensesController = Ember.ArrayController.extend({
     var bill = this.store.createRecord('bill', {
             expenseName: title,
             expenseAmount: amount,
-            expenseDate: date
+            expenseDate: date,
+            expenseAssignee: assignee
     });
 
     // Clear the "New Bill" text field
     this.setProperties({
       'newTitle': '',
       'newAmount': '',
-      'newDate': ''
+      'newDate': '',
+      'newExpenseAssignee': ''
     });
 
     // Save it
@@ -516,8 +552,12 @@ App.IncomeGraphView = Ember.View.extend({
 });
 
 App.IncomeListView = Ember.View.extend({
-  templateName: 'incomeList',
+  templateName: 'incomeList'
 });
+
+App.FrequencySelectionView = Ember.View.extend({
+  templateName: 'incomeFrequencySelection'
+}), 
 
 App.CalendarDatePicker = Ember.TextField.extend({
   _picker: null,
@@ -560,13 +600,17 @@ App.EditIncomeView = Ember.TextField.extend({
 
 Ember.Handlebars.helper('edit-income', App.EditIncomeView);
 
+Ember.Handlebars.helper('edit-expense', App.EditIncomeView);
+
+Ember.Handlebars.helper('edit-frequency', App.EditFrequencyView);
+
 App.EditFrequencyView = Ember.TextField.extend({
   didInsertElement: function() {
     this.$().focus();
   }
 });
 
-Ember.Handlebars.helper('edit-frequency', App.EditFrequencyView);
+
 
 App.IncomeItemListView = Ember.View.extend({
 });

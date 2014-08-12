@@ -1,0 +1,19 @@
+<section>
+  <h1>Home Page Text</h1>
+  <div id="rotator" class="fullSizeImg"></div>
+  <div id="homeContent" class="row-fluid">
+  <div id="leftHomeContent" class="text span4">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sit amet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. </p>
+  </div>
+
+  <!-- end left home content -->
+
+  <div id="rightHomeContent" class="span8">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus dignissim massa, vitae eleifend ligula consectetur vitae. Morbi quis tristique sem. Integer sed lorem molestie, vulputate quam eget, ullamcorper ante. Vestibulum a tortor nec augue hendrerit placerat in sitmet ligula. Curabitur eleifend nulla id vulputate venenatis. Sed malesuada sagittis tellus sed interdum. Praesent rutrum elit ut felis imperdiet, a aliquam libero fermentum. Vestibulum sit amet erat at tellus iaculis tristique. Vestibulum tempus turpis nibh, a cursus orci adipiscing vitae. Nullam pharetra risus cursus mattis gravida. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis id scelerisque vehicula. Praesent urna mi, euismod ut posuere sit amet, mollis id metus. Maecenas aliquet diam sit amet tristique condimentum. Quisque tristique turpis inputd scelerisque vehicula.</p>
+  </div>
+
+  <!-- ed right home content -->
+
+  </div>
+  <!-- end home content -->
+</section>
