@@ -150,13 +150,12 @@ define("activemodel-adapter/system",
     __exports__.ActiveModelSerializer = ActiveModelSerializer;
   });
 define("activemodel-adapter/system/active_model_adapter",
-  ["ember-data/adapters","ember-data/system/adapter","ember-inflector","activemodel-adapter/system/active_model_serializer","exports"],
-  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __exports__) {
+  ["ember-data/adapters","ember-data/system/adapter","ember-inflector","exports"],
+  function(__dependency1__, __dependency2__, __dependency3__, __exports__) {
     "use strict";
     var RESTAdapter = __dependency1__.RESTAdapter;
     var InvalidError = __dependency2__.InvalidError;
     var pluralize = __dependency3__.pluralize;
-    var ActiveModelSerializer = __dependency4__["default"];
 
     /**
       @module ember-data
@@ -485,10 +484,12 @@ define("activemodel-adapter/system/active_model_serializer",
       serializePolymorphicType: function(record, json, relationship) {
         var key = relationship.key;
         var belongsTo = get(record, key);
+        var jsonKey = underscore(key + "_type");
 
-        if (belongsTo) {
-          key = this.keyForAttribute(key);
-          json[key + "_type"] = capitalize(belongsTo.constructor.typeKey);
+        if (Ember.isNone(belongsTo)) {
+          json[jsonKey] = null;
+        } else {
+          json[jsonKey] = capitalize(camelize(belongsTo.constructor.typeKey));
         }
       },
 
@@ -680,13 +681,15 @@ define("ember-data",
     DS.attr      = attr;
     DS.Errors    = Errors;
 
-    DS.AttributeChange       = AttributeChange;
-    DS.RelationshipChange    = RelationshipChange;
-    DS.RelationshipChangeAdd = RelationshipChangeAdd;
-    DS.OneToManyChange       = OneToManyChange;
-    DS.ManyToNoneChange      = OneToManyChange;
-    DS.OneToOneChange        = OneToOneChange;
-    DS.ManyToManyChange      = ManyToManyChange;
+    DS.AttributeChange          = AttributeChange;
+    DS.RelationshipChange       = RelationshipChange;
+    DS.RelationshipChangeAdd    = RelationshipChangeAdd;
+    DS.RelationshipChangeRemove = RelationshipChangeRemove;
+    DS.ManyToNoneChange         = ManyToNoneChange;
+    DS.OneToManyChange          = OneToManyChange;
+    DS.ManyToNoneChange         = OneToManyChange;
+    DS.OneToOneChange           = OneToOneChange;
+    DS.ManyToManyChange         = ManyToManyChange;
 
     DS.Adapter      = Adapter;
     DS.InvalidError = InvalidError;
@@ -1119,9 +1122,30 @@ define("ember-data/adapters/rest_adapter",
       ```js
       {
         "post": {
+          "id": 1,
           "title": "I'm Running to Reform the W3C's Tag",
           "author": "Yehuda Katz"
         }
+      }
+      ```
+
+      Similarly, in response to a `GET` request for `/posts`, the JSON should
+      look like this:
+
+      ```js
+      {
+        "posts": [
+          {
+            "id": 1,
+            "title": "I'm Running to Reform the W3C's Tag",
+            "author": "Yehuda Katz"
+          },
+          {
+            "id": 2,
+            "title": "Rails is omakase",
+            "author": "D2H"
+          }
+        ]
       }
       ```
 
@@ -1145,6 +1169,7 @@ define("ember-data/adapters/rest_adapter",
       ```js
       {
         "person": {
+          "id": 5,
           "firstName": "Barack",
           "lastName": "Obama",
           "occupation": "President"
@@ -1686,13 +1711,42 @@ define("ember-data/adapters/rest_adapter",
       groupRecordsForFindMany: function (store, records) {
         var groups = Ember.MapWithDefault.create({defaultValue: function(){return [];}});
         var adapter = this;
+
         forEach.call(records, function(record){
           var baseUrl = adapter._stripIDFromURL(store, record);
           groups.get(baseUrl).push(record);
         });
+
+        function splitGroupToFitInUrl(group, maxUrlLength) {
+          var baseUrl = adapter._stripIDFromURL(store, group[0]);
+          var idsSize = 0;
+          var splitGroups = [[]];
+
+          forEach.call(group, function(record) {
+            var additionalLength = '&ids[]='.length + record.get('id.length');
+            if (baseUrl.length + idsSize + additionalLength >= maxUrlLength) {
+              idsSize = 0;
+              splitGroups.push([]);
+            }
+
+            idsSize += additionalLength;
+
+            var lastGroupIndex = splitGroups.length - 1;
+            splitGroups[lastGroupIndex].push(record);
+          });
+
+          return splitGroups;
+        }
+
         var groupsArray = [];
         groups.forEach(function(key, group){
-          groupsArray.push(group);
+          // http://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
+          var maxUrlLength = 2048;
+          var splitGroups = splitGroupToFitInUrl(group, maxUrlLength);
+
+          forEach.call(splitGroups, function(splitGroup) {
+            groupsArray.push(splitGroup);
+          });
         });
 
         return groupsArray;
@@ -1872,11 +1926,11 @@ define("ember-data/core",
       /**
         @property VERSION
         @type String
-        @default '1.0.0-beta.9+canary.6b740cf9a2'
+        @default '1.0.0-beta.10+canary.7db210f29a'
         @static
       */
       DS = Ember.Namespace.create({
-        VERSION: '1.0.0-beta.9+canary.6b740cf9a2'
+        VERSION: '1.0.0-beta.10+canary.7db210f29a'
       });
 
       if (Ember.libraries) {
@@ -1981,7 +2035,7 @@ define("ember-data/ext/date",
     /**
       Date.parse with progressive enhancement for ISO 8601 <https://github.com/csnover/js-iso8601>
 
-      Â© 2011 Colin Snover <http://zetafleet.com>
+      © 2011 Colin Snover <http://zetafleet.com>
 
       Released under MIT license.
 
@@ -2000,12 +2054,12 @@ define("ember-data/ext/date",
     Ember.Date.parse = function (date) {
         var timestamp, struct, minutesOffset = 0;
 
-        // ES5 Â§15.9.4.2 states that the string should attempt to be parsed as a Date Time String Format string
-        // before falling back to any implementation-specific date parsing, so thatâ€™s what we do, even if native
+        // ES5 §15.9.4.2 states that the string should attempt to be parsed as a Date Time String Format string
+        // before falling back to any implementation-specific date parsing, so that’s what we do, even if native
         // implementations could be faster
-        //              1 YYYY                2 MM       3 DD           4 HH    5 mm       6 ss        7 msec        8 Z 9 Â±    10 tzHH    11 tzmm
+        //              1 YYYY                2 MM       3 DD           4 HH    5 mm       6 ss        7 msec        8 Z 9 ±    10 tzHH    11 tzmm
         if ((struct = /^(\d{4}|[+\-]\d{6})(?:-(\d{2})(?:-(\d{2}))?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:(Z)|([+\-])(\d{2})(?::(\d{2}))?)?)?$/.exec(date))) {
-            // avoid NaN timestamps caused by â€œundefinedâ€ values being passed to Date.UTC
+            // avoid NaN timestamps caused by “undefined” values being passed to Date.UTC
             for (var i = 0, k; (k = numericKeys[i]); ++i) {
                 struct[k] = +struct[k] || 0;
             }
@@ -2147,14 +2201,12 @@ define("ember-data/serializers",
     __exports__.RESTSerializer = RESTSerializer;
   });
 define("ember-data/serializers/embedded_records_mixin",
-  ["ember-inflector","exports"],
-  function(__dependency1__, __exports__) {
+  ["exports"],
+  function(__exports__) {
     "use strict";
     var get = Ember.get;
     var forEach = Ember.EnumerableUtils.forEach;
     var camelize = Ember.String.camelize;
-
-    var pluralize = __dependency1__.pluralize;
 
     /**
       ## Using Embedded Records
@@ -2174,6 +2226,11 @@ define("ember-data/serializers/embedded_records_mixin",
         }
       })
       ```
+      Note that this use of `{embedded: 'always'}` is unrelated to
+      the `{embedded: 'always'}` that is defined as an option on `DS.attr` as part of
+      defining a model while working with the ActiveModelSerializer.  Nevertheless,
+      using `{embedded: 'always'}` as an option to DS.attr is not a valid way to setup
+      embedded records.
 
       The `attrs` option for a resource `{embedded: 'always'}` is shorthand for:
 
@@ -2183,7 +2240,7 @@ define("ember-data/serializers/embedded_records_mixin",
 
       ### Configuring Attrs
 
-      A resource's `attrs` option may be set to use `ids`, `records` or `no` for the
+      A resource's `attrs` option may be set to use `ids`, `records` or false for the
       `serialize`  and `deserialize` settings.
 
       The `attrs` property can be set on the ApplicationSerializer or a per-type
@@ -2195,7 +2252,7 @@ define("ember-data/serializers/embedded_records_mixin",
       the vanilla EmbeddedRecordsMixin. Likewise, to embed JSON in the payload while
       serializing `serialize: 'records'` is the setting to use. There is an option of
       not embedding JSON in the serialized payload by using `serialize: 'ids'`. If you
-      do not want the relationship sent at all, you can use `serialize: 'no'`.
+      do not want the relationship sent at all, you can use `serialize: false`.
 
 
       ### EmbeddedRecordsMixin defaults
@@ -2203,11 +2260,15 @@ define("ember-data/serializers/embedded_records_mixin",
       will behave in the following way:
 
       BelongsTo: `{serialize:'id', deserialize:'id'}`
-      HasMany:   `{serialize:'no',  deserialize:'ids'}`
+      HasMany:   `{serialize:false,  deserialize:'ids'}`
 
       ### Model Relationships
 
-      Embedded records must have a model defined to be extracted and serialized.
+      Embedded records must have a model defined to be extracted and serialized. Note that
+      when defining any relationships on your model such as `belongsTo` and `hasMany`, you
+      should not both specify `async:true` and also indicate through the serializer's
+      `attrs` attribute that the related model should be embedded.  If a model is
+      declared embedded, then do not use `async:true`.
 
       To successfully extract and serialize embedded records the model relationships
       must be setup correcty See the
@@ -2324,7 +2385,6 @@ define("ember-data/serializers/embedded_records_mixin",
       */
       serializeBelongsTo: function(record, json, relationship) {
         var attr = relationship.key;
-        var attrs = this.get('attrs');
         if (this.noSerializeOptionSpecified(attr)) {
           this._super(record, json, relationship);
           return;
@@ -2434,7 +2494,6 @@ define("ember-data/serializers/embedded_records_mixin",
       */
       serializeHasMany: function(record, json, relationship) {
         var attr = relationship.key;
-        var attrs = this.get('attrs');
         if (this.noSerializeOptionSpecified(attr)) {
           this._super(record, json, relationship);
           return;
@@ -2509,8 +2568,6 @@ define("ember-data/serializers/embedded_records_mixin",
       // checks config for attrs option to serialize records
       noSerializeOptionSpecified: function(attr) {
         var option = this.attrsOption(attr);
-        var serializeRecords = this.hasSerializeRecordsOption(attr);
-        var serializeIds = this.hasSerializeIdsOption(attr);
         return !(option && (option.serialize || option.embedded));
       },
 
@@ -2589,7 +2646,6 @@ define("ember-data/serializers/json_serializer",
     "use strict";
     var RelationshipChange = __dependency1__.RelationshipChange;
     var get = Ember.get;
-    var set = Ember.set;
     var isNone = Ember.isNone;
     var map = Ember.ArrayPolyfills.map;
     var merge = Ember.merge;
@@ -2699,7 +2755,7 @@ define("ember-data/serializers/json_serializer",
        @return {Object} data The transformed data object
       */
       applyTransforms: function(type, data) {
-        type.eachTransformedAttribute(function(key, type) {
+        type.eachTransformedAttribute(function applyTransform(key, type) {
           if (!data.hasOwnProperty(key)) { return; }
 
           var transform = this.transformFor(type);
@@ -2785,7 +2841,7 @@ define("ember-data/serializers/json_serializer",
         @private
       */
       normalizeAttributes: function(type, hash) {
-        var payloadKey, key;
+        var payloadKey;
 
         if (this.keyForAttribute) {
           type.eachAttribute(function(key) {
@@ -2804,7 +2860,7 @@ define("ember-data/serializers/json_serializer",
         @private
       */
       normalizeRelationships: function(type, hash) {
-        var payloadKey, key;
+        var payloadKey;
 
         if (this.keyForRelationship) {
           type.eachRelationship(function(key, relationship) {
@@ -2876,6 +2932,21 @@ define("ember-data/serializers/json_serializer",
         }
 
         return key;
+      },
+
+      /**
+        Check attrs.key.serialize property to inform if the `key`
+        can be serialized
+
+        @method _canSerialize
+        @private
+        @param {String} key
+        @return {boolean} true if the key can be serialized
+      */
+      _canSerialize: function(key) {
+        var attrs = get(this, 'attrs');
+
+        return !attrs || !attrs[key] || attrs[key].serialize !== false;
       },
 
       // SERIALIZE
@@ -3100,29 +3171,25 @@ define("ember-data/serializers/json_serializer",
        @param {Object} attribute
       */
       serializeAttribute: function(record, json, key, attribute) {
-        var attrs = get(this, 'attrs');
-        var value = get(record, key);
         var type = attribute.type;
 
-        if (type) {
-          var transform = this.transformFor(type);
-          value = transform.serialize(value);
-        }
+        if (this._canSerialize(key)) {
+          var value = get(record, key);
+          if (type) {
+            var transform = this.transformFor(type);
+            value = transform.serialize(value);
+          }
 
-        // If attrs.key.serialize is false, do not include the value in the
-        // response to the server at all.
-        if (attrs && attrs[key] && attrs[key].serialize === false) {
-          return;
-        }
-        // if provided, use the mapping provided by `attrs` in
-        // the serializer
-        var payloadKey =  this._getMappedKey(key);
+          // if provided, use the mapping provided by `attrs` in
+          // the serializer
+          var payloadKey =  this._getMappedKey(key);
 
-        if (payloadKey === key && this.keyForAttribute) {
-          payloadKey = this.keyForAttribute(key);
-        }
+          if (payloadKey === key && this.keyForAttribute) {
+            payloadKey = this.keyForAttribute(key);
+          }
 
-        json[payloadKey] = value;
+          json[payloadKey] = value;
+        }
       },
 
       /**
@@ -3151,25 +3218,27 @@ define("ember-data/serializers/json_serializer",
        @param {Object} relationship
       */
       serializeBelongsTo: function(record, json, relationship) {
-        var attrs = get(this, 'attrs');
         var key = relationship.key;
-        var belongsTo = get(record, key);
 
-        // if provided, use the mapping provided by `attrs` in
-        // the serializer
-        var payloadKey = this._getMappedKey(key);
-        if (payloadKey === key && this.keyForRelationship) {
-          payloadKey = this.keyForRelationship(key, "belongsTo");
-        }
+        if (this._canSerialize(key)) {
+          var belongsTo = get(record, key);
 
-        if (isNone(belongsTo)) {
-          json[payloadKey] = belongsTo;
-        } else {
-          json[payloadKey] = get(belongsTo, 'id');
-        }
+          // if provided, use the mapping provided by `attrs` in
+          // the serializer
+          var payloadKey = this._getMappedKey(key);
+          if (payloadKey === key && this.keyForRelationship) {
+            payloadKey = this.keyForRelationship(key, "belongsTo");
+          }
 
-        if (relationship.options.polymorphic) {
-          this.serializePolymorphicType(record, json, relationship);
+          if (isNone(belongsTo)) {
+            json[payloadKey] = belongsTo;
+          } else {
+            json[payloadKey] = get(belongsTo, 'id');
+          }
+
+          if (relationship.options.polymorphic) {
+            this.serializePolymorphicType(record, json, relationship);
+          }
         }
       },
 
@@ -3198,22 +3267,24 @@ define("ember-data/serializers/json_serializer",
        @param {Object} relationship
       */
       serializeHasMany: function(record, json, relationship) {
-        var attrs = get(this, 'attrs');
         var key = relationship.key;
-        var payloadKey;
 
-        // if provided, use the mapping provided by `attrs` in
-        // the serializer
-        payloadKey = this._getMappedKey(key);
-        if (payloadKey === key && this.keyForRelationship) {
-          payloadKey = this.keyForRelationship(key, "hasMany");
-        }
+        if (this._canSerialize(key)) {
+          var payloadKey;
 
-        var relationshipType = RelationshipChange.determineRelationshipType(record.constructor, relationship);
+          // if provided, use the mapping provided by `attrs` in
+          // the serializer
+          payloadKey = this._getMappedKey(key);
+          if (payloadKey === key && this.keyForRelationship) {
+            payloadKey = this.keyForRelationship(key, "hasMany");
+          }
 
-        if (relationshipType === 'manyToNone' || relationshipType === 'manyToMany') {
-          json[payloadKey] = get(record, key).mapBy('id');
-          // TODO support for polymorphic manyToNone and manyToMany relationships
+          var relationshipType = RelationshipChange.determineRelationshipType(record.constructor, relationship);
+
+          if (relationshipType === 'manyToNone' || relationshipType === 'manyToMany') {
+            json[payloadKey] = get(record, key).mapBy('id');
+            // TODO support for polymorphic manyToNone and manyToMany relationships
+          }
         }
       },
 
@@ -3231,7 +3302,12 @@ define("ember-data/serializers/json_serializer",
             var key = relationship.key,
                 belongsTo = get(record, key);
             key = this.keyForAttribute ? this.keyForAttribute(key) : key;
-            json[key + "_type"] = belongsTo.constructor.typeKey;
+
+            if (Ember.isNone(belongsTo)) {
+              json[key + "_type"] = null;
+            } else {
+              json[key + "_type"] = belongsTo.constructor.typeKey;
+            }
           }
         });
        ```
@@ -3613,7 +3689,6 @@ define("ember-data/serializers/rest_serializer",
 
     var JSONSerializer = __dependency1__["default"];
     var get = Ember.get;
-    var set = Ember.set;
     var forEach = Ember.ArrayPolyfills.forEach;
     var map = Ember.ArrayPolyfills.map;
     var camelize = Ember.String.camelize;
@@ -4294,7 +4369,7 @@ define("ember-data/serializers/rest_serializer",
 
       /**
         You can use this method to customize the root keys serialized into the JSON.
-        By default the REST Serializer sends the typeKey of a model, whih is a camelized
+        By default the REST Serializer sends the typeKey of a model, which is a camelized
         version of the name.
 
         For example, your server may expect underscored root objects.
@@ -4332,7 +4407,11 @@ define("ember-data/serializers/rest_serializer",
         var key = relationship.key;
         var belongsTo = get(record, key);
         key = this.keyForAttribute ? this.keyForAttribute(key) : key;
-        json[key + "Type"] = belongsTo.constructor.typeKey;
+        if (Ember.isNone(belongsTo)) {
+          json[key + "Type"] = null;
+        } else {
+          json[key + "Type"] = Ember.String.camelize(belongsTo.constructor.typeKey);
+        }
       }
     });
   });
@@ -4367,8 +4446,6 @@ define("ember-data/system/adapter",
     */
 
     var get = Ember.get;
-    var set = Ember.set;
-    var map = Ember.ArrayPolyfills.map;
 
     var errorProps = [
       'description',
@@ -5326,7 +5403,7 @@ define("ember-data/system/container_proxy",
     };
 
     ContainerProxy.prototype.registerDeprecations = function(proxyPairs) {
-      var i, proxyPair, deprecated, valid, proxy;
+      var i, proxyPair, deprecated, valid;
 
       for (i = proxyPairs.length; i > 0; i--) {
         proxyPair = proxyPairs[i - 1];
@@ -6872,9 +6949,9 @@ define("ember-data/system/model/model",
       },
 
       /**
-        When a find request is triggered on the store, the user can optionally passed in
+        When a find request is triggered on the store, the user can optionally pass in
         attributes and relationships to be preloaded. These are meant to behave as if they
-        came back from the server, expect the user obtained them out of band and is informing
+        came back from the server, except the user obtained them out of band and is informing
         the store of their existence. The most common use case is for supporting client side
         nested URLs, such as `/posts/1/comments/2` so the user can do
         `store.find('comment', 2, {post:1})` without having to fetch the post.
@@ -6997,9 +7074,7 @@ define("ember-data/system/model/model",
 
         if (!data) { return; }
 
-        this.suspendRelationshipObservers(function() {
-          this.notifyPropertyChange('data');
-        });
+        this._dataDidChange();
       },
 
       /**
@@ -7073,9 +7148,7 @@ define("ember-data/system/model/model",
 
         if (data) { this.pushedData(); }
 
-        this.suspendRelationshipObservers(function() {
-          this.notifyPropertyChange('data');
-        });
+        this._dataDidChange();
       },
 
       materializeId: function(id) {
@@ -7142,7 +7215,11 @@ define("ember-data/system/model/model",
 
         this.send('rolledBack');
 
-        this.suspendRelationshipObservers(function() {
+        this._dataDidChange();
+      },
+
+      _dataDidChange: function() {
+        this.suspendRelationshipObservers(function _dataDidChange_suspectRelationshipObservers() {
           this.notifyPropertyChange('data');
         });
       },
@@ -7550,18 +7627,6 @@ define("ember-data/system/model/states",
       @class RootState
     */
 
-    function hasDefinedProperties(object) {
-      // Ignore internal property defined by simulated `Ember.create`.
-      var names = Ember.keys(object);
-      var i, l, name;
-      for (i = 0, l = names.length; i < l; i++ ) {
-        name = names[i];
-        if (object.hasOwnProperty(name) && object[name]) { return true; }
-      }
-
-      return false;
-    }
-
     function didSetProperty(record, context) {
       if (context.value === context.originalValue) {
         delete record._attributes[context.name];
@@ -7636,12 +7701,8 @@ define("ember-data/system/model/states",
         loadingData: Ember.K,
 
         propertyWasReset: function(record, name) {
-          var stillDirty = false;
-
-          for (var prop in record._attributes) {
-            stillDirty = true;
-            break;
-          }
+          var length = Ember.keys(record._attributes);
+          var stillDirty = length > 0;
 
           if (!stillDirty) { record.send('rolledBack'); }
         },
@@ -8126,7 +8187,6 @@ define("ember-data/system/record_array_manager",
     var AdapterPopulatedRecordArray = __dependency1__.AdapterPopulatedRecordArray;
     var ManyArray = __dependency1__.ManyArray;
     var get = Ember.get;
-    var set = Ember.set;
     var forEach = Ember.EnumerableUtils.forEach;
 
     /**
@@ -8451,7 +8511,6 @@ define("ember-data/system/record_arrays/adapter_populated_record_array",
     */
 
     var get = Ember.get;
-    var set = Ember.set;
 
     function cloneNull(source) {
       var clone = Object.create(null);
@@ -8823,7 +8882,6 @@ define("ember-data/system/record_arrays/record_array",
 
     var PromiseArray = __dependency1__.PromiseArray;
     var get = Ember.get;
-    var set = Ember.set;
 
     /**
       A record array is an array that contains records of a certain type. The record
@@ -9291,16 +9349,14 @@ define("ember-data/system/relationships/belongs_to",
     __exports__["default"] = belongsTo;
   });
 define("ember-data/system/relationships/ext",
-  ["ember-inflector/system","ember-data/system/relationship-meta","ember-data/system/model"],
-  function(__dependency1__, __dependency2__, __dependency3__) {
+  ["ember-data/system/relationship-meta","ember-data/system/model"],
+  function(__dependency1__, __dependency2__) {
     "use strict";
-    var singularize = __dependency1__.singularize;
-    var typeForRelationshipMeta = __dependency2__.typeForRelationshipMeta;
-    var relationshipFromMeta = __dependency2__.relationshipFromMeta;
-    var Model = __dependency3__.Model;
+    var typeForRelationshipMeta = __dependency1__.typeForRelationshipMeta;
+    var relationshipFromMeta = __dependency1__.relationshipFromMeta;
+    var Model = __dependency2__.Model;
 
     var get = Ember.get;
-    var set = Ember.set;
 
     /**
       @module ember-data
@@ -10077,7 +10133,7 @@ define("ember-data/system/store",
 
       ### Store createRecord() vs. push() vs. pushPayload() vs. update()
 
-      The store provides multiple ways to create new records object. They have
+      The store provides multiple ways to create new record objects. They have
       some subtle differences in their use which are detailed below:
 
       [createRecord](#method_createRecord) is used for creating new
@@ -10337,10 +10393,10 @@ define("ember-data/system/store",
 
         ---
 
-        You can optionally preload specific attributes and relationships that you know of
+        You can optionally `preload` specific attributes and relationships that you know of
         by passing them as the third argument to find.
 
-        For example, if your Ember route looks like `/posts/1/comments/2` and you API route
+        For example, if your Ember route looks like `/posts/1/comments/2` and your API route
         for the comment also looks like `/posts/1/comments/2` if you want to fetch the comment
         without fetching the post you can pass in the post to the `find` call:
 
@@ -10388,6 +10444,7 @@ define("ember-data/system/store",
         @method find
         @param {String or subclass of DS.Model} type
         @param {Object|String|Integer|null} id
+        @param {Object} preload - optional set of attributes and relationships passed in either as IDs or as actual models
         @return {Promise} promise
       */
       find: function(type, id, preload) {
@@ -10413,6 +10470,7 @@ define("ember-data/system/store",
         @private
         @param {String or subclass of DS.Model} type
         @param {String|Integer} id
+        @param {Object} preload - optional set of attributes and relationships passed in either as IDs or as actual models
         @return {Promise} promise
       */
       findById: function(typeName, id, preload) {
@@ -10447,7 +10505,6 @@ define("ember-data/system/store",
       */
       findByIds: function(type, ids) {
         var store = this;
-        var promiseLabel = "DS: Store#findByIds " + type;
 
         return promiseArray(Ember.RSVP.all(map(ids, function(id) {
           return store.findById(type, id);
@@ -10518,7 +10575,6 @@ define("ember-data/system/store",
         var adapter = store.adapterFor(type);
         var shouldCoalesce = !!adapter.findMany && adapter.coalesceFindRequests;
         var records = Ember.A(recordResolverPairs).mapBy('record');
-        var resolvers = Ember.A(recordResolverPairs).mapBy('resolver');
 
         function _fetchRecord(recordResolverPair) {
           recordResolverPair.resolver.resolve(store.fetchRecord(recordResolverPair.record));
@@ -11195,11 +11251,11 @@ define("ember-data/system/store",
         var factory;
 
         if (typeof key === 'string') {
-          var normalizedKey = this.container.normalize('model:' + key);
-
-          factory = this.container.lookupFactory(normalizedKey);
-          if (!factory) { throw new Ember.Error("No model was found for '" + key + "'"); }
-          factory.typeKey = this._normalizeTypeKey(normalizedKey.split(':', 2)[1]);
+          factory = this.container.lookupFactory('model:' + key);
+          if (!factory) {
+            throw new Ember.Error("No model was found for '" + key + "'");
+          }
+          factory.typeKey = factory.typeKey || this._normalizeTypeKey(key);
         } else {
           // A factory already supplied. Ensure it has a normalized key.
           factory = key;
@@ -11277,8 +11333,8 @@ define("ember-data/system/store",
         // _partial is an internal param used by `update`.
         // If passed, it means that the data should be
         // merged into the existing data, not replace it.
-
-        Ember.assert("You must include an `id` for " + typeName+ " in a hash passed to `push`", data.id != null);
+        Ember.assert("Expected an object as `data` in a call to push for " + typeName + " , but was " + data, Ember.typeOf(data) === 'object');
+        Ember.assert("You must include an `id` for " + typeName + " in an object passed to `push`", data.id != null);
 
         var type = this.modelFor(typeName);
 
@@ -11379,7 +11435,7 @@ define("ember-data/system/store",
         properties. This makes it safe to use with a subset of record
         attributes. This method expects normalized data.
 
-        `update` is useful if you app broadcasts partial updates to
+        `update` is useful if your app broadcasts partial updates to
         records.
 
         ```js
@@ -11422,9 +11478,14 @@ define("ember-data/system/store",
         @return {Array}
       */
       pushMany: function(type, datas) {
-        return map(datas, function(data) {
-          return this.push(type, data);
-        }, this);
+        var length = datas.length;
+        var result = new Array(length);
+
+        for (var i = 0; i < length; i++) {
+          result[i] = this.push(type, datas[i]);
+        }
+
+        return result;
       },
 
       /**
@@ -11615,7 +11676,6 @@ define("ember-data/system/store",
       willDestroy: function() {
         var typeMaps = this.typeMaps;
         var keys = Ember.keys(typeMaps);
-        var store = this;
 
         var types = map(keys, byType);
 
@@ -11794,10 +11854,6 @@ define("ember-data/system/store",
       });
     }
 
-    function isThenable(object) {
-      return object && typeof object.then === 'function';
-    }
-
     function serializerFor(container, type, defaultSerializer) {
       return container.lookup('serializer:'+type) ||
                      container.lookup('serializer:application') ||
@@ -11881,8 +11937,6 @@ define("ember-data/system/store",
       if (promise === undefined) {
         throw new Error('adapter.findMany returned undefined, this was very likely a mistake');
       }
-
-      var guardedPromise;
 
       promise = Promise.cast(promise, label);
       promise = _guard(promise, _bind(_objectIsAlive, store));
@@ -12174,8 +12228,30 @@ define("ember-data/transforms/date",
      */
     var Transform = __dependency1__["default"];
 
-    function pad(num) {
-      return num < 10 ? "0"+num : ""+num;
+    // Date.prototype.toISOString shim
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+    var toISOString = Date.prototype.toISOString || function() {
+      function pad(number) {
+        if ( number < 10 ) {
+          return '0' + number;
+        }
+        return number;
+      }
+
+      return this.getUTCFullYear() +
+        '-' + pad( this.getUTCMonth() + 1 ) +
+        '-' + pad( this.getUTCDate() ) +
+        'T' + pad( this.getUTCHours() ) +
+        ':' + pad( this.getUTCMinutes() ) +
+        ':' + pad( this.getUTCSeconds() ) +
+        '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+        'Z';
+    };
+
+    if (Ember.SHIM_ES5) {
+      if (!Date.prototype.toISOString) {
+        Date.prototype.toISOString = toISOString;
+      }
     }
 
     __exports__["default"] = Transform.extend({
@@ -12198,44 +12274,7 @@ define("ember-data/transforms/date",
 
       serialize: function(date) {
         if (date instanceof Date) {
-          var days = [
-            "Sun",
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat"
-          ];
-          var months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-          ];
-
-          var utcYear = date.getUTCFullYear();
-          var utcMonth = date.getUTCMonth();
-          var utcDayOfMonth = date.getUTCDate();
-          var utcDay = date.getUTCDay();
-          var utcHours = date.getUTCHours();
-          var utcMinutes = date.getUTCMinutes();
-          var utcSeconds = date.getUTCSeconds();
-
-          var dayOfWeek = days[utcDay];
-          var dayOfMonth = pad(utcDayOfMonth);
-          var month = months[utcMonth];
-
-          return dayOfWeek + ", " + dayOfMonth + " " + month + " " + utcYear + " " +
-                 pad(utcHours) + ":" + pad(utcMinutes) + ":" + pad(utcSeconds) + " GMT";
+          return toISOString.call(date);
         } else {
           return null;
         }
@@ -12319,8 +12358,8 @@ define("ember-data/transforms/string",
     });
   });
 define("ember-inflector",
-  ["./system","./ext/string","exports"],
-  function(__dependency1__, __dependency2__, __exports__) {
+  ["./system","./helpers","./ext/string","exports"],
+  function(__dependency1__, __dependency2__, __dependency3__, __exports__) {
     "use strict";
     var Inflector = __dependency1__.Inflector;
     var defaultRules = __dependency1__.defaultRules;
@@ -12367,6 +12406,45 @@ define("ember-inflector/ext/string",
         return singularize(this);
       };
     }
+  });
+define("ember-inflector/helpers",
+  ["./system/string"],
+  function(__dependency1__) {
+    "use strict";
+    var singularize = __dependency1__.singularize;
+    var pluralize = __dependency1__.pluralize;
+
+    /**
+     *
+     * If you have Ember Inflector (such as if Ember Data is present),
+     * singularize a word. For example, turn "oxen" into "ox".
+     *
+     * Example:
+     *
+     * {{singularize myProperty}}
+     * {{singularize "oxen"}}
+     *
+     * @for Ember.Handlebars.helpers
+     * @method singularize
+     * @param {String|Property} word word to singularize
+    */
+    Ember.Handlebars.helper('singularize', singularize);
+
+    /**
+     *
+     * If you have Ember Inflector (such as if Ember Data is present),
+     * pluralize a word. For example, turn "ox" into "oxen".
+     *
+     * Example:
+     *
+     * {{pluralize myProperty}}
+     * {{pluralize "oxen"}}
+     *
+     * @for Ember.Handlebars.helpers
+     * @method pluralize
+     * @param {String|Property} word word to pluralize
+    */
+    Ember.Handlebars.helper('pluralize', pluralize);
   });
 define("ember-inflector/system",
   ["./system/inflector","./system/string","./system/inflections","exports"],

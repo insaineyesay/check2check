@@ -50,6 +50,9 @@ App.ExpensesOverviewRoute = Ember.Route.extend({
 });
 
 App.ExpenseListRoute = Ember.Route.extend({
+  renderTemplate: function(){
+    this.render('expenseList');
+  },
 	model: function() {
 		return this.store.find('bill');
 	}
@@ -85,6 +88,7 @@ App.Income = DS.Model.extend({
 
 App.Bill = DS.Model.extend({
   expenseName: DS.attr(),
+  expenseFrequency: DS.attr(),
   expenseAmount: DS.attr(),
   expenseDate: DS.attr(),
   expenseApr: DS.attr(),
@@ -94,7 +98,7 @@ App.Bill = DS.Model.extend({
 
 // Controllers
 App.ApplicationController = Ember.ArrayController.extend({
-  needs: ['income', 'incomeList', 'expenses', 'expenseList'],
+ 
   actions: {
     
     createBillItem: function() {
@@ -102,6 +106,8 @@ App.ApplicationController = Ember.ArrayController.extend({
     // Get the Bill title set by the new 'New Bill' text field
     var title = this.get('newExpenseTitle');
     var amount = this.get('newExpenseAmount');
+    var expenseFrequency = document.getElementById("addExpenseFrequency");
+    var frequency = expenseFrequency.options[expenseFrequency.selectedIndex].value;
     var date = this.get('newExpenseDate');
     var assignee = this.get('newExpenseAssignee');
 
@@ -111,6 +117,7 @@ App.ApplicationController = Ember.ArrayController.extend({
     var bill = this.store.createRecord('bill', {
             expenseName: title,
             expenseAmount: amount,
+            expenseFrequency: frequency,
             expenseDate: date,
             expenseAssignee: assignee
     });
@@ -179,21 +186,6 @@ App.IncomeOverviewController = Ember.ArrayController.extend({
   needs: 'expenses'
 });
 
-App.ExpensesOverviewController = Ember.ArrayController.extend({
-  needs: ['income', 'incomeList', 'expenses', 'expenseList'],
-  totalBills: function() {
-    // console.log('yay');
-    var bills = this.getEach('controllers.expenseList.expenseAmount');
-    // console.log(bills);
-    if(bills.length > 0) {
-      var totalBills = bills.reduce(function (previousValue, currentValue, index) {
-        return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
-      });
-      return totalBills;
-    }
-  }.property('@each')
-});
-
 App.IncomeItemListController = Ember.ObjectController.extend({
   actions: {
     frequencyOptions: ["Daily", "Weekly", "Bi-Weekly" , "Monthly", "One-Time"],
@@ -255,7 +247,7 @@ App.IncomeItemListController = Ember.ObjectController.extend({
       } else {
         income.set('incomeFrequency', value).save();
       }
-  }
+    }
 
   }
 });
@@ -322,6 +314,21 @@ App.IncomeItemController = Ember.ArrayController.extend({
     
 });
 
+App.ExpensesOverviewController = Ember.ArrayController.extend({
+  needs: ['income', 'incomeList', 'incomeItemList', 'incomeItem', 'expenses', 'expenseList'],
+  totalBills: function() {
+    // console.log('yay');
+    var bills = this.getEach('controllers.expenseList.expenseAmount');
+    // console.log(bills);
+    if(bills.length > 0) {
+      var totalBills = bills.reduce(function (previousValue, currentValue, index) {
+        return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+      });
+      return totalBills;
+    }
+  }.property('@each')
+});
+
 App.ExpenseItemListController = Ember.ObjectController.extend({
   deleteMode: false,
 
@@ -340,17 +347,54 @@ App.ExpenseItemListController = Ember.ObjectController.extend({
 
     editExpenseName: function() {
       //Grab the model
-      this.toggleProperty('isEditing', true);
+      this.toggleProperty('isEditingExpenseName');
+    },
+
+    acceptExpenseNameChanges: function() {
+      this.set('isEditingExpenseName', false);
+      var income = this.get('model');
+      if (Ember.isEmpty(this.get('model.expenseName'))) {
+        this.send('cancelExepenseEdit');
+      } else {
+        income.save();
+      }
     },
 
     editExpenseFrequency: function() {
       //Grab the model
-      this.set('isEditing', true);
+      this.toggleProperty('isEditingFrequency');
+    }, 
+    acceptExpenseFrequencyChanges: function(value){
+      var expenseFrequency = document.getElementById("editExpenseFrequency");
+      var frequency = expenseFrequency.value;
+      console.log(frequency);
+      // expenseFrequency.onChange(function(){
+      //   var expense = this.get('model');
+      //   expense.set('expenseFrequency', value).save();
+      //   this.set('isEditingFrequency', false);
+      // });
+      this.set('isEditingFrequency', false);
+      var expense = this.get('model');
+      if(Ember.isEmpty(this.get('model.expenseFrequency'))) {
+        this.send('cancelExpenseEdit');
+      } else {
+        expense.set('expenseFrequency', value).save();
+      }
     },
 
     editExpenseDate: function() {
       //Grab the model
-      this.set('isEditing', true);
+      this.toggleProperty('isEditingDate');
+    },
+    acceptExpenseDateChange: function(value) {
+      this.toggleProperty('isEditingDate');
+      var expense = this.get('model');
+      var expenseDate = expenseDate;
+      if(Ember.isEmpty(this.get('model.expenseDate'))) {
+        this.send('cancelExpenseEdit');
+      } else {
+        expense.set('expenseDate', value).save();
+      }
     },
 
     editExpense: function() {
@@ -360,12 +404,33 @@ App.ExpenseItemListController = Ember.ObjectController.extend({
 
     editExpenseAmount: function() {
       //Grab the model
-      this.set('isEditing', true);
+      this.toggleProperty('isEditingAmount');
+    },
+
+    acceptExpenseAmountChanges: function(){
+      console.log('yay');
+      this.set('isEditingAmount', false);
+      var expense = this.get('model');
+      if (Ember.isEmpty(this.get('model.expenseAmount'))) {
+        this.send('cancelExpenseEdit');
+      } else {
+        expense.save();
+      }
     },
 
     editExpenseAssignee: function() {
       //Grab the model
-      this.set('isEditing', true);
+      this.toggleProperty('isEditingExpenseAssignee');
+    },
+
+    acceptExpenseAssigneeChanges: function() {
+      this.set('isEditingExpenseAssignee', false);
+      var expense = this.get('model');
+      if (Ember.isEmpty(this.get('model.expenseAssignee'))) {
+        this.send('cancelExpenseEdit');
+      } else {
+        expense.save();
+      }
     },
 
 		delete: function() {
@@ -374,7 +439,7 @@ App.ExpenseItemListController = Ember.ObjectController.extend({
 		
 		},
 
-    cancelEdit: function() {
+    cancelExpenseEdit: function() {
       this.set('isEditing', false);
     },
 
@@ -383,25 +448,18 @@ App.ExpenseItemListController = Ember.ObjectController.extend({
       //set editing back to false
       this.set('isEditing', false);
       this.get('model').save();
-    },
-
-    acceptExpenseChanges: function() {
-      console.log('yay');
-      this.set('isEditing', false);
-      var income = this.get('model');
-      if (Ember.isEmpty(this.get('model.expenseName'))) {
-        this.send('cancelExepenseEdit');
-      } else {
-        income.save();
-      }
     }
+    
   }
 });
 
 App.ExpenseListController = Ember.ArrayController.extend({
-  needs: ['expenses', 'incomeList'],
-  
+  needs: ['income', 'incomeList', 'incomeItemList', 'incomeItem', 'expenses', 'expenseList'],
+  income: Ember.computed.alias('controllers.incomeList.incomeTotal'),
+  disposableIncome: Ember.computed.alias('controllers.incomeList.disposableIncome'),
+
     sumOfBills: function() {
+
       console.log('yay');
       var bills = this.getEach('expenseAmount');
       if (bills.length > 0) {
@@ -413,17 +471,17 @@ App.ExpenseListController = Ember.ArrayController.extend({
     
     }.property('@each'),
 
-    // totalIncome: function() {
-    //   console.log('yay');
-    //   var income = this.getEach('controllers.incomeList.incomeTotal');
-    //   console.log(income);
-    //   if (income.length > 0) {
-    //     var incomeTotals = income.reduce(function (previousValue, currentValue, index) {
-    //       return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
-    //     });
-    //     return incomeTotals;
-    //   }
-    // }.property('@each'),
+    totalIncome: function() {
+      console.log('yay');
+      var income = income;
+      console.log(income);
+      if (income.length > 0) {
+        var incomeTotals = income.reduce(function (previousValue, currentValue, index) {
+          return parseFloat(previousValue, 10) + parseFloat(currentValue, 10);
+        });
+        return incomeTotals;
+      }
+    }.property('@each'),
 
     // disposableIncome: function () {
     //   var incomes = this.getEach('controllers.incomeList.incomeTotal');
@@ -559,6 +617,10 @@ App.FrequencySelectionView = Ember.View.extend({
   templateName: 'incomeFrequencySelection'
 }), 
 
+App.ExpenseFrequencySelectionView = Ember.View.extend({
+  templateName: 'expenseFrequencySelection'
+}),
+
 App.CalendarDatePicker = Ember.TextField.extend({
   _picker: null,
  
@@ -628,6 +690,12 @@ App.IncomeOverviewView = Ember.View.extend({
   templateName: 'incomeOverview',
   incomeListHeading: 'Income',
   
+});
+
+App.ExpenseListView = Ember.View.extend({
+  templateName: 'expenseList',
+  name: 'expenseList',
+  layoutName: 'expenseList'
 });
 
 App.AddBillView = Ember.View.extend({

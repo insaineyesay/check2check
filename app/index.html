@@ -151,17 +151,24 @@
               {{input class="form-control" type="number" id="sbillAmountEntry" valueBinding="newExpenseAmount" placeholder="Enter the amount here"}}
             <span class="input-group-addon">.00</span>
           </div>
+          <select id="addExpenseFrequency" class="form-control">
+          <option>Daily</option>
+          <option>Weekly</option>
+          <option>Bi-Weekly</option>
+          <option>Monthly</option>
+          <option>One Time</option>
+          </select>
               
           {{input type="date" id="sbillDateEntry" valueBinding="newExpenseDate" placeholder="Enter the date here"}}
 
-          <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
+          <!-- <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
           <button type="button" class="btn btn-xs btn-info">{{#link-to "incomeOverview"}}Add Income{{/link-to}}</button>
-          <button type="button" class="btn btn-xs btn-success">{{#link-to "bills"}}Done Adding Income{{/link-to}}</button>
+          <button type="button" class="btn btn-xs btn-success">{{#link-to "bills"}}Done Adding Income{{/link-to}}</button> -->
         </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" value="submit" {{action "createBillItem"}}>Save changes</button>
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -260,6 +267,8 @@
   </select>
 
 </script>
+
+
 
 <script type = "text/x-handlebars" id="incomeList" data-template-name="incomeList">
   <div class="col-md-12">
@@ -456,6 +465,25 @@
 <!-- END OF INCOME VIEWS -->
 
 <!-- BEGIN EXPENSE VIEWS -->
+
+<script type="text/x-handlebars" id="expenseFrequencySelection" data-template-name="expenseFrequencySelection">
+ 
+ <select id="editExpenseFrequency" onChange="acceptExpenseFrequencyChanges()" class="form-control">
+    <option value="Daily">Daily</option>
+    <option value="Weekly">Weekly</option>
+    <option value="Bi-Weekly">Bi-Weekly</option>
+    <option value="Monthly">Monthly</option>
+    <option value="OneTime">One Time</option>
+  </select>
+
+
+</script>
+
+<script type="text/javascript">
+  acceptExpenseFrequencyChanges: function (value){
+  this.acceptExpenseFrequencyChanges(); 
+}
+</script>
 <script type="text/x-handlebars" id="innerExpenseButtons" data-template-name="innerExpenseButtons">
   <div id="InnerButtons" class="col-md-offset-10">
     <button class="btn btn-xs btn-default">{{#link-to "expenseList"}}Expense List{{/link-to}}</button>
@@ -472,7 +500,7 @@
 
     {{view App.InnerExpenseButtonsView}}
         <h1>Expense List View</h1>
-        You have a total of ${{sumOfBills}} to pay every month. While you have a total of ${{controllers.incomeList.incomeTotal}} coming in as revenue. This means you have ${{controllers.incomeList.disposableIncome}} remaining to save.
+        You have a total of ${{sumOfBills}} to pay every month. While you have a total of ${{controllers.incomeList.incomeTotal}} coming in as revenue. This means you have ${{disposableIncome}} remaining to save.
           <table id="expenseListTable" class="table">
             <tr>
               <th>Expense Name</th>
@@ -486,9 +514,9 @@
             {{#each itemController = "expenseItemList"}}
             <tr>
 
-              <td colspan="1" {{bind-attr class="isEditing:editing"}}>
-                {{#if isEditing}}
-                  {{edit-expense class="edit" value=expenseName focus-out="acceptExpenseChanges" insert-newline="acceptExpenseChanges"}}
+              <td colspan="1" {{bind-attr class="isEditingExpenseName:editing"}}>
+                {{#if isEditingExpenseName}}
+                  {{edit-expense class="edit" value=expenseName focus-out="acceptExpenseNameChanges" insert-newline="acceptExpenseNameChanges"}}
                 {{else}}
                   <p {{action "editExpenseName" on="doubleClick" }}>{{expenseName}}</p>
                 {{/if}}
@@ -496,7 +524,7 @@
 
               <td colspan="1" {{bind-attr class="isEditingFrequency:editing"}}>
                 {{#if isEditingFrequency}}
-                  {{view App.CalendarDatePicker value=expenseFrequency insert-newline="accept"}}
+                  {{view App.ExpenseFrequencySelectionView onChange="acceptExpenseFrequencyChanges"  value=expenseFrequency focus-out="acceptExpenseFrequencyChanges" insert-newline="acceptExpenseFrequencyChanges"}}
                 {{else}}
                   <p {{action "editExpenseFrequency" on="doubleClick" }}>{{expenseFrequency}}</p>
                 {{/if}}
@@ -504,13 +532,13 @@
 
               <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
                 {{#if isEditingDate}}
-                  {{view App.CalendarDatePicker value=expenseDate insert-newline="accept"}}
+                  {{view App.CalendarDatePicker value=expenseDate focus-out="acceptExpenseDateChange" insert-newline="acceptExpenseDateChange"}}
                 {{else}}
                   <p {{action "editExpenseDate" on="doubleClick" }}>{{expenseDate}}</p>
                 {{/if}}
               </td>
 
-              <td colspan="1">
+              <td colspan="1" {{bind-attr class="isEditingAmount:editing"}}>
                 {{#if isEditingAmount}}
                   {{edit-expense class="edit" value=expenseAmount focus-out="acceptExpenseAmountChanges" insert-newline="acceptExpenseAmountChanges"}}
                 {{else}}
@@ -518,9 +546,9 @@
                 {{/if}}
               </td>
 
-              <td colspan="1" {{bind-attr class="isEditingDate:editing"}}>
-                {{#if isEditingAssignee}}
-                  {{view App.CalendarDatePicker value=expenseAssignee insert-newline="accept"}}
+              <td colspan="1" {{bind-attr class="isEditingExpenseAssignee:editing"}}>
+                {{#if isEditingExpenseAssignee}}
+                  {{edit-expense class="edit" value=expenseAssignee focus-out="acceptExpenseAssigneeChanges" insert-newline="acceptExpenseAssigneeChanges"}}
                 {{else}}
                   <p {{action "editExpenseAssignee" on="doubleClick" }}>{{expenseAssignee}}</p>
                 {{/if}}
@@ -797,6 +825,7 @@
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember.js"></script>
 <script src="http://builds.emberjs.com/beta/ember-data.js"></script>
+
 <script src="js/libs/localstorage_adapter.js"></script>
 <script src="js/libs/pikaday.js"></script>
 <script src="js/libs/Chart.js"></script>
