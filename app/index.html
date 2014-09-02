@@ -161,8 +161,8 @@
               
           {{input type="date" id="sbillDateEntry" valueBinding="newExpenseDate" placeholder="Enter the date here"}}
 
-          <!-- <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
-          <button type="button" class="btn btn-xs btn-info">{{#link-to "incomeOverview"}}Add Income{{/link-to}}</button>
+          <button type="submit" class="btn btn-xs btn-default" value="submit" {{action "createBillItem"}}>Add New</button>
+         <!--  <button type="button" class="btn btn-xs btn-info">{{#link-to "incomeOverview"}}Add Income{{/link-to}}</button>
           <button type="button" class="btn btn-xs btn-success">{{#link-to "bills"}}Done Adding Income{{/link-to}}</button> -->
         </form>
             </div>
@@ -479,11 +479,7 @@
 
 </script>
 
-<script type="text/javascript">
-  acceptExpenseFrequencyChanges: function (value){
-  this.acceptExpenseFrequencyChanges(); 
-}
-</script>
+
 <script type="text/x-handlebars" id="innerExpenseButtons" data-template-name="innerExpenseButtons">
   <div id="InnerButtons" class="col-md-offset-10">
     <button class="btn btn-xs btn-default">{{#link-to "expenseList"}}Expense List{{/link-to}}</button>

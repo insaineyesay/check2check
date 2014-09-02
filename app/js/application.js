@@ -23,7 +23,7 @@ App.Router.map(function() {
 	this.resource('index', {path: '/'});
 	this.resource('getting started');
   this.resource('financial');
-  this.resource('income');
+  // this.resource('income');
   this.resource('incomeOverview', {path: '/income'});
   this.resource('incomeList');
   this.resource('incomeGraph');
@@ -253,7 +253,7 @@ App.IncomeItemListController = Ember.ObjectController.extend({
 });
 
 App.IncomeListController = Ember.ArrayController.extend({
-  needs: ["expenses","incomeItemList"],
+  needs: ['income', 'incomeList', 'incomeItemList', 'incomeItem', 'expenses', 'expenseList'],
 
   incomeTotal: function() {
     var incomes = this.getEach('incomeAmount');
@@ -330,6 +330,7 @@ App.ExpensesOverviewController = Ember.ArrayController.extend({
 });
 
 App.ExpenseItemListController = Ember.ObjectController.extend({
+  needs: ['income', 'incomeList', 'incomeItemList', 'incomeItem', 'expenses', 'expenseList'],
   deleteMode: false,
 
 	actions: {
@@ -501,10 +502,11 @@ App.ExpenseListController = Ember.ArrayController.extend({
 });
 
 App.ExpenseController = Ember.ObjectController.extend({
-
+  needs: ['income', 'incomeList', 'incomeItemList', 'incomeItem', 'expenses', 'expenseList'],
 });
 
 App.ExpensesController = Ember.ArrayController.extend({
+  needs: ['income', 'incomeList', 'incomeItemList', 'incomeItem', 'expenses', 'expenseList'],
   isEditing: false,
 
   actions: {
